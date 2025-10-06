@@ -37,14 +37,42 @@
             </li>
             <hr class="sidebar-divider">
             <div class="sidebar-heading">Catalog</div>
-            <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-fw fa-folder"></i> <span>Categories</span></a></li>
-            <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-fw fa-sitemap"></i> <span>Subcategories</span></a></li>
-            <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-fw fa-box"></i> <span>Products</span></a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ route('admin.categories.index') }}"><i class="fas fa-fw fa-folder"></i> <span>Categories</span></a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ route('admin.subcategories.index') }}"><i class="fas fa-fw fa-sitemap"></i> <span>Subcategories</span></a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ route('admin.products.index') }}"><i class="fas fa-fw fa-box"></i> <span>Products</span></a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ route('admin.product-attributes.index') }}"><i class="fas fa-fw fa-sliders-h"></i> <span>Attributes</span></a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ route('admin.product-reviews.index') }}"><i class="fas fa-fw fa-star"></i> <span>Reviews</span></a></li>
             <hr class="sidebar-divider">
             <div class="sidebar-heading">Sales</div>
-            <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-fw fa-shopping-cart"></i> <span>Orders</span></a></li>
-            <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-fw fa-users"></i> <span>Customers</span></a></li>
-            <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-fw fa-tag"></i> <span>Coupons</span></a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ route('admin.orders.index') }}"><i class="fas fa-fw fa-shopping-cart"></i> <span>Orders</span></a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ route('admin.customers.index') }}"><i class="fas fa-fw fa-users"></i> <span>Customers</span></a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ route('admin.coupons.index') }}"><i class="fas fa-fw fa-tag"></i> <span>Coupons</span></a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ route('admin.transactions.index') }}"><i class="fas fa-fw fa-dollar-sign"></i> <span>Transactions</span></a></li>
+            <hr class="sidebar-divider">
+            <div class="sidebar-heading">Operations</div>
+            <li class="nav-item"><a class="nav-link" href="{{ route('admin.shipping-methods.index') }}"><i class="fas fa-fw fa-truck"></i> <span>Shipping</span></a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ route('admin.taxes.index') }}"><i class="fas fa-fw fa-percent"></i> <span>Taxes</span></a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ route('admin.currencies.index') }}"><i class="fas fa-fw fa-money-bill"></i> <span>Currencies</span></a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ route('admin.payment-gateways.index') }}"><i class="fas fa-fw fa-credit-card"></i> <span>Payments</span></a></li>
+            <hr class="sidebar-divider">
+            <div class="sidebar-heading">Content</div>
+            <li class="nav-item"><a class="nav-link" href="{{ route('admin.sliders.index') }}"><i class="fas fa-fw fa-images"></i> <span>Sliders</span></a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ route('admin.banners.index') }}"><i class="fas fa-fw fa-rectangle-ad"></i> <span>Banners</span></a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ route('admin.blog-posts.index') }}"><i class="fas fa-fw fa-blog"></i> <span>Blog</span></a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ route('admin.pages.index') }}"><i class="fas fa-fw fa-file"></i> <span>Pages</span></a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ route('admin.faqs.index') }}"><i class="fas fa-fw fa-question-circle"></i> <span>FAQs</span></a></li>
+            <hr class="sidebar-divider">
+            <div class="sidebar-heading">Support</div>
+            <li class="nav-item"><a class="nav-link" href="{{ route('admin.tickets.index') }}"><i class="fas fa-fw fa-ticket"></i> <span>Tickets</span></a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ route('admin.subscribers.index') }}"><i class="fas fa-fw fa-envelope"></i> <span>Subscribers</span></a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ route('admin.email-templates.index') }}"><i class="fas fa-fw fa-envelope-open-text"></i> <span>Email Templates</span></a></li>
+            <hr class="sidebar-divider">
+            <div class="sidebar-heading">System</div>
+            <li class="nav-item"><a class="nav-link" href="{{ route('admin.settings.index') }}"><i class="fas fa-fw fa-cog"></i> <span>Settings</span></a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ route('admin.languages.index') }}"><i class="fas fa-fw fa-language"></i> <span>Languages</span></a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ route('admin.analytics') }}"><i class="fas fa-fw fa-chart-line"></i> <span>Analytics</span></a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ route('admin.activity-logs.index') }}"><i class="fas fa-fw fa-history"></i> <span>Activity Logs</span></a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ route('admin.backups.index') }}"><i class="fas fa-fw fa-database"></i> <span>Backups</span></a></li>
         </ul>
 
         <div id="content-wrapper" class="d-flex flex-column">
@@ -60,7 +88,8 @@
                                 <i class="fas fa-user-circle fa-lg"></i>
                             </a>
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in">
-                                <a class="dropdown-item" href="#"><i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i> Profile</a>
+                                <a class="dropdown-item" href="{{ route('admin.profile') }}"><i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i> Profile</a>
+                                <a class="dropdown-item" href="{{ route('admin.notifications.index') }}"><i class="fas fa-bell fa-sm fa-fw mr-2 text-gray-400"></i> Notifications</a>
                                 <div class="dropdown-divider"></div>
                                 <a class="dropdown-item" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                     <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i> Logout
