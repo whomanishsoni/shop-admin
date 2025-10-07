@@ -3,12 +3,12 @@
 @section('title', 'Orders')
 
 @section('content')
-<div class="d-flex justify-content-between align-items-center mb-4">
+{{-- <div class="d-flex justify-content-between align-items-center mb-4">
     <h1 class="h3 mb-0 text-gray-800">Orders</h1>
     <a href="{{ route('admin.orders.create') }}" class="btn btn-primary">
         <i class="fas fa-plus"></i> Add Order
     </a>
-</div>
+</div> --}}
 
 @if(session('success'))
 <div class="alert alert-success alert-dismissible fade show" role="alert">
