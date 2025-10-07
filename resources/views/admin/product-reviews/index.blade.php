@@ -3,12 +3,6 @@
 @section('title', 'Product Reviews')
 
 @section('content')
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h1 class="h3 mb-0 text-gray-800">Product Reviews</h1>
-    <a href="{{ route('admin.product-reviews.create') }}" class="btn btn-primary">
-        <i class="fas fa-plus"></i> Add Review
-    </a>
-</div>
 
 @if(session('success'))
 <div class="alert alert-success alert-dismissible fade show" role="alert">
