@@ -56,7 +56,7 @@ class CategoryController extends Controller
         ]);
 
         $validated['slug'] = Str::slug($request->name);
-        
+
         if ($request->hasFile('image')) {
             $validated['image'] = $request->file('image')->store('categories', 'public');
         }
@@ -81,8 +81,10 @@ class CategoryController extends Controller
             'status' => 'boolean'
         ]);
 
+        $validated['status'] = $request->has('status') ? true : false;
+
         $validated['slug'] = Str::slug($request->name);
-        
+
         if ($request->hasFile('image')) {
             $validated['image'] = $request->file('image')->store('categories', 'public');
         }

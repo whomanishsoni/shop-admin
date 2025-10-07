@@ -5,123 +5,107 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'Admin Panel')</title>
-    
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+    <title>@yield('title', 'Vyuga Admin Panel')</title>
+
+    <!-- Offline CSS -->
+    <link href="{{ asset('admin/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('admin/vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ asset('admin/vendor/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('admin/css/sb-admin-2.min.css') }}" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+
     <style>
         body { font-family: 'Nunito', sans-serif; }
         #wrapper { display: flex; }
         #content-wrapper { background-color: #f8f9fc; width: 100%; overflow-x: hidden; }
         #content { flex: 1; }
-        .sidebar { min-height: 100vh; width: 250px; background: linear-gradient(180deg, #4e73df 10%, #224abe 100%); }
-        .sidebar .nav-link { color: rgba(255,255,255,.8); padding: 1rem; }
+        .sidebar { min-height: 100vh; width: 250px; background: linear-gradient(180deg, #4e73df 10%, #224abe 100%); transition: all 0.3s; }
+        .sidebar.toggled { width: 70px; }
+        .sidebar .nav-link { color: rgba(255,255,255,.8); padding: 1rem; display: flex; align-items: center; }
         .sidebar .nav-link:hover { color: #fff; }
         .sidebar .nav-link.active { color: #fff; font-weight: 700; }
+        .sidebar.toggled .nav-link span { display: none; }
+        .sidebar.toggled .nav-link i { display: block !important; margin-right: 0; }
+        @media (max-width: 768px) {
+            .sidebar { width: 70px; }
+            .sidebar .nav-link span { display: none; }
+            .sidebar .nav-link i { display: block !important; margin-right: 0; }
+        }
     </style>
     @stack('styles')
 </head>
 <body id="page-top">
     <div id="wrapper">
-        <ul class="navbar-nav sidebar sidebar-dark accordion" id="accordionSidebar">
-            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('admin.dashboard') }}">
-                <div class="sidebar-brand-text mx-3">Admin Panel</div>
-            </a>
-            <hr class="sidebar-divider my-0">
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('admin.dashboard') }}">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
-                    <span>Dashboard</span>
-                </a>
-            </li>
-            <hr class="sidebar-divider">
-            <div class="sidebar-heading">Catalog</div>
-            <li class="nav-item"><a class="nav-link" href="{{ route('admin.categories.index') }}"><i class="fas fa-fw fa-folder"></i> <span>Categories</span></a></li>
-            <li class="nav-item"><a class="nav-link" href="{{ route('admin.subcategories.index') }}"><i class="fas fa-fw fa-sitemap"></i> <span>Subcategories</span></a></li>
-            <li class="nav-item"><a class="nav-link" href="{{ route('admin.products.index') }}"><i class="fas fa-fw fa-box"></i> <span>Products</span></a></li>
-            <li class="nav-item"><a class="nav-link" href="{{ route('admin.product-attributes.index') }}"><i class="fas fa-fw fa-sliders-h"></i> <span>Attributes</span></a></li>
-            <li class="nav-item"><a class="nav-link" href="{{ route('admin.product-reviews.index') }}"><i class="fas fa-fw fa-star"></i> <span>Reviews</span></a></li>
-            <hr class="sidebar-divider">
-            <div class="sidebar-heading">Sales</div>
-            <li class="nav-item"><a class="nav-link" href="{{ route('admin.orders.index') }}"><i class="fas fa-fw fa-shopping-cart"></i> <span>Orders</span></a></li>
-            <li class="nav-item"><a class="nav-link" href="{{ route('admin.customers.index') }}"><i class="fas fa-fw fa-users"></i> <span>Customers</span></a></li>
-            <li class="nav-item"><a class="nav-link" href="{{ route('admin.coupons.index') }}"><i class="fas fa-fw fa-tag"></i> <span>Coupons</span></a></li>
-            <li class="nav-item"><a class="nav-link" href="{{ route('admin.transactions.index') }}"><i class="fas fa-fw fa-dollar-sign"></i> <span>Transactions</span></a></li>
-            <hr class="sidebar-divider">
-            <div class="sidebar-heading">Operations</div>
-            <li class="nav-item"><a class="nav-link" href="{{ route('admin.shipping-methods.index') }}"><i class="fas fa-fw fa-truck"></i> <span>Shipping</span></a></li>
-            <li class="nav-item"><a class="nav-link" href="{{ route('admin.taxes.index') }}"><i class="fas fa-fw fa-percent"></i> <span>Taxes</span></a></li>
-            <li class="nav-item"><a class="nav-link" href="{{ route('admin.currencies.index') }}"><i class="fas fa-fw fa-money-bill"></i> <span>Currencies</span></a></li>
-            <li class="nav-item"><a class="nav-link" href="{{ route('admin.payment-gateways.index') }}"><i class="fas fa-fw fa-credit-card"></i> <span>Payments</span></a></li>
-            <hr class="sidebar-divider">
-            <div class="sidebar-heading">Content</div>
-            <li class="nav-item"><a class="nav-link" href="{{ route('admin.sliders.index') }}"><i class="fas fa-fw fa-images"></i> <span>Sliders</span></a></li>
-            <li class="nav-item"><a class="nav-link" href="{{ route('admin.banners.index') }}"><i class="fas fa-fw fa-rectangle-ad"></i> <span>Banners</span></a></li>
-            <li class="nav-item"><a class="nav-link" href="{{ route('admin.blog-posts.index') }}"><i class="fas fa-fw fa-blog"></i> <span>Blog</span></a></li>
-            <li class="nav-item"><a class="nav-link" href="{{ route('admin.pages.index') }}"><i class="fas fa-fw fa-file"></i> <span>Pages</span></a></li>
-            <li class="nav-item"><a class="nav-link" href="{{ route('admin.faqs.index') }}"><i class="fas fa-fw fa-question-circle"></i> <span>FAQs</span></a></li>
-            <hr class="sidebar-divider">
-            <div class="sidebar-heading">Support</div>
-            <li class="nav-item"><a class="nav-link" href="{{ route('admin.tickets.index') }}"><i class="fas fa-fw fa-ticket"></i> <span>Tickets</span></a></li>
-            <li class="nav-item"><a class="nav-link" href="{{ route('admin.subscribers.index') }}"><i class="fas fa-fw fa-envelope"></i> <span>Subscribers</span></a></li>
-            <li class="nav-item"><a class="nav-link" href="{{ route('admin.email-templates.index') }}"><i class="fas fa-fw fa-envelope-open-text"></i> <span>Email Templates</span></a></li>
-            <hr class="sidebar-divider">
-            <div class="sidebar-heading">System</div>
-            <li class="nav-item"><a class="nav-link" href="{{ route('admin.settings.index') }}"><i class="fas fa-fw fa-cog"></i> <span>Settings</span></a></li>
-            <li class="nav-item"><a class="nav-link" href="{{ route('admin.languages.index') }}"><i class="fas fa-fw fa-language"></i> <span>Languages</span></a></li>
-            <li class="nav-item"><a class="nav-link" href="{{ route('admin.analytics') }}"><i class="fas fa-fw fa-chart-line"></i> <span>Analytics</span></a></li>
-            <li class="nav-item"><a class="nav-link" href="{{ route('admin.activity-logs.index') }}"><i class="fas fa-fw fa-history"></i> <span>Activity Logs</span></a></li>
-            <li class="nav-item"><a class="nav-link" href="{{ route('admin.backups.index') }}"><i class="fas fa-fw fa-database"></i> <span>Backups</span></a></li>
-        </ul>
+        @include('admin.layouts.partials.sidebar')
 
         <div id="content-wrapper" class="d-flex flex-column">
             <div id="content">
-                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
-                    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
-                        <i class="fa fa-bars"></i>
-                    </button>
-                    <ul class="navbar-nav ml-auto">
-                        <li class="nav-item dropdown no-arrow">
-                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
-                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Admin User</span>
-                                <i class="fas fa-user-circle fa-lg"></i>
-                            </a>
-                            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in">
-                                <a class="dropdown-item" href="{{ route('admin.profile') }}"><i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i> Profile</a>
-                                <a class="dropdown-item" href="{{ route('admin.notifications.index') }}"><i class="fas fa-bell fa-sm fa-fw mr-2 text-gray-400"></i> Notifications</a>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                                    <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i> Logout
-                                </a>
-                                <form id="logout-form" action="{{ route('admin.logout') }}" method="POST" style="display: none;">
-                                    @csrf
-                                </form>
-                            </div>
-                        </li>
-                    </ul>
-                </nav>
+                @include('admin.layouts.partials.topbar')
 
                 <div class="container-fluid">
                     @yield('content')
                 </div>
             </div>
 
-            <footer class="sticky-footer bg-white">
-                <div class="container my-auto">
-                    <div class="copyright text-center my-auto">
-                        <span>Copyright &copy; E-commerce Admin {{ date('Y') }}</span>
-                    </div>
-                </div>
-            </footer>
+            @include('admin.layouts.partials.footer')
         </div>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <!-- Scroll to Top Button -->
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+
+    <!-- Logout Modal -->
+    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Ready to Leave?</h5>
+                    <button class="close" type="button" data-bs-dismiss="modal">
+                        <span>×</span>
+                    </button>
+                </div>
+                <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Cancel</button>
+                    <form id="logout-form" action="{{ route('admin.logout') }}" method="POST" style="display: none;">
+                        @csrf
+                    </form>
+                    <a class="btn btn-primary" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Offline JavaScript -->
+    <script src="{{ asset('admin/vendor/jquery/jquery.min.js') }}"></script>
+    <script src="{{ asset('admin/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ asset('admin/vendor/jquery-easing/jquery.easing.min.js') }}"></script>
+    <script src="{{ asset('admin/js/sb-admin-2.min.js') }}"></script>
+    <script src="{{ asset('admin/vendor/datatables/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('admin/vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
+    <script src="{{ asset('admin/vendor/chart.js/chart.min.js') }}"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize Bootstrap dropdowns
+            var dropdownElementList = [].slice.call(document.querySelectorAll('.dropdown-toggle'));
+            dropdownElementList.forEach(function(dropdownToggleEl) {
+                new bootstrap.Dropdown(dropdownToggleEl);
+            });
+
+            // Sidebar toggle functionality
+            document.getElementById('sidebarToggleTop').addEventListener('click', function() {
+                document.getElementById('accordionSidebar').classList.toggle('toggled');
+                const navLinks = document.querySelectorAll('.nav-link');
+                navLinks.forEach(link => {
+                    link.style.display = 'flex';
+                    link.querySelector('i').style.display = 'block';
+                });
+            });
+        });
+    </script>
     @stack('scripts')
 </body>
 </html>
