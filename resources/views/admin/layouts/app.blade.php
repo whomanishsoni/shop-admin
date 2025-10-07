@@ -86,9 +86,37 @@
     <script src="{{ asset('admin/vendor/datatables/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('admin/vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
     <script src="{{ asset('admin/vendor/chart.js/chart.min.js') }}"></script>
+    <script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // Initialize CKEditor for all textareas with .ckeditor class
+            if (typeof CKEDITOR !== 'undefined') {
+                document.querySelectorAll('.ckeditor').forEach(function(textarea) {
+                    CKEDITOR.replace(textarea, {
+                        height: 300,
+                        toolbar: [
+                            { name: 'document', items: ['Source', '-', 'Save', 'NewPage', 'Preview', 'Print'] },
+                            { name: 'clipboard', items: ['Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo'] },
+                            { name: 'editing', items: ['Find', 'Replace', '-', 'SelectAll'] },
+                            '/',
+                            { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', '-', 'RemoveFormat'] },
+                            { name: 'paragraph', items: ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote'] },
+                            { name: 'links', items: ['Link', 'Unlink', 'Anchor'] },
+                            { name: 'insert', items: ['Image', 'Table', 'HorizontalRule', 'SpecialChar'] },
+                            '/',
+                            { name: 'styles', items: ['Styles', 'Format', 'Font', 'FontSize'] },
+                            { name: 'colors', items: ['TextColor', 'BGColor'] },
+                            { name: 'tools', items: ['Maximize', 'ShowBlocks'] }
+                        ],
+                        filebrowserImageBrowseUrl: '/laravel-filemanager?type=Images',
+                        filebrowserImageUploadUrl: '/laravel-filemanager/upload?type=Images&_token={{csrf_token()}}',
+                        filebrowserBrowseUrl: '/laravel-filemanager?type=Files',
+                        filebrowserUploadUrl: '/laravel-filemanager/upload?type=Files&_token={{csrf_token()}}'
+                    });
+                });
+            }
+
             // Initialize Bootstrap dropdowns
             var dropdownElementList = [].slice.call(document.querySelectorAll('.dropdown-toggle'));
             dropdownElementList.forEach(function(dropdownToggleEl) {
