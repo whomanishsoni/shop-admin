@@ -25,6 +25,7 @@ class CurrencyController extends Controller
                 })
                 ->addColumn('action', function($row) {
                     return '
+                        <a href="'.route('admin.currencies.show', $row->id).'" class="btn btn-sm btn-info"><i class="fas fa-eye"></i></a>
                         <a href="'.route('admin.currencies.edit', $row->id).'" class="btn btn-sm btn-primary"><i class="fas fa-edit"></i></a>
                         <form action="'.route('admin.currencies.destroy', $row->id).'" method="POST" class="d-inline delete-form">
                             '.csrf_field().'
@@ -46,6 +47,7 @@ class CurrencyController extends Controller
 
     public function store(Request $request)
     {
+        \Log::info('Store method called', $request->all());
         $validated = $request->validate([
             'code' => 'required|string|unique:currencies,code|max:10',
             'name' => 'required|string|max:255',
@@ -55,11 +57,15 @@ class CurrencyController extends Controller
             'status' => 'boolean'
         ]);
 
-        if ($request->is_default) {
+        \Log::info('Validated data', $validated);
+
+        if ($request->has('is_default') && $request->is_default) {
+            \Log::info('Setting other currencies is_default to false');
             Currency::where('is_default', true)->update(['is_default' => false]);
         }
 
-        Currency::create($validated);
+        $currency = Currency::create($validated);
+        \Log::info('Currency created', ['id' => $currency->id]);
 
         return redirect()->route('admin.currencies.index')->with('success', 'Currency created successfully');
     }
@@ -76,6 +82,7 @@ class CurrencyController extends Controller
 
     public function update(Request $request, Currency $currency)
     {
+        \Log::info('Update method called', $request->all());
         $validated = $request->validate([
             'code' => 'required|string|max:10|unique:currencies,code,'.$currency->id,
             'name' => 'required|string|max:255',
@@ -85,26 +92,29 @@ class CurrencyController extends Controller
             'status' => 'boolean'
         ]);
 
-        $validated['is_default'] = $request->has('is_default') ? true : false;
-        $validated['status'] = $request->has('status') ? true : false;
+        \Log::info('Validated data', $validated);
 
-        if ($validated['is_default']) {
+        if ($request->has('is_default') && $validated['is_default']) {
+            \Log::info('Setting other currencies is_default to false');
             Currency::where('is_default', true)->where('id', '!=', $currency->id)->update(['is_default' => false]);
         }
 
         $currency->update($validated);
+        \Log::info('Currency updated', ['id' => $currency->id]);
 
         return redirect()->route('admin.currencies.index')->with('success', 'Currency updated successfully');
     }
 
     public function destroy(Currency $currency)
     {
+        \Log::info('Deleting currency', ['id' => $currency->id]);
         $currency->delete();
         return redirect()->route('admin.currencies.index')->with('success', 'Currency deleted successfully');
     }
 
     public function bulkDelete(Request $request)
     {
+        \Log::info('Bulk delete called', ['ids' => $request->ids]);
         Currency::whereIn('id', $request->ids)->delete();
         return response()->json(['success' => 'Currencies deleted successfully']);
     }
