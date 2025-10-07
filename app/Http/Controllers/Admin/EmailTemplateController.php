@@ -48,12 +48,17 @@ class EmailTemplateController extends Controller
             'name' => 'required|string|max:255',
             'subject' => 'required|string|max:255',
             'body' => 'required|string',
-            'variables' => 'nullable|array',
+            'variables' => 'nullable|string',
             'status' => 'boolean'
         ]);
 
-        if (isset($validated['variables'])) {
-            $validated['variables'] = json_encode($validated['variables']);
+        $validated['status'] = $request->has('status') ? true : false;
+
+        if (isset($validated['variables']) && !empty($validated['variables'])) {
+            $variablesArray = array_filter(array_map('trim', explode("\n", $validated['variables'])));
+            $validated['variables'] = json_encode($variablesArray);
+        } else {
+            $validated['variables'] = json_encode([]);
         }
 
         EmailTemplate::create($validated);
@@ -77,14 +82,17 @@ class EmailTemplateController extends Controller
             'name' => 'required|string|max:255',
             'subject' => 'required|string|max:255',
             'body' => 'required|string',
-            'variables' => 'nullable|array',
+            'variables' => 'nullable|string',
             'status' => 'boolean'
         ]);
 
         $validated['status'] = $request->has('status') ? true : false;
 
-        if (isset($validated['variables'])) {
-            $validated['variables'] = json_encode($validated['variables']);
+        if (isset($validated['variables']) && !empty($validated['variables'])) {
+            $variablesArray = array_filter(array_map('trim', explode("\n", $validated['variables'])));
+            $validated['variables'] = json_encode($variablesArray);
+        } else {
+            $validated['variables'] = json_encode([]);
         }
 
         $emailTemplate->update($validated);
