@@ -73,11 +73,24 @@ class ProductController extends Controller
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string',
             'meta_keywords' => 'nullable|string|max:255',
+            'images' => 'nullable|array',
+            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
         ]);
 
         $validated['slug'] = $validated['slug'] ?? Str::slug($request->name);
 
-        Product::create($validated);
+        $product = Product::create($validated);
+
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $index => $image) {
+                $path = $image->store('products', 'public');
+                $product->images()->create([
+                    'image' => $path,
+                    'sort_order' => $index,
+                    'is_primary' => $index === 0 ? true : false
+                ]);
+            }
+        }
 
         return redirect()->route('admin.products.index')->with('success', 'Product created successfully');
     }
@@ -112,17 +125,38 @@ class ProductController extends Controller
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string',
             'meta_keywords' => 'nullable|string|max:255',
+            'images' => 'nullable|array',
+            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'delete_images' => 'nullable|array',
+            'delete_images.*' => 'nullable|exists:product_images,id',
         ]);
 
         $validated['slug'] = $validated['slug'] ?? Str::slug($request->name);
 
         $product->update($validated);
 
+        if ($request->has('delete_images')) {
+            $product->images()->whereIn('id', $request->delete_images)->delete();
+        }
+
+        if ($request->hasFile('images')) {
+            $existingCount = $product->images()->count();
+            foreach ($request->file('images') as $index => $image) {
+                $path = $image->store('products', 'public');
+                $product->images()->create([
+                    'image' => $path,
+                    'sort_order' => $existingCount + $index,
+                    'is_primary' => $product->images()->count() === 0 && $index === 0 ? true : false
+                ]);
+            }
+        }
+
         return redirect()->route('admin.products.index')->with('success', 'Product updated successfully');
     }
 
     public function destroy(Product $product)
     {
+        $product->images()->delete();
         $product->delete();
         return redirect()->route('admin.products.index')->with('success', 'Product deleted successfully');
     }

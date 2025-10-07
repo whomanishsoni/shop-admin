@@ -11,7 +11,8 @@ return new class extends Migration
         Schema::create('product_attributes', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('type')->default('select');
+            $table->string('display_name')->nullable();
+            $table->text('values')->nullable();
             $table->boolean('status')->default(1);
             $table->timestamps();
         });

@@ -77,8 +77,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('tickets/bulk-delete', [TicketController::class, 'bulkDelete'])->name('tickets.bulk-delete');
 
         Route::get('settings', [SettingController::class, 'index'])->name('settings.index');
-        Route::post('settings', [SettingController::class, 'store'])->name('settings.store');
-        Route::post('settings/bulk-delete', [TicketController::class, 'bulkDelete'])->name('settings.bulk-delete');
+        Route::post('settings/bulk-update', [SettingController::class, 'bulkUpdate'])->name('settings.bulk-update');
+        Route::post('settings/bulk-delete', [SettingController::class, 'bulkDelete'])->name('settings.bulk-delete');
 
 
         Route::resource('sliders', SliderController::class);

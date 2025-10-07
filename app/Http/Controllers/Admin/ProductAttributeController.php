@@ -45,9 +45,19 @@ class ProductAttributeController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'type' => 'required|in:select,radio,text,color',
+            'display_name' => 'nullable|string|max:255',
+            'values' => 'nullable|array',
+            'values.*' => 'nullable|string|max:255',
             'status' => 'boolean'
         ]);
+
+        $validated['display_name'] = $validated['display_name'] ?? $validated['name'];
+        
+        if (isset($validated['values'])) {
+            $validated['values'] = json_encode(array_filter($validated['values']));
+        }
+
+        $validated['status'] = $request->has('status') ? true : false;
 
         ProductAttribute::create($validated);
 
@@ -68,9 +78,17 @@ class ProductAttributeController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'type' => 'required|in:select,radio,text,color',
+            'display_name' => 'nullable|string|max:255',
+            'values' => 'nullable|array',
+            'values.*' => 'nullable|string|max:255',
             'status' => 'boolean'
         ]);
+
+        $validated['display_name'] = $validated['display_name'] ?? $validated['name'];
+        
+        if (isset($validated['values'])) {
+            $validated['values'] = json_encode(array_filter($validated['values']));
+        }
 
         $validated['status'] = $request->has('status') ? true : false;
 

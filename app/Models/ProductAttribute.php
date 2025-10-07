@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class ProductAttribute extends Model
 {
-    protected $fillable = ['name', 'type', 'status'];
+    protected $fillable = ['name', 'display_name', 'values', 'status'];
 
     public function attributeValues()
     {

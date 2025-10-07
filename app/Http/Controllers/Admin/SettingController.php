@@ -17,6 +17,12 @@ class SettingController extends Controller
                 ->addColumn('checkbox', function($row) {
                     return '<input type="checkbox" class="select-item" value="'.$row->id.'">';
                 })
+                ->addColumn('value_display', function($row) {
+                    if (in_array($row->type, ['file', 'image']) && $row->value) {
+                        return '<img src="/storage/'.$row->value.'" width="50" height="50" style="object-fit: cover;">';
+                    }
+                    return strlen($row->value) > 50 ? substr($row->value, 0, 50).'...' : $row->value;
+                })
                 ->addColumn('action', function($row) {
                     return '
                         <a href="'.route('admin.settings.edit', $row->id).'" class="btn btn-sm btn-primary"><i class="fas fa-edit"></i></a>
@@ -27,10 +33,12 @@ class SettingController extends Controller
                         </form>
                     ';
                 })
-                ->rawColumns(['checkbox', 'action'])
+                ->rawColumns(['checkbox', 'value_display', 'action'])
                 ->make(true);
         }
-        return view('admin.settings.index');
+        
+        $settings = Setting::pluck('value', 'key')->toArray();
+        return view('admin.settings.index', compact('settings'));
     }
 
     public function create()
@@ -43,8 +51,12 @@ class SettingController extends Controller
         $validated = $request->validate([
             'key' => 'required|string|unique:settings,key',
             'value' => 'nullable|string',
-            'type' => 'required|in:text,textarea,number,boolean,file'
+            'type' => 'required|in:text,textarea,number,boolean,file,image'
         ]);
+
+        if ($request->hasFile('value')) {
+            $validated['value'] = $request->file('value')->store('settings', 'public');
+        }
 
         Setting::create($validated);
 
@@ -66,12 +78,37 @@ class SettingController extends Controller
         $validated = $request->validate([
             'key' => 'required|string|unique:settings,key,'.$setting->id,
             'value' => 'nullable|string',
-            'type' => 'required|in:text,textarea,number,boolean,file'
+            'type' => 'required|in:text,textarea,number,boolean,file,image'
         ]);
+
+        if ($request->hasFile('value')) {
+            $validated['value'] = $request->file('value')->store('settings', 'public');
+        }
 
         $setting->update($validated);
 
         return redirect()->route('admin.settings.index')->with('success', 'Setting updated successfully');
+    }
+
+    public function bulkUpdate(Request $request)
+    {
+        $fileFields = ['site_logo', 'site_favicon', 'footer_logo'];
+        
+        foreach ($request->except(['_token']) as $key => $value) {
+            if ($request->hasFile($key)) {
+                $value = $request->file($key)->store('settings', 'public');
+            }
+            
+            Setting::updateOrCreate(
+                ['key' => $key],
+                [
+                    'value' => $value,
+                    'type' => in_array($key, $fileFields) ? 'image' : 'text'
+                ]
+            );
+        }
+
+        return redirect()->route('admin.settings.index')->with('success', 'Settings updated successfully');
     }
 
     public function destroy(Setting $setting)

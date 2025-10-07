@@ -15,28 +15,68 @@
         <form action="{{ route('admin.banners.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
             
-            <div class="mb-3">
-                <label for="name" class="form-label">Name <span class="text-danger">*</span></label>
-                <input type="text" class="form-control @error('name') is-invalid @enderror" 
-                       id="name" name="name" value="{{ old('name') }}" required>
-                @error('name')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-            </div>
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="mb-3">
+                        <label for="title" class="form-label">Title <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control @error('title') is-invalid @enderror" 
+                               id="title" name="title" value="{{ old('title') }}" required>
+                        @error('title')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
 
-            <div class="mb-3">
-                <label for="description" class="form-label">Description</label>
-                <textarea class="form-control @error('description') is-invalid @enderror" 
-                          id="description" name="description" rows="4">{{ old('description') }}</textarea>
-                @error('description')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-            </div>
+                    <div class="mb-3">
+                        <label for="link" class="form-label">Link URL</label>
+                        <input type="url" class="form-control @error('link') is-invalid @enderror" 
+                               id="link" name="link" value="{{ old('link') }}" placeholder="https://example.com">
+                        @error('link')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
 
-            <div class="mb-3">
-                <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="status" name="status" value="1" {{ old('status', 1) ? 'checked' : '' }}>
-                    <label class="form-check-label" for="status">Active</label>
+                    <div class="mb-3">
+                        <label class="form-label">Banner Image <span class="text-danger">*</span></label>
+                        <div class="border rounded p-4 text-center" style="background-color: #f8f9fc;">
+                            <div id="image-preview" class="mb-3" style="display: none;">
+                                <img id="preview-img" src="" class="img-fluid" style="max-height: 300px; border-radius: 5px;">
+                            </div>
+                            <input type="file" name="image" id="image-input" class="form-control @error('image') is-invalid @enderror" 
+                                   accept="image/*" required onchange="previewImage(this)">
+                            <small class="text-muted d-block mt-2">Recommended size: varies by position (JPG, PNG, GIF max 2MB)</small>
+                        </div>
+                        @error('image')
+                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label for="position" class="form-label">Position</label>
+                        <input type="text" name="position" id="position" class="form-control @error('position') is-invalid @enderror" 
+                               value="{{ old('position', 'home') }}" placeholder="e.g., home, sidebar">
+                        @error('position')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="order" class="form-label">Display Order</label>
+                        <input type="number" name="order" id="order" class="form-control @error('order') is-invalid @enderror" 
+                               value="{{ old('order', 0) }}">
+                        <small class="text-muted">Lower numbers appear first</small>
+                        @error('order')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="status" name="status" value="1" {{ old('status', 1) ? 'checked' : '' }}>
+                            <label class="form-check-label" for="status">Active</label>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -50,3 +90,21 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+function previewImage(input) {
+    const preview = document.getElementById('image-preview');
+    const previewImg = document.getElementById('preview-img');
+    
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            previewImg.src = e.target.result;
+            preview.style.display = 'block';
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+</script>
+@endpush
