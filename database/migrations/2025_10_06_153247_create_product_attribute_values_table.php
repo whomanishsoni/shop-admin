@@ -10,10 +10,9 @@ return new class extends Migration
     {
         Schema::create('product_attribute_values', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('product_attribute_id')->constrained()->onDelete('cascade');
             $table->foreignId('product_id')->constrained()->onDelete('cascade');
+            $table->foreignId('attribute_id')->constrained('product_attributes')->onDelete('cascade');
             $table->string('value');
-            $table->decimal('price_adjustment', 10, 2)->default(0);
             $table->timestamps();
         });
     }

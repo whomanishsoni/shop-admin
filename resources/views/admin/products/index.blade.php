@@ -10,13 +10,6 @@
     </a>
 </div>
 
-@if(session('success'))
-<div class="alert alert-success alert-dismissible fade show" role="alert">
-    {{ session('success') }}
-    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-</div>
-@endif
-
 <div class="card shadow mb-4">
     <div class="card-header py-3">
         <div class="d-flex justify-content-between align-items-center">
@@ -32,6 +25,7 @@
                 <thead>
                     <tr>
                         <th width="30"><input type="checkbox" id="select-all"></th>
+                        <th>Image</th>
                         <th>Name</th>
                         <th>SKU</th>
                         <th>Category</th>
@@ -57,6 +51,7 @@ $(function() {
         ajax: "{{ route('admin.products.index') }}",
         columns: [
             {data: 'checkbox', name: 'checkbox', orderable: false, searchable: false},
+            {data: 'image', name: 'image', orderable: false, searchable: false},
             {data: 'name', name: 'name'},
             {data: 'sku', name: 'sku'},
             {data: 'category', name: 'category'},

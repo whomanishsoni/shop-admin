@@ -3,20 +3,66 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\{
     AuthController, DashboardController, CategoryController, SubcategoryController,
-    ProductController, ProductAttributeController, ProductReviewController, OrderController,
-    CustomerController, CouponController, TransactionController, ShippingMethodController,
-    ShippingZoneController, TaxController, CurrencyController, PaymentGatewayController,
-    TicketController, SettingController, SliderController, EmailTemplateController,
-    LanguageController, FaqController, BlogCategoryController, BlogPostController,
-    PageController, SubscriberController, BannerController, ActivityLogController,
-    NotificationController, UserController, AnalyticsController, BackupController,
-    ProductImportExportController
+    ProductController as AdminProductController, ProductAttributeController, ProductReviewController,
+    OrderController as AdminOrderController, CustomerController, CouponController,
+    TransactionController, ShippingMethodController, ShippingZoneController,
+    TaxController, CurrencyController, PaymentGatewayController, TicketController,
+    SettingController, SliderController, EmailTemplateController, LanguageController,
+    FaqController, BlogCategoryController, BlogPostController, PageController,
+    SubscriberController, BannerController, ActivityLogController, NotificationController,
+    UserController, AnalyticsController, BackupController, ProductImportExportController
+};
+use App\Http\Controllers\Store\{
+    HomeController, AccountController, AboutController, CartController,
+    ContactController, LegalController, OrderController, ProductController,
+    ShopController, WishlistController, CheckoutController
 };
 
-Route::get('/', function () {
-    return redirect(route('admin.login'));
+Route::get('/', [HomeController::class, 'index'])->name('home');
+
+// Store frontend routes
+Route::get('/shop', [ShopController::class, 'index'])->name('shop');
+Route::get('/product/{slug}', [ProductController::class, 'show'])->name('product.detail');
+
+// Cart routes
+Route::get('/cart', [CartController::class, '__invoke'])->name('cart');
+Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
+Route::post('/cart/update', [CartController::class, 'update'])->name('cart.update');
+Route::post('/cart/remove', [CartController::class, 'remove'])->name('cart.remove');
+
+// Checkout routes
+Route::get('/checkout', [CheckoutController::class, '__invoke'])->name('checkout');
+Route::post('/checkout/process', [CheckoutController::class, 'process'])->name('checkout.process');
+Route::get('/payment', [CheckoutController::class, 'payment'])->name('payment');
+
+// Wishlist routes
+Route::get('/wishlist', [WishlistController::class, '__invoke'])->name('wishlist');
+Route::post('/wishlist/add', [WishlistController::class, 'add'])->name('wishlist.add');
+Route::post('/wishlist/remove', [WishlistController::class, 'remove'])->name('wishlist.remove');
+
+// Account routes
+Route::prefix('account')->group(function () {
+    Route::get('/login', [AccountController::class, 'login'])->name('login');
+    Route::post('/login', [AccountController::class, 'loginAttempt'])->name('login.attempt');
+    Route::get('/register', [AccountController::class, 'register'])->name('register');
+    Route::post('/register', [AccountController::class, 'registerAttempt'])->name('register.attempt');
+    Route::get('/profile', [AccountController::class, 'profile'])->name('profile');
+    Route::get('/edit-profile', [AccountController::class, 'editProfile'])->name('editProfile');
+    Route::get('/orders', [OrderController::class, 'index'])->name('orders');
+    Route::get('/orders/{id}/invoice', [OrderController::class, 'invoice'])->name('order.invoice');
+    Route::get('/addresses', [AccountController::class, 'addresses'])->name('addresses');
+    Route::post('/logout', [AccountController::class, 'logout'])->name('logout');
 });
 
+// Other frontend routes
+Route::get('/about', [AboutController::class, '__invoke'])->name('about');
+Route::get('/contact', [ContactController::class, '__invoke'])->name('contact');
+Route::get('/privacy-policy', [LegalController::class, 'privacyPolicy'])->name('privacy-policy');
+Route::get('/terms-conditions', [LegalController::class, 'termsConditions'])->name('terms-conditions');
+Route::get('/refund-policy', [LegalController::class, 'refundPolicy'])->name('refund-policy');
+Route::get('/shipping-policy', [LegalController::class, 'shippingPolicy'])->name('shipping-policy');
+
+// Admin routes
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('login', [AuthController::class, 'showLogin'])->name('login');
     Route::post('login', [AuthController::class, 'login']);
@@ -25,14 +71,16 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::middleware(['auth'])->group(function () {
         Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
+        Route::get('subcategories/{category_id}', [AdminProductController::class, 'getSubcategories'])->name('subcategories.get');
+
         Route::resource('categories', CategoryController::class);
         Route::post('categories/bulk-delete', [CategoryController::class, 'bulkDelete'])->name('categories.bulk-delete');
 
         Route::resource('subcategories', SubcategoryController::class);
         Route::post('subcategories/bulk-delete', [SubcategoryController::class, 'bulkDelete'])->name('subcategories.bulk-delete');
 
-        Route::resource('products', ProductController::class);
-        Route::post('products/bulk-delete', [ProductController::class, 'bulkDelete'])->name('products.bulk-delete');
+        Route::resource('products', AdminProductController::class);
+        Route::post('products/bulk-delete', [AdminProductController::class, 'bulkDelete'])->name('products.bulk-delete');
 
         Route::resource('product-attributes', ProductAttributeController::class);
         Route::post('product-attributes/bulk-delete', [ProductAttributeController::class, 'bulkDelete'])->name('product-attributes.bulk-delete');
@@ -41,10 +89,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('product-reviews/{id}/approve', [ProductReviewController::class, 'approve'])->name('product-reviews.approve');
         Route::post('product-reviews/bulk-delete', [ProductReviewController::class, 'bulkDelete'])->name('product-reviews.bulk-delete');
 
-        Route::resource('orders', OrderController::class)->except(['create', 'store']);
-        Route::get('orders/{id}/invoice', [OrderController::class, 'invoice'])->name('orders.invoice');
-        Route::post('orders/{id}/update-status', [OrderController::class, 'updateStatus'])->name('orders.update-status');
-        Route::post('orders/bulk-delete', [OrderController::class, 'bulkDelete'])->name('orders.bulk-delete');
+        Route::resource('orders', AdminOrderController::class)->except(['create', 'store']);
+        Route::get('orders/{id}/invoice', [AdminOrderController::class, 'invoice'])->name('orders.invoice');
+        Route::post('orders/{id}/update-status', [AdminOrderController::class, 'updateStatus'])->name('orders.update-status');
+        Route::post('orders/bulk-delete', [AdminOrderController::class, 'bulkDelete'])->name('orders.bulk-delete');
 
         Route::resource('customers', CustomerController::class);
         Route::post('customers/bulk-delete', [CustomerController::class, 'bulkDelete'])->name('customers.bulk-delete');
@@ -55,7 +103,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         Route::resource('transactions', TransactionController::class)->only(['index', 'show']);
         Route::post('transactions/bulk-delete', [TransactionController::class, 'bulkDelete'])->name('transactions.bulk-delete');
-
 
         Route::resource('shipping-methods', ShippingMethodController::class);
         Route::post('shipping-methods/bulk-delete', [ShippingMethodController::class, 'bulkDelete'])->name('shipping-methods.bulk-delete');
@@ -79,7 +126,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('settings', [SettingController::class, 'index'])->name('settings.index');
         Route::post('settings/bulk-update', [SettingController::class, 'bulkUpdate'])->name('settings.bulk-update');
         Route::post('settings/bulk-delete', [SettingController::class, 'bulkDelete'])->name('settings.bulk-delete');
-
 
         Route::resource('sliders', SliderController::class);
         Route::post('sliders/bulk-delete', [SliderController::class, 'bulkDelete'])->name('sliders.bulk-delete');
@@ -121,7 +167,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         Route::get('analytics', [AnalyticsController::class, 'index'])->name('analytics');
 
-        Route::get('inventory-reports', [ProductController::class, 'inventoryReport'])->name('inventory-reports');
+        Route::get('inventory-reports', [AdminProductController::class, 'inventoryReport'])->name('inventory-reports');
 
         Route::get('seo-settings', [SettingController::class, 'seo'])->name('seo-settings');
         Route::post('seo-settings', [SettingController::class, 'updateSeo'])->name('seo-settings.update');

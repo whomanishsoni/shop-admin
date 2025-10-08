@@ -30,9 +30,54 @@
                 <div class="mb-3">
                     <h5>Description</h5>
                     <div>
-                        {!! nl2br(e($product->description)) !!}
+                        {!! $product->description !!}
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Product Images</h6>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    @foreach($product->images as $image)
+                        <div class="col-md-3 mb-3">
+                            <img src="{{ asset('storage/' . $image->image) }}" class="img-fluid" style="height: 150px; object-fit: cover;">
+                            @if($image->is_primary)
+                                <span class="badge bg-primary">Primary</span>
+                            @endif
+                        </div>
+                    @endforeach
+                </div>
+                @if($product->images->isEmpty())
+                    <p>No images available.</p>
+                @endif
+            </div>
+        </div>
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Product Attributes</h6>
+            </div>
+            <div class="card-body">
+                @if($product->attributeValues->isEmpty())
+                    <p>No attributes assigned.</p>
+                @else
+                    @foreach($product->attributeValues as $attributeValue)
+                        <div class="mb-3">
+                            <strong>{{ $attributeValue->attribute->display_name ?? 'Unknown Attribute' }}:</strong>
+                            <p class="mb-0 text-muted">
+                                @if(is_array($attributeValue->value))
+                                    {{ implode(', ', $attributeValue->value) }}
+                                @else
+                                    {{ $attributeValue->value ?? 'N/A' }}
+                                @endif
+                            </p>
+                        </div>
+                    @endforeach
+                @endif
             </div>
         </div>
     </div>
@@ -135,8 +180,8 @@
                 <a href="{{ route('admin.products.edit', $product->id) }}" class="btn btn-warning btn-block w-100 mb-2">
                     <i class="fas fa-edit"></i> Edit Product
                 </a>
-                
-                <form action="{{ route('admin.products.destroy', $product->id) }}" method="POST" 
+
+                <form action="{{ route('admin.products.destroy', $product->id) }}" method="POST"
                       onsubmit="return confirm('Are you sure you want to delete this product?')">
                     @csrf
                     @method('DELETE')
