@@ -15,12 +15,12 @@
         <form action="{{ route('admin.sliders.update', $slider->id) }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('PUT')
-            
+
             <div class="row">
                 <div class="col-md-8">
                     <div class="mb-3">
                         <label for="title" class="form-label">Title <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control @error('title') is-invalid @enderror" 
+                        <input type="text" class="form-control @error('title') is-invalid @enderror"
                                id="title" name="title" value="{{ old('title', $slider->title) }}" required>
                         @error('title')
                             <div class="invalid-feedback">{{ $message }}</div>
@@ -29,7 +29,7 @@
 
                     <div class="mb-3">
                         <label for="link" class="form-label">Link URL</label>
-                        <input type="url" class="form-control @error('link') is-invalid @enderror" 
+                        <input type="url" class="form-control @error('link') is-invalid @enderror"
                                id="link" name="link" value="{{ old('link', $slider->link) }}" placeholder="https://example.com">
                         @error('link')
                             <div class="invalid-feedback">{{ $message }}</div>
@@ -47,7 +47,7 @@
                             <div id="image-preview" class="mb-3" style="display: none;">
                                 <img id="preview-img" src="" class="img-fluid" style="max-height: 300px; border-radius: 5px;">
                             </div>
-                            <input type="file" name="image" id="image-input" class="form-control @error('image') is-invalid @enderror" 
+                            <input type="file" name="image" id="image-input" class="form-control @error('image') is-invalid @enderror"
                                    accept="image/*" onchange="previewImage(this)">
                             <small class="text-muted d-block mt-2">Leave empty to keep current image. Recommended: 1920x600px</small>
                         </div>
@@ -60,7 +60,7 @@
                 <div class="col-md-4">
                     <div class="mb-3">
                         <label for="order" class="form-label">Display Order</label>
-                        <input type="number" name="order" id="order" class="form-control @error('order') is-invalid @enderror" 
+                        <input type="number" name="order" id="order" class="form-control @error('order') is-invalid @enderror"
                                value="{{ old('order', $slider->order) }}">
                         <small class="text-muted">Lower numbers appear first</small>
                         @error('order')
@@ -93,7 +93,7 @@
 function previewImage(input) {
     const preview = document.getElementById('image-preview');
     const previewImg = document.getElementById('preview-img');
-    
+
     if (input.files && input.files[0]) {
         const reader = new FileReader();
         reader.onload = function(e) {

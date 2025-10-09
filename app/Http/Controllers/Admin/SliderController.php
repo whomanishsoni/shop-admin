@@ -18,7 +18,10 @@ class SliderController extends Controller
                     return '<input type="checkbox" class="select-item" value="'.$row->id.'">';
                 })
                 ->addColumn('image', function($row) {
-                    return $row->image ? '<img src="/storage/'.$row->image.'" width="80">' : 'No Image';
+                    return $row->image ? '<img src="/storage/'.$row->image.'" width="80" style="border-radius: 5px;">' : 'No Image';
+                })
+                ->addColumn('title', function($row) {
+                    return $row->title;
                 })
                 ->addColumn('status', function($row) {
                     return $row->status ? '<span class="badge bg-success">Active</span>' : '<span class="badge bg-danger">Inactive</span>';
@@ -33,7 +36,7 @@ class SliderController extends Controller
                         </form>
                     ';
                 })
-                ->rawColumns(['checkbox', 'image', 'status', 'action'])
+                ->rawColumns(['checkbox', 'image', 'title', 'status', 'action'])
                 ->make(true);
         }
         return view('admin.sliders.index');

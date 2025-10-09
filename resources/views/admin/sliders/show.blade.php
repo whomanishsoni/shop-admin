@@ -6,7 +6,7 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h1 class="h3 mb-0 text-gray-800">View Slider</h1>
     <div>
-        <a href="{{ route('admin.sliders.edit', $sliders->id) }}" class="btn btn-warning">
+        <a href="{{ route('admin.sliders.edit', $slider->id) }}" class="btn btn-warning">
             <i class="fas fa-edit"></i> Edit
         </a>
         <a href="{{ route('admin.sliders.index') }}" class="btn btn-secondary">
@@ -23,32 +23,48 @@
             </div>
             <div class="card-body">
                 <div class="mb-3">
-                    <strong>Name:</strong>
-                    <p class="mb-0">{{ $sliders->name }}</p>
+                    <strong>Title:</strong>
+                    <p class="mb-0">{{ $slider->title }}</p>
                 </div>
 
                 <div class="mb-3">
-                    <strong>Description:</strong>
-                    <p class="mb-0">{{ $sliders->description ?? 'N/A' }}</p>
+                    <strong>Image:</strong>
+                    <p class="mb-0">
+                        @if($slider->image)
+                            <img src="/storage/{{ $slider->image }}" class="img-fluid" style="max-height: 200px; border-radius: 5px;">
+                        @else
+                            No Image
+                        @endif
+                    </p>
+                </div>
+
+                <div class="mb-3">
+                    <strong>Link:</strong>
+                    <p class="mb-0">{{ $slider->link ?? 'N/A' }}</p>
+                </div>
+
+                <div class="mb-3">
+                    <strong>Order:</strong>
+                    <p class="mb-0">{{ $slider->order }}</p>
                 </div>
 
                 <div class="mb-3">
                     <strong>Status:</strong>
                     <p class="mb-0">
-                        <span class="badge bg-{{ $sliders->status ? 'success' : 'danger' }}">
-                            {{ $sliders->status ? 'Active' : 'Inactive' }}
+                        <span class="badge bg-{{ $slider->status ? 'success' : 'danger' }}">
+                            {{ $slider->status ? 'Active' : 'Inactive' }}
                         </span>
                     </p>
                 </div>
 
                 <div class="mb-3">
                     <strong>Created:</strong>
-                    <p class="mb-0">{{ $sliders->created_at->format('M d, Y h:i A') }}</p>
+                    <p class="mb-0">{{ $slider->created_at->format('M d, Y h:i A') }}</p>
                 </div>
 
                 <div class="mb-3">
                     <strong>Last Updated:</strong>
-                    <p class="mb-0">{{ $sliders->updated_at->format('M d, Y h:i A') }}</p>
+                    <p class="mb-0">{{ $slider->updated_at->format('M d, Y h:i A') }}</p>
                 </div>
             </div>
         </div>
@@ -60,11 +76,11 @@
                 <h6 class="m-0 font-weight-bold text-primary">Actions</h6>
             </div>
             <div class="card-body">
-                <a href="{{ route('admin.sliders.edit', $sliders->id) }}" class="btn btn-warning btn-block w-100 mb-2">
+                <a href="{{ route('admin.sliders.edit', $slider->id) }}" class="btn btn-warning btn-block w-100 mb-2">
                     <i class="fas fa-edit"></i> Edit
                 </a>
-                
-                <form action="{{ route('admin.sliders.destroy', $sliders->id) }}" method="POST" 
+
+                <form action="{{ route('admin.sliders.destroy', $slider->id) }}" method="POST"
                       onsubmit="return confirm('Are you sure you want to delete this item?')">
                     @csrf
                     @method('DELETE')
