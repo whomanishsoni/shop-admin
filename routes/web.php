@@ -46,12 +46,22 @@ Route::prefix('account')->group(function () {
     Route::post('/login', [AccountController::class, 'loginAttempt'])->name('login.attempt');
     Route::get('/register', [AccountController::class, 'register'])->name('register');
     Route::post('/register', [AccountController::class, 'registerAttempt'])->name('register.attempt');
-    Route::get('/profile', [AccountController::class, 'profile'])->name('profile');
-    Route::get('/edit-profile', [AccountController::class, 'editProfile'])->name('editProfile');
-    Route::get('/orders', [OrderController::class, 'index'])->name('orders');
-    Route::get('/orders/{id}/invoice', [OrderController::class, 'invoice'])->name('order.invoice');
-    Route::get('/addresses', [AccountController::class, 'addresses'])->name('addresses');
-    Route::post('/logout', [AccountController::class, 'logout'])->name('logout');
+    Route::match(['get', 'post'], '/forgot-password', [AccountController::class, 'forgotPassword'])->name('forgot_password');
+
+    Route::middleware('auth:customer')->group(function () {
+        Route::get('/profile', [AccountController::class, 'profile'])->name('profile');
+        Route::get('/edit-profile', [AccountController::class, 'editProfile'])->name('editProfile');
+        Route::post('/edit-profile', [AccountController::class, 'updateProfile'])->name('update_profile');
+        Route::get('/orders', [OrderController::class, 'index'])->name('orders');
+        Route::get('/orders/{id}/invoice', [OrderController::class, 'invoice'])->name('order.invoice');
+        Route::get('/addresses', [AccountController::class, 'addresses'])->name('addresses');
+        Route::get('/addresses/create', [AccountController::class, 'createAddress'])->name('address.create');
+        Route::post('/addresses/store', [AccountController::class, 'storeAddress'])->name('address.store');
+        Route::get('/addresses/{id}/edit', [AccountController::class, 'editAddress'])->name('address.edit');
+        Route::put('/addresses/{id}', [AccountController::class, 'updateAddress'])->name('address.update');
+        Route::delete('/addresses/{id}', [AccountController::class, 'deleteAddress'])->name('address.delete');
+        Route::post('/logout', [AccountController::class, 'logout'])->name('logout');
+    });
 });
 
 // Other frontend routes

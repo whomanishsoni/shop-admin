@@ -21,7 +21,19 @@
         </section>
         <section class="my__account--section section--padding">
             <div class="container">
-                <p class="account__welcome--text">Hello, Guest! Welcome to your dashboard!</p>
+                @if (session('success'))
+                    <div class="alert alert-success">{{ session('success') }}</div>
+                @endif
+                @if ($errors->any())
+                    <div class="alert alert-danger">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+                <p class="account__welcome--text">Hello, {{ Auth::guard('customer')->user()->first_name }} {{ Auth::guard('customer')->user()->last_name }}! Welcome to your dashboard!</p>
                 <div class="my__account--section__inner border-radius-10 d-flex">
                     <div class="account__left--sidebar">
                         <h2 class="account__content--title h3 mb-20">My Account</h2>
@@ -42,21 +54,38 @@
                     <div class="account__wrapper">
                         <div class="account__content">
                             <h2 class="account__content--title mb-20">My Addresses</h2>
-                            <a href="#"><button class="new__address--btn primary__btn mb-25" type="button">Add a new address</button></a>
-                            @foreach ($addresses as $address)
-                                <div class="account__details two">
-                                    <h4 class="account__details--title">{{ $address['is_default'] ? 'Default' : 'Additional' }}</h4>
-                                    <p class="account__details--desc">{{ $address['name'] }} <br> {{ $address['address'] }}</p>
-                                    <div class="account__details--footer d-flex">
-                                        <button class="account__details--footer__btn" type="button">Edit</button>
-                                        <button class="account__details--footer__btn" type="button">Delete</button>
-                                        <button class="like-btn" data-address-id="{{ $address['id'] }}"
-                                                style="background:none;border:none;cursor:pointer;">
-                                            <span class="heart-icon" style="color: {{ $address['liked'] ? '#ff0000' : '#ccc' }};">&#9829;</span>
-                                        </button>
+                            <a href="{{ route('address.create') }}"><button class="new__address--btn primary__btn mb-25" type="button">Add a new address</button></a>
+                            @if (empty($addresses))
+                                <p>No addresses found.</p>
+                            @else
+                                @foreach ($addresses as $address)
+                                    <div class="account__details two">
+                                        <h4 class="account__details--title">{{ $address['is_default'] ? 'Default' : 'Additional' }}</h4>
+                                        <p class="account__details--desc">
+                                            {{ $address['name'] }} <br>
+                                            {{ $address['address'] }} <br>
+                                            @if ($address['city']) {{ $address['city'] . ',' }} @endif
+                                            @if ($address['state']) {{ $address['state'] . ',' }} @endif
+                                            @if ($address['pincode']) {{ $address['pincode'] . ',' }} @endif
+                                            @if ($address['country']) {{ $address['country'] }} @endif
+                                        </p>
+                                        <div class="account__details--footer d-flex">
+                                            <a href="{{ route('address.edit', ['id' => $address['id']]) }}" class="account__details--footer__btn">Edit</a>
+                                            <form action="{{ route('address.delete', ['id' => $address['id']]) }}" method="POST" style="margin: 0;">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="account__details--footer__btn" onclick="return confirm('Are you sure you want to delete this address?')">Delete</button>
+                                            </form>
+                                            <form action="{{ route('address.like', ['id' => $address['id']]) }}" method="POST" style="margin: 0;">
+                                                @csrf
+                                                <button class="like-btn" type="submit" style="background:none;border:none;cursor:pointer;">
+                                                    <span class="heart-icon" style="color: {{ $address['liked'] ? '#ff0000' : '#ccc' }};">&#9829;</span>
+                                                </button>
+                                            </form>
+                                        </div>
                                     </div>
-                                </div>
-                            @endforeach
+                                @endforeach
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -67,13 +96,4 @@
 
 @push('scripts')
     @include('store.partials.js')
-    <script>
-        document.querySelectorAll('.like-btn').forEach(button => {
-            button.addEventListener('click', function() {
-                const heart = this.querySelector('.heart-icon');
-                const isLiked = heart.style.color === 'rgb(255, 0, 0)';
-                heart.style.color = isLiked ? '#ccc' : '#ff0000';
-            });
-        });
-    </script>
 @endpush

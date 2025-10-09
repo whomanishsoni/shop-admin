@@ -2,11 +2,27 @@
 
 namespace App\Models;
 
+use Illuminate\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 
-class Customer extends Model
+class Customer extends Model implements AuthenticatableContract
 {
-    protected $fillable = ['name', 'email', 'phone', 'address'];
+    use Authenticatable;
+
+    protected $fillable = [
+        'first_name',
+        'last_name',
+        'email',
+        'password',
+        'contact_no',
+        'alternative_contact_no',
+    ];
+
+    public function addresses()
+    {
+        return $this->hasMany(Address::class);
+    }
 
     public function orders()
     {

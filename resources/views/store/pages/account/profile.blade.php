@@ -21,7 +21,19 @@
         </section>
         <section class="my__account--section section--padding">
             <div class="container">
-                <p class="account__welcome--text">Hello, Guest! Welcome to your dashboard!</p>
+                @if (session('success'))
+                    <div class="alert alert-success">{{ session('success') }}</div>
+                @endif
+                @if ($errors->any())
+                    <div class="alert alert-danger">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+                <p class="account__welcome--text">Hello, {{ $profileData['first_name'] }} {{ $profileData['last_name'] }}! Welcome to your dashboard!</p>
                 <div class="my__account--section__inner border-radius-10 d-flex">
                     <div class="account__left--sidebar">
                         <h2 class="account__content--title h3 mb-20">My Account</h2>
@@ -42,40 +54,40 @@
                     <div class="account__wrapper">
                         <div class="account__content">
                             <h2 class="account__content--title h3 mb-20">My Profile</h2>
-                            <div class="account__content">
-                                <div class="row account__table--area">
-                                    @foreach ($profileData as $data)
-                                        <div class="col-lg-6 col-12 mb-12">
-                                            <div class="checkout__input--list">
-                                                <label>Name : </label>
-                                                <input class="checkout__input--field border-radius-5 form-control" value="{{ $data['name'] }}" type="text" readonly>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-6 col-6 mb-12">
-                                            <div class="checkout__input--list">
-                                                <label>Email-Id : </label>
-                                                <input class="checkout__input--field border-radius-5 form-control" value="{{ $data['email'] }}" type="text" readonly>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-6 col-12 mb-12">
-                                            <div class="checkout__input--list">
-                                                <label>Contact No. : </label>
-                                                <input class="checkout__input--field border-radius-5 form-control" value="{{ $data['contact_no'] }}" type="text" readonly>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-6 col-12 mb-12">
-                                            <div class="checkout__input--list">
-                                                <label>Alt. Contact No. : </label>
-                                                <input class="checkout__input--field border-radius-5 form-control" value="{{ $data['alt_contact_no'] }}" type="text" readonly>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-12 col-12 mb-12">
-                                            <div class="checkout__input--list">
-                                                <label>Address : </label>
-                                                <textarea class="checkout__input--field border-radius-5 form-control" rows="1" type="text" readonly>{{ $data['address'] }}</textarea>
-                                            </div>
-                                        </div>
-                                    @endforeach
+                            <div class="row account__table--area">
+                                <div class="col-lg-6 col-12 mb-12">
+                                    <div class="checkout__input--list">
+                                        <label>First Name:</label>
+                                        <input class="checkout__input--field border-radius-5 form-control" value="{{ $profileData['first_name'] }}" type="text" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 col-12 mb-12">
+                                    <div class="checkout__input--list">
+                                        <label>Last Name:</label>
+                                        <input class="checkout__input--field border-radius-5 form-control" value="{{ $profileData['last_name'] }}" type="text" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 col-12 mb-12">
+                                    <div class="checkout__input--list">
+                                        <label>Email-Id:</label>
+                                        <input class="checkout__input--field border-radius-5 form-control" value="{{ $profileData['email'] }}" type="email" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 col-12 mb-12">
+                                    <div class="checkout__input--list">
+                                        <label>Contact No.:</label>
+                                        <input class="checkout__input--field border-radius-5 form-control" value="{{ $profileData['contact_no'] ?? 'Not provided' }}" type="text" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 col-12 mb-12">
+                                    <div class="checkout__input--list">
+                                        <label>Alternative Contact No.:</label>
+                                        <input class="checkout__input--field border-radius-5 form-control" value="{{ $profileData['alternative_contact_no'] ?? 'Not provided' }}" type="text" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-12 mb-12">
+                                    <a href="{{ route('editProfile') }}" class="account__login--btn primary__btn">Edit Profile</a>
+                                    <a href="{{ route('addresses') }}" class="account__login--btn primary__btn ml-10">Manage Addresses</a>
                                 </div>
                             </div>
                         </div>

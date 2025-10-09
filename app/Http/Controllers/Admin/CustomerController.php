@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Customer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Yajra\DataTables\Facades\DataTables;
 
 class CustomerController extends Controller
@@ -42,12 +43,22 @@ class CustomerController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
             'email' => 'required|email|unique:customers,email',
-            'phone' => 'nullable|string|max:20',
-            'address' => 'nullable|string'
+            'password' => 'required|string|min:8|confirmed',
+            'contact_no' => 'nullable|string|max:20',
+            'alternative_contact_no' => 'nullable|string|max:20',
+            'home_address' => 'nullable|string',
+            'shipping_address' => 'nullable|string',
+            'office_address' => 'nullable|string',
+            'city' => 'nullable|string|max:100',
+            'state' => 'nullable|string|max:100',
+            'pincode' => 'nullable|string|max:20',
+            'country' => 'nullable|string|max:100',
         ]);
 
+        $validated['password'] = Hash::make($validated['password']);
         Customer::create($validated);
 
         return redirect()->route('admin.customers.index')->with('success', 'Customer created successfully');
@@ -67,11 +78,26 @@ class CustomerController extends Controller
     public function update(Request $request, Customer $customer)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
             'email' => 'required|email|unique:customers,email,'.$customer->id,
-            'phone' => 'nullable|string|max:20',
-            'address' => 'nullable|string'
+            'password' => 'nullable|string|min:8|confirmed',
+            'contact_no' => 'nullable|string|max:20',
+            'alternative_contact_no' => 'nullable|string|max:20',
+            'home_address' => 'nullable|string',
+            'shipping_address' => 'nullable|string',
+            'office_address' => 'nullable|string',
+            'city' => 'nullable|string|max:100',
+            'state' => 'nullable|string|max:100',
+            'pincode' => 'nullable|string|max:20',
+            'country' => 'nullable|string|max:100',
         ]);
+
+        if (!empty($validated['password'])) {
+            $validated['password'] = Hash::make($validated['password']);
+        } else {
+            unset($validated['password']);
+        }
 
         $customer->update($validated);
 
@@ -88,5 +114,11 @@ class CustomerController extends Controller
     {
         Customer::whereIn('id', $request->ids)->delete();
         return response()->json(['success' => 'Customers deleted successfully']);
+    }
+
+    public function orders(Customer $customer)
+    {
+        $orders = $customer->orders()->with(['items', 'customer'])->latest()->paginate(10);
+        return view('admin.customers.orders', compact('customer', 'orders'));
     }
 }

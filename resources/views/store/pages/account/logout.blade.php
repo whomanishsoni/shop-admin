@@ -21,6 +21,9 @@
         </section>
         <section class="my__account--section section--padding">
             <div class="container">
+                @if (session('success'))
+                    <div class="alert alert-success">{{ session('success') }}</div>
+                @endif
                 <p class="account__welcome--text">Hello, Guest! You have been logged out.</p>
                 <div class="my__account--section__inner border-radius-10 d-flex">
                     <div class="account__left--sidebar">
