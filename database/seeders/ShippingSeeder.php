@@ -8,13 +8,54 @@ use App\Models\ShippingZone;
 
 class ShippingSeeder extends Seeder
 {
+    protected $stateCodes = [
+        'Andaman and Nicobar Islands' => 'AN',
+        'Andhra Pradesh' => 'AP',
+        'Arunachal Pradesh' => 'AR',
+        'Assam' => 'AS',
+        'Bihar' => 'BR',
+        'Chandigarh' => 'CH',
+        'Chhattisgarh' => 'CT',
+        'Delhi' => 'DL',
+        'Dadra and Nagar Haveli and Daman and Diu' => 'DN',
+        'Daman and Diu' => 'DN',
+        'Dadra and Nagar Haveli' => 'DN',
+        'Goa' => 'GA',
+        'Gujarat' => 'GJ',
+        'Himachal Pradesh' => 'HP',
+        'Haryana' => 'HR',
+        'Jharkhand' => 'JH',
+        'Jammu and Kashmir' => 'JK',
+        'Karnataka' => 'KA',
+        'Kerala' => 'KL',
+        'Ladakh' => 'LA',
+        'Lakshadweep' => 'LD',
+        'Maharashtra' => 'MH',
+        'Meghalaya' => 'ML',
+        'Manipur' => 'MN',
+        'Madhya Pradesh' => 'MP',
+        'Mizoram' => 'MZ',
+        'Nagaland' => 'NL',
+        'Odisha' => 'OR',
+        'Punjab' => 'PB',
+        'Puducherry' => 'PY',
+        'Rajasthan' => 'RJ',
+        'Sikkim' => 'SK',
+        'Tamil Nadu' => 'TN',
+        'Telangana' => 'TG',
+        'Tripura' => 'TR',
+        'Uttar Pradesh' => 'UP',
+        'Uttarakhand' => 'UT',
+        'West Bengal' => 'WB',
+    ];
+
     public function run(): void
     {
         $methods = [
             [
                 'name' => 'Standard Shipping',
                 'description' => 'Delivery within 5-7 business days',
-                'cost' => 0,
+                'cost' => 0.00,
                 'delivery_time' => 7,
                 'status' => true,
             ],
@@ -42,27 +83,27 @@ class ShippingSeeder extends Seeder
         }
 
         $indiaStates = [
-            'North Zone' => ['Delhi', 'Haryana', 'Punjab', 'Himachal Pradesh', 'Jammu and Kashmir', 'Uttarakhand', 'Chandigarh'],
-            'South Zone' => ['Andhra Pradesh', 'Karnataka', 'Kerala', 'Tamil Nadu', 'Telangana', 'Puducherry', 'Lakshadweep'],
-            'East Zone' => ['Bihar', 'Jharkhand', 'Odisha', 'West Bengal', 'Andaman and Nicobar Islands'],
-            'West Zone' => ['Goa', 'Gujarat', 'Maharashtra', 'Rajasthan', 'Daman and Diu', 'Dadra and Nagar Haveli'],
-            'Central Zone' => ['Chhattisgarh', 'Madhya Pradesh', 'Uttar Pradesh'],
-            'North East Zone' => ['Arunachal Pradesh', 'Assam', 'Manipur', 'Meghalaya', 'Mizoram', 'Nagaland', 'Sikkim', 'Tripura'],
+            'North Zone' => ['DL', 'HR', 'PB', 'HP', 'JK', 'UT', 'CH'],
+            'South Zone' => ['AP', 'KA', 'KL', 'TN', 'TG', 'PY', 'LD'],
+            'East Zone' => ['BR', 'JH', 'OR', 'WB', 'AN'],
+            'West Zone' => ['GA', 'GJ', 'MH', 'RJ', 'DN'],
+            'Central Zone' => ['CT', 'MP', 'UP'],
+            'North East Zone' => ['AR', 'AS', 'MN', 'ML', 'MZ', 'NL', 'SK', 'TR'],
         ];
 
         $standardMethod = ShippingMethod::where('name', 'Standard Shipping')->first();
         $expressMethod = ShippingMethod::where('name', 'Express Shipping')->first();
 
         if ($standardMethod) {
-            foreach ($indiaStates as $zoneName => $states) {
+            foreach ($indiaStates as $zoneName => $stateCodes) {
                 ShippingZone::updateOrCreate(
                     [
                         'name' => $zoneName,
                         'shipping_method_id' => $standardMethod->id
                     ],
                     [
-                        'states' => json_encode($states),
-                        'rate' => $zoneName === 'North East Zone' ? 100.00 : 0,
+                        'states' => json_encode($stateCodes),
+                        'rate' => $zoneName === 'North East Zone' ? 100.00 : 0.00,
                         'status' => true,
                     ]
                 );
@@ -70,20 +111,21 @@ class ShippingSeeder extends Seeder
         }
 
         if ($expressMethod) {
-            foreach ($indiaStates as $zoneName => $states) {
+            foreach ($indiaStates as $zoneName => $stateCodes) {
+                $expressZoneName = $zoneName . ' - Express';
                 $rate = match($zoneName) {
                     'North East Zone' => 300.00,
                     'South Zone' => 200.00,
                     default => 150.00,
                 };
-                
+
                 ShippingZone::updateOrCreate(
                     [
-                        'name' => $zoneName . ' - Express',
+                        'name' => $expressZoneName,
                         'shipping_method_id' => $expressMethod->id
                     ],
                     [
-                        'states' => json_encode($states),
+                        'states' => json_encode($stateCodes),
                         'rate' => $rate,
                         'status' => true,
                     ]

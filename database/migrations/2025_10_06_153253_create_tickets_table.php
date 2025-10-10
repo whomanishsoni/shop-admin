@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('customer_id')->constrained('customers')->onDelete('cascade');
             $table->string('subject');
+            $table->text('message')->nullable();
             $table->string('priority')->default('medium');
             $table->string('status')->default('open');
             $table->string('category')->nullable();

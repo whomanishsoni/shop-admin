@@ -33,4 +33,9 @@ class Customer extends Model implements AuthenticatableContract
     {
         return $this->hasMany(ProductReview::class);
     }
+
+    public function getNameAttribute()
+    {
+        return trim($this->first_name . ' ' . ($this->last_name ?? ''));
+    }
 }

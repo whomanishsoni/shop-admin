@@ -13,7 +13,6 @@ return new class extends Migration
             $table->string('name');
             $table->string('type');
             $table->decimal('rate', 5, 2);
-            $table->string('state')->nullable();
             $table->boolean('status')->default(1);
             $table->timestamps();
         });

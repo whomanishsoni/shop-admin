@@ -54,7 +54,7 @@ class SliderController extends Controller
             'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
             'link' => 'nullable|url',
             'order' => 'nullable|integer',
-            'status' => 'boolean'
+            'status' => 'required|in:0,1',
         ]);
 
         if ($request->hasFile('image')) {
@@ -83,10 +83,8 @@ class SliderController extends Controller
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'link' => 'nullable|url',
             'order' => 'nullable|integer',
-            'status' => 'boolean'
+            'status' => 'required|in:0,1',
         ]);
-
-        $validated['status'] = $request->has('status') ? true : false;
 
         if ($request->hasFile('image')) {
             $validated['image'] = $request->file('image')->store('sliders', 'public');

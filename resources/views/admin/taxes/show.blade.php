@@ -1,12 +1,12 @@
 @extends('admin.layouts.app')
 
-@section('title', 'View Taxe')
+@section('title', 'View Tax')
 
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h1 class="h3 mb-0 text-gray-800">View Taxe</h1>
+    <h1 class="h3 mb-0 text-gray-800">View Tax</h1>
     <div>
-        <a href="{{ route('admin.taxes.edit', $taxes->id) }}" class="btn btn-warning">
+        <a href="{{ route('admin.taxes.edit', $tax->id) }}" class="btn btn-warning">
             <i class="fas fa-edit"></i> Edit
         </a>
         <a href="{{ route('admin.taxes.index') }}" class="btn btn-secondary">
@@ -24,31 +24,36 @@
             <div class="card-body">
                 <div class="mb-3">
                     <strong>Name:</strong>
-                    <p class="mb-0">{{ $taxes->name }}</p>
+                    <p class="mb-0">{{ $tax->name }}</p>
                 </div>
 
                 <div class="mb-3">
-                    <strong>Description:</strong>
-                    <p class="mb-0">{{ $taxes->description ?? 'N/A' }}</p>
+                    <strong>Type:</strong>
+                    <p class="mb-0">{{ ucfirst(str_replace('_', ' ', $tax->type)) }}</p>
+                </div>
+
+                <div class="mb-3">
+                    <strong>Rate:</strong>
+                    <p class="mb-0">{{ $tax->rate }}%</p>
                 </div>
 
                 <div class="mb-3">
                     <strong>Status:</strong>
                     <p class="mb-0">
-                        <span class="badge bg-{{ $taxes->status ? 'success' : 'danger' }}">
-                            {{ $taxes->status ? 'Active' : 'Inactive' }}
+                        <span class="badge bg-{{ $tax->status ? 'success' : 'danger' }}">
+                            {{ $tax->status ? 'Active' : 'Inactive' }}
                         </span>
                     </p>
                 </div>
 
                 <div class="mb-3">
                     <strong>Created:</strong>
-                    <p class="mb-0">{{ $taxes->created_at->format('M d, Y h:i A') }}</p>
+                    <p class="mb-0">{{ $tax->created_at->format('M d, Y h:i A') }}</p>
                 </div>
 
                 <div class="mb-3">
                     <strong>Last Updated:</strong>
-                    <p class="mb-0">{{ $taxes->updated_at->format('M d, Y h:i A') }}</p>
+                    <p class="mb-0">{{ $tax->updated_at->format('M d, Y h:i A') }}</p>
                 </div>
             </div>
         </div>
@@ -60,11 +65,11 @@
                 <h6 class="m-0 font-weight-bold text-primary">Actions</h6>
             </div>
             <div class="card-body">
-                <a href="{{ route('admin.taxes.edit', $taxes->id) }}" class="btn btn-warning btn-block w-100 mb-2">
+                <a href="{{ route('admin.taxes.edit', $tax->id) }}" class="btn btn-warning btn-block w-100 mb-2">
                     <i class="fas fa-edit"></i> Edit
                 </a>
-                
-                <form action="{{ route('admin.taxes.destroy', $taxes->id) }}" method="POST" 
+
+                <form action="{{ route('admin.taxes.destroy', $tax->id) }}" method="POST"
                       onsubmit="return confirm('Are you sure you want to delete this item?')">
                     @csrf
                     @method('DELETE')

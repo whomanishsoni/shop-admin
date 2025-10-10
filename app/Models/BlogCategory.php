@@ -11,6 +11,7 @@ class BlogCategory extends Model
         'name',
         'slug',
         'description',
+        'status',
     ];
 
     public function blogPosts(): HasMany

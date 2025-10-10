@@ -24,8 +24,8 @@
             <div class="card-body">
                 @if($blogPost->featured_image)
                 <div class="mb-4">
-                    <img src="{{ asset('storage/' . $blogPost->featured_image) }}" 
-                         alt="{{ $blogPost->title }}" 
+                    <img src="{{ asset('storage/' . $blogPost->featured_image) }}"
+                         alt="{{ $blogPost->title }}"
                          class="img-fluid rounded" style="max-height: 400px; width: 100%; object-fit: cover;">
                 </div>
                 @endif
@@ -33,7 +33,7 @@
                 <div class="mb-3">
                     <h5>Content</h5>
                     <div class="blog-content">
-                        {!! nl2br(e($blogPost->content)) !!}
+                        {!! ($blogPost->content) !!}
                     </div>
                 </div>
             </div>
@@ -92,8 +92,8 @@
                 <a href="{{ route('admin.blog-posts.edit', $blogPost->id) }}" class="btn btn-warning btn-block w-100 mb-2">
                     <i class="fas fa-edit"></i> Edit Post
                 </a>
-                
-                <form action="{{ route('admin.blog-posts.destroy', $blogPost->id) }}" method="POST" 
+
+                <form action="{{ route('admin.blog-posts.destroy', $blogPost->id) }}" method="POST"
                       onsubmit="return confirm('Are you sure you want to delete this blog post?')">
                     @csrf
                     @method('DELETE')

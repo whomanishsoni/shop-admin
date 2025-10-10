@@ -15,12 +15,12 @@
         <form action="{{ route('admin.banners.update', $banner->id) }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('PUT')
-            
+
             <div class="row">
                 <div class="col-md-8">
                     <div class="mb-3">
                         <label for="title" class="form-label">Title <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control @error('title') is-invalid @enderror" 
+                        <input type="text" class="form-control @error('title') is-invalid @enderror"
                                id="title" name="title" value="{{ old('title', $banner->title) }}" required>
                         @error('title')
                             <div class="invalid-feedback">{{ $message }}</div>
@@ -29,7 +29,7 @@
 
                     <div class="mb-3">
                         <label for="link" class="form-label">Link URL</label>
-                        <input type="url" class="form-control @error('link') is-invalid @enderror" 
+                        <input type="url" class="form-control @error('link') is-invalid @enderror"
                                id="link" name="link" value="{{ old('link', $banner->link) }}" placeholder="https://example.com">
                         @error('link')
                             <div class="invalid-feedback">{{ $message }}</div>
@@ -47,7 +47,7 @@
                             <div id="image-preview" class="mb-3" style="display: none;">
                                 <img id="preview-img" src="" class="img-fluid" style="max-height: 300px; border-radius: 5px;">
                             </div>
-                            <input type="file" name="image" id="image-input" class="form-control @error('image') is-invalid @enderror" 
+                            <input type="file" name="image" id="image-input" class="form-control @error('image') is-invalid @enderror"
                                    accept="image/*" onchange="previewImage(this)">
                             <small class="text-muted d-block mt-2">Leave empty to keep current image</small>
                         </div>
@@ -60,7 +60,7 @@
                 <div class="col-md-4">
                     <div class="mb-3">
                         <label for="position" class="form-label">Position</label>
-                        <input type="text" name="position" id="position" class="form-control @error('position') is-invalid @enderror" 
+                        <input type="text" name="position" id="position" class="form-control @error('position') is-invalid @enderror"
                                value="{{ old('position', $banner->position) }}" placeholder="e.g., home, sidebar">
                         @error('position')
                             <div class="invalid-feedback">{{ $message }}</div>
@@ -69,7 +69,7 @@
 
                     <div class="mb-3">
                         <label for="order" class="form-label">Display Order</label>
-                        <input type="number" name="order" id="order" class="form-control @error('order') is-invalid @enderror" 
+                        <input type="number" name="order" id="order" class="form-control @error('order') is-invalid @enderror"
                                value="{{ old('order', $banner->order) }}">
                         <small class="text-muted">Lower numbers appear first</small>
                         @error('order')
@@ -78,10 +78,14 @@
                     </div>
 
                     <div class="mb-3">
-                        <div class="form-check">
-                            <input type="checkbox" class="form-check-input" id="status" name="status" value="1" {{ old('status', $banner->status) ? 'checked' : '' }}>
-                            <label class="form-check-label" for="status">Active</label>
-                        </div>
+                        <label for="status" class="form-label">Status</label>
+                        <select class="form-control @error('status') is-invalid @enderror" id="status" name="status">
+                            <option value="1" {{ old('status', $banner->status) == 1 ? 'selected' : '' }}>Active</option>
+                            <option value="0" {{ old('status', $banner->status) == 0 ? 'selected' : '' }}>Inactive</option>
+                        </select>
+                        @error('status')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
                 </div>
             </div>
@@ -102,7 +106,7 @@
 function previewImage(input) {
     const preview = document.getElementById('image-preview');
     const previewImg = document.getElementById('preview-img');
-    
+
     if (input.files && input.files[0]) {
         const reader = new FileReader();
         reader.onload = function(e) {

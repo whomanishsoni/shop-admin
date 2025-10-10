@@ -137,7 +137,7 @@
                 <a class="collapse-item {{ request()->routeIs('admin.settings.index') ? 'active' : '' }}"
                     href="{{ route('admin.settings.index') }}">Settings</a>
                 <a class="collapse-item {{ request()->routeIs('admin.languages.index') ? 'active' : '' }}"
-                    href="{{ route('admin.languages.index') }}">List Languages</a>
+                    href="{{ route('admin.languages.index') }}">Languages</a>
                 <a class="collapse-item {{ request()->routeIs('admin.analytics') ? 'active' : '' }}"
                     href="{{ route('admin.analytics') }}">Analytics</a>
                 <a class="collapse-item {{ request()->routeIs('admin.activity-logs.index') ? 'active' : '' }}"

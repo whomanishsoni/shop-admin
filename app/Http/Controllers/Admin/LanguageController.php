@@ -12,7 +12,7 @@ class LanguageController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $languages = Language::select('*');
+            $languages = Language::select(['id', 'name', 'code', 'locale', 'direction', 'status']);
             return DataTables::of($languages)
                 ->addColumn('checkbox', function($row) {
                     return '<input type="checkbox" class="select-item" value="'.$row->id.'">';
@@ -48,8 +48,10 @@ class LanguageController extends Controller
             'code' => 'required|string|unique:languages,code|max:10',
             'locale' => 'required|string|max:10',
             'direction' => 'required|in:ltr,rtl',
-            'status' => 'boolean'
+            'status' => 'required|in:0,1',
         ]);
+
+        $validated['status'] = (bool) $validated['status'];
 
         Language::create($validated);
 
@@ -73,10 +75,10 @@ class LanguageController extends Controller
             'code' => 'required|string|max:10|unique:languages,code,'.$language->id,
             'locale' => 'required|string|max:10',
             'direction' => 'required|in:ltr,rtl',
-            'status' => 'boolean'
+            'status' => 'required|in:0,1',
         ]);
 
-        $validated['status'] = $request->has('status') ? true : false;
+        $validated['status'] = (bool) $validated['status'];
 
         $language->update($validated);
 

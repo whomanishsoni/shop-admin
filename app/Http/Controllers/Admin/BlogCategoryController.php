@@ -18,6 +18,9 @@ class BlogCategoryController extends Controller
                 ->addColumn('checkbox', function($row) {
                     return '<input type="checkbox" class="select-item" value="'.$row->id.'">';
                 })
+                ->addColumn('status', function($row) {
+                    return $row->status ? '<span class="badge bg-success">Active</span>' : '<span class="badge bg-danger">Inactive</span>';
+                })
                 ->addColumn('action', function($row) {
                     return '
                         <a href="'.route('admin.blog-categories.edit', $row->id).'" class="btn btn-sm btn-primary"><i class="fas fa-edit"></i></a>
@@ -28,7 +31,7 @@ class BlogCategoryController extends Controller
                         </form>
                     ';
                 })
-                ->rawColumns(['checkbox', 'action'])
+                ->rawColumns(['checkbox', 'status', 'action'])
                 ->make(true);
         }
         return view('admin.blog-categories.index');
@@ -44,12 +47,18 @@ class BlogCategoryController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'slug' => 'nullable|string|unique:blog_categories,slug',
-            'description' => 'nullable|string'
+            'description' => 'nullable|string',
+            'status' => 'required|in:0,1'
         ]);
 
         $validated['slug'] = $validated['slug'] ?? Str::slug($request->name);
 
-        BlogCategory::create($validated);
+        BlogCategory::create([
+            'name' => $validated['name'],
+            'slug' => $validated['slug'],
+            'description' => $validated['description'],
+            'status' => (int) $validated['status'], // Ensure status is cast to integer
+        ]);
 
         return redirect()->route('admin.blog-categories.index')->with('success', 'Blog Category created successfully');
     }
@@ -70,12 +79,18 @@ class BlogCategoryController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'slug' => 'nullable|string|unique:blog_categories,slug,'.$blogCategory->id,
-            'description' => 'nullable|string'
+            'description' => 'nullable|string',
+            'status' => 'required|in:0,1'
         ]);
 
         $validated['slug'] = $validated['slug'] ?? Str::slug($request->name);
 
-        $blogCategory->update($validated);
+        $blogCategory->update([
+            'name' => $validated['name'],
+            'slug' => $validated['slug'],
+            'description' => $validated['description'],
+            'status' => (int) $validated['status'], // Ensure status is cast to integer
+        ]);
 
         return redirect()->route('admin.blog-categories.index')->with('success', 'Blog Category updated successfully');
     }

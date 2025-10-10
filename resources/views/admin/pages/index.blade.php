@@ -6,16 +6,9 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h1 class="h3 mb-0 text-gray-800">Pages</h1>
     <a href="{{ route('admin.pages.create') }}" class="btn btn-primary">
-        <i class="fas fa-plus"></i> Add
+        <i class="fas fa-plus"></i> Add Page
     </a>
 </div>
-
-@if(session('success'))
-<div class="alert alert-success alert-dismissible fade show" role="alert">
-    {{ session('success') }}
-    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-</div>
-@endif
 
 <div class="card shadow mb-4">
     <div class="card-header py-3">
@@ -32,7 +25,7 @@
                 <thead>
                     <tr>
                         <th width="30"><input type="checkbox" id="select-all"></th>
-                        <th>Name</th>
+                        <th>Title</th>
                         <th>Status</th>
                         <th width="150">Actions</th>
                     </tr>
@@ -52,7 +45,7 @@ $(function() {
         ajax: "{{ route('admin.pages.index') }}",
         columns: [
             {data: 'checkbox', name: 'checkbox', orderable: false, searchable: false},
-            {data: 'name', name: 'name'},
+            {data: 'title', name: 'title'}, // Changed from 'name' to 'title'
             {data: 'status', name: 'status'},
             {data: 'action', name: 'action', orderable: false, searchable: false}
         ]

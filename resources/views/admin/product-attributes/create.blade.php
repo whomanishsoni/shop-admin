@@ -18,7 +18,7 @@
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Attribute Name <span class="text-danger">*</span></label>
-                    <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name') }}" required placeholder="e.g., Color, Size">
+                    <input type="text" id="name" name="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name') }}" required placeholder="e.g., Color, Size">
                     <small class="text-muted"></small>
                     @error('name')
                         <div class="invalid-feedback">{{ $message }}</div>
@@ -27,7 +27,7 @@
 
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Slug<span class="text-danger">*</span></label>
-                    <input type="text" name="display_name" class="form-control @error('display_name') is-invalid @enderror" value="{{ old('display_name') }}" required placeholder="e.g., color, size">
+                    <input type="text" id="display_name" name="display_name" class="form-control @error('display_name') is-invalid @enderror" value="{{ old('display_name') }}" required placeholder="e.g., color, size">
                     <small class="text-muted">
                         This will be used internally (lowercase, no spaces)
                     </small>
@@ -88,6 +88,14 @@ function addValue() {
 function removeValue(button) {
     button.closest('.input-group').remove();
 }
+
+document.getElementById('name').addEventListener('input', function(e) {
+    const slug = e.target.value
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+    document.getElementById('display_name').value = slug;
+});
 </script>
 @endpush
 @endsection

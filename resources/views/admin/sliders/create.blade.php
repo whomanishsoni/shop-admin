@@ -63,10 +63,14 @@
                     </div>
 
                     <div class="mb-3">
-                        <div class="form-check">
-                            <input type="checkbox" class="form-check-input" id="status" name="status" value="1" {{ old('status', 1) ? 'checked' : '' }}>
-                            <label class="form-check-label" for="status">Active</label>
-                        </div>
+                        <label for="status" class="form-label">Status</label>
+                        <select class="form-control @error('status') is-invalid @enderror" id="status" name="status">
+                            <option value="1" {{ old('status', 1) == 1 ? 'selected' : '' }}>Active</option>
+                            <option value="0" {{ old('status', 1) == 0 ? 'selected' : '' }}>Inactive</option>
+                        </select>
+                        @error('status')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
                 </div>
             </div>

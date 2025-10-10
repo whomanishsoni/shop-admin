@@ -17,6 +17,9 @@ class TaxController extends Controller
                 ->addColumn('checkbox', function($row) {
                     return '<input type="checkbox" class="select-item" value="'.$row->id.'">';
                 })
+                ->addColumn('type', function($row) {
+                    return ucfirst(str_replace('_', ' ', $row->type));
+                })
                 ->addColumn('rate', function($row) {
                     return $row->rate.'%';
                 })
@@ -49,9 +52,8 @@ class TaxController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'type' => 'required|in:percentage,fixed',
-            'rate' => 'required|numeric|min:0|max:100',
-            'state' => 'nullable|string|max:255',
-            'status' => 'boolean'
+            'rate' => 'required|numeric|min:0|max:28', // Max 28% for GST
+            'status' => 'required|in:0,1',
         ]);
 
         Tax::create($validated);
@@ -74,12 +76,9 @@ class TaxController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'type' => 'required|in:percentage,fixed',
-            'rate' => 'required|numeric|min:0|max:100',
-            'state' => 'nullable|string|max:255',
-            'status' => 'boolean'
+            'rate' => 'required|numeric|min:0|max:28', // Max 28% for GST
+            'status' => 'required|in:0,1',
         ]);
-
-        $validated['status'] = $request->has('status') ? true : false;
 
         $tax->update($validated);
 

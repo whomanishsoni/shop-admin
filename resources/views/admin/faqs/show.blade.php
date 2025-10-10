@@ -6,7 +6,7 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h1 class="h3 mb-0 text-gray-800">View Faq</h1>
     <div>
-        <a href="{{ route('admin.faqs.edit', $faqs->id) }}" class="btn btn-warning">
+        <a href="{{ route('admin.faqs.edit', $faq->id) }}" class="btn btn-warning">
             <i class="fas fa-edit"></i> Edit
         </a>
         <a href="{{ route('admin.faqs.index') }}" class="btn btn-secondary">
@@ -23,32 +23,47 @@
             </div>
             <div class="card-body">
                 <div class="mb-3">
-                    <strong>Name:</strong>
-                    <p class="mb-0">{{ $faqs->name }}</p>
+                    <strong>Question:</strong>
+                    <p class="mb-0">{{ $faq->question ?? 'N/A' }}</p>
                 </div>
 
                 <div class="mb-3">
-                    <strong>Description:</strong>
-                    <p class="mb-0">{{ $faqs->description ?? 'N/A' }}</p>
+                    <strong>Slug:</strong>
+                    <p class="mb-0">{{ $faq->slug ?? 'N/A' }}</p>
+                </div>
+
+                <div class="mb-3">
+                    <strong>Answer:</strong>
+                    <p class="mb-0">{{ $faq->answer ?? 'N/A' }}</p>
+                </div>
+
+                <div class="mb-3">
+                    <strong>Category:</strong>
+                    <p class="mb-0">{{ $faq->category ?? 'N/A' }}</p>
+                </div>
+
+                <div class="mb-3">
+                    <strong>Order:</strong>
+                    <p class="mb-0">{{ $faq->order ?? 'N/A' }}</p>
                 </div>
 
                 <div class="mb-3">
                     <strong>Status:</strong>
                     <p class="mb-0">
-                        <span class="badge bg-{{ $faqs->status ? 'success' : 'danger' }}">
-                            {{ $faqs->status ? 'Active' : 'Inactive' }}
+                        <span class="badge bg-{{ $faq->status ? 'success' : 'danger' }}">
+                            {{ $faq->status ? 'Active' : 'Inactive' }}
                         </span>
                     </p>
                 </div>
 
                 <div class="mb-3">
                     <strong>Created:</strong>
-                    <p class="mb-0">{{ $faqs->created_at->format('M d, Y h:i A') }}</p>
+                    <p class="mb-0">{{ $faq->created_at->format('M d, Y h:i A') }}</p>
                 </div>
 
                 <div class="mb-3">
                     <strong>Last Updated:</strong>
-                    <p class="mb-0">{{ $faqs->updated_at->format('M d, Y h:i A') }}</p>
+                    <p class="mb-0">{{ $faq->updated_at->format('M d, Y h:i A') }}</p>
                 </div>
             </div>
         </div>
@@ -60,11 +75,11 @@
                 <h6 class="m-0 font-weight-bold text-primary">Actions</h6>
             </div>
             <div class="card-body">
-                <a href="{{ route('admin.faqs.edit', $faqs->id) }}" class="btn btn-warning btn-block w-100 mb-2">
+                <a href="{{ route('admin.faqs.edit', $faq->id) }}" class="btn btn-warning btn-block w-100 mb-2">
                     <i class="fas fa-edit"></i> Edit
                 </a>
-                
-                <form action="{{ route('admin.faqs.destroy', $faqs->id) }}" method="POST" 
+
+                <form action="{{ route('admin.faqs.destroy', $faq->id) }}" method="POST"
                       onsubmit="return confirm('Are you sure you want to delete this item?')">
                     @csrf
                     @method('DELETE')

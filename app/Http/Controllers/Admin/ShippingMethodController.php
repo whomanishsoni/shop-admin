@@ -12,7 +12,7 @@ class ShippingMethodController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $shippingMethods = ShippingMethod::select('*');
+            $shippingMethods = ShippingMethod::select(['id', 'name', 'description', 'cost', 'delivery_time', 'status']);
             return DataTables::of($shippingMethods)
                 ->addColumn('checkbox', function($row) {
                     return '<input type="checkbox" class="select-item" value="'.$row->id.'">';
@@ -54,8 +54,10 @@ class ShippingMethodController extends Controller
             'description' => 'nullable|string',
             'cost' => 'required|numeric|min:0',
             'delivery_time' => 'nullable|integer|min:0',
-            'status' => 'boolean'
+            'status' => 'required|in:0,1',
         ]);
+
+        $validated['status'] = (bool) $validated['status'];
 
         ShippingMethod::create($validated);
 
@@ -79,10 +81,10 @@ class ShippingMethodController extends Controller
             'description' => 'nullable|string',
             'cost' => 'required|numeric|min:0',
             'delivery_time' => 'nullable|integer|min:0',
-            'status' => 'boolean'
+            'status' => 'required|in:0,1',
         ]);
 
-        $validated['status'] = $request->has('status') ? true : false;
+        $validated['status'] = (bool) $validated['status'];
 
         $shippingMethod->update($validated);
 

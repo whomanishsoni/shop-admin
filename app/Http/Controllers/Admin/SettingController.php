@@ -36,7 +36,7 @@ class SettingController extends Controller
                 ->rawColumns(['checkbox', 'value_display', 'action'])
                 ->make(true);
         }
-        
+
         $settings = Setting::pluck('value', 'key')->toArray();
         return view('admin.settings.index', compact('settings'));
     }
@@ -63,16 +63,6 @@ class SettingController extends Controller
         return redirect()->route('admin.settings.index')->with('success', 'Setting created successfully');
     }
 
-    public function show(Setting $setting)
-    {
-        return view('admin.settings.show', compact('setting'));
-    }
-
-    public function edit(Setting $setting)
-    {
-        return view('admin.settings.edit', compact('setting'));
-    }
-
     public function update(Request $request, Setting $setting)
     {
         $validated = $request->validate([
@@ -93,12 +83,12 @@ class SettingController extends Controller
     public function bulkUpdate(Request $request)
     {
         $fileFields = ['site_logo', 'site_favicon', 'footer_logo'];
-        
+
         foreach ($request->except(['_token']) as $key => $value) {
             if ($request->hasFile($key)) {
                 $value = $request->file($key)->store('settings', 'public');
             }
-            
+
             Setting::updateOrCreate(
                 ['key' => $key],
                 [
@@ -109,17 +99,5 @@ class SettingController extends Controller
         }
 
         return redirect()->route('admin.settings.index')->with('success', 'Settings updated successfully');
-    }
-
-    public function destroy(Setting $setting)
-    {
-        $setting->delete();
-        return redirect()->route('admin.settings.index')->with('success', 'Setting deleted successfully');
-    }
-
-    public function bulkDelete(Request $request)
-    {
-        Setting::whereIn('id', $request->ids)->delete();
-        return response()->json(['success' => 'Settings deleted successfully']);
     }
 }

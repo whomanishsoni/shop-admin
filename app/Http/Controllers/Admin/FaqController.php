@@ -12,7 +12,7 @@ class FaqController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $faqs = Faq::select('*');
+            $faqs = Faq::select(['id', 'question', 'slug', 'status']);
             return DataTables::of($faqs)
                 ->addColumn('checkbox', function($row) {
                     return '<input type="checkbox" class="select-item" value="'.$row->id.'">';
@@ -46,10 +46,11 @@ class FaqController extends Controller
     {
         $validated = $request->validate([
             'question' => 'required|string|max:255',
+            'slug' => 'required|string|max:255|unique:faqs,slug',
             'answer' => 'required|string',
             'category' => 'nullable|string|max:255',
-            'order' => 'nullable|integer',
-            'status' => 'boolean'
+            'order' => 'nullable|integer|min:0',
+            'status' => 'required|boolean',
         ]);
 
         Faq::create($validated);
@@ -71,13 +72,12 @@ class FaqController extends Controller
     {
         $validated = $request->validate([
             'question' => 'required|string|max:255',
+            'slug' => 'required|string|max:255|unique:faqs,slug,' . $faq->id,
             'answer' => 'required|string',
             'category' => 'nullable|string|max:255',
-            'order' => 'nullable|integer',
-            'status' => 'boolean'
+            'order' => 'nullable|integer|min:0',
+            'status' => 'required|boolean',
         ]);
-
-        $validated['status'] = $request->has('status') ? true : false;
 
         $faq->update($validated);
 
@@ -92,6 +92,7 @@ class FaqController extends Controller
 
     public function bulkDelete(Request $request)
     {
+        $request->validate(['ids' => 'required|array']);
         Faq::whereIn('id', $request->ids)->delete();
         return response()->json(['success' => 'FAQs deleted successfully']);
     }

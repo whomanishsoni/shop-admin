@@ -13,7 +13,7 @@ class TicketController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $tickets = Ticket::with('customer')->select('*');
+            $tickets = Ticket::with('customer')->select(['id', 'customer_id', 'subject', 'priority', 'status']);
             return DataTables::of($tickets)
                 ->addColumn('checkbox', function($row) {
                     return '<input type="checkbox" class="select-item" value="'.$row->id.'">';
@@ -68,6 +68,7 @@ class TicketController extends Controller
         $validated = $request->validate([
             'customer_id' => 'required|exists:customers,id',
             'subject' => 'required|string|max:255',
+            'message' => 'nullable|string',
             'priority' => 'required|in:low,medium,high',
             'status' => 'required|in:open,closed,pending,resolved',
             'category' => 'nullable|string|max:255'
@@ -95,6 +96,7 @@ class TicketController extends Controller
         $validated = $request->validate([
             'customer_id' => 'required|exists:customers,id',
             'subject' => 'required|string|max:255',
+            'message' => 'nullable|string',
             'priority' => 'required|in:low,medium,high',
             'status' => 'required|in:open,closed,pending,resolved',
             'category' => 'nullable|string|max:255'
@@ -113,6 +115,7 @@ class TicketController extends Controller
 
     public function bulkDelete(Request $request)
     {
+        $request->validate(['ids' => 'required|array']);
         Ticket::whereIn('id', $request->ids)->delete();
         return response()->json(['success' => 'Tickets deleted successfully']);
     }

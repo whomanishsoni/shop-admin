@@ -7,42 +7,35 @@
     <h1 class="h3 mb-0 text-gray-800">Website Settings</h1>
 </div>
 
-@if(session('success'))
-<div class="alert alert-success alert-dismissible fade show" role="alert">
-    {{ session('success') }}
-    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-</div>
-@endif
-
 <form action="{{ route('admin.settings.bulk-update') }}" method="POST" enctype="multipart/form-data">
     @csrf
-    
+
     <div class="card shadow mb-4">
         <div class="card-header py-3">
             <ul class="nav nav-tabs card-header-tabs" id="settingsTabs" role="tablist">
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="general-tab" data-bs-toggle="tab" data-bs-target="#general" type="button" role="tab">
+                <li class="nav-item">
+                    <a class="nav-link active" id="general-tab" data-toggle="tab" data-target="#general" href="#general" role="tab">
                         <i class="fas fa-cog"></i> General
-                    </button>
+                    </a>
                 </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="branding-tab" data-bs-toggle="tab" data-bs-target="#branding" type="button" role="tab">
+                <li class="nav-item">
+                    <a class="nav-link" id="branding-tab" data-toggle="tab" data-target="#branding" href="#branding" role="tab">
                         <i class="fas fa-image"></i> Branding
-                    </button>
+                    </a>
                 </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="social-tab" data-bs-toggle="tab" data-bs-target="#social" type="button" role="tab">
+                <li class="nav-item">
+                    <a class="nav-link" id="social-tab" data-toggle="tab" data-target="#social" href="#social" role="tab">
                         <i class="fas fa-share-alt"></i> Social Media
-                    </button>
+                    </a>
                 </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact" type="button" role="tab">
+                <li class="nav-item">
+                    <a class="nav-link" id="contact-tab" data-toggle="tab" data-target="#contact" href="#contact" role="tab">
                         <i class="fas fa-phone"></i> Contact Info
-                    </button>
+                    </a>
                 </li>
             </ul>
         </div>
-        
+
         <div class="card-body">
             <div class="tab-content" id="settingsTabContent">
                 <div class="tab-pane fade show active" id="general" role="tabpanel">
@@ -84,7 +77,7 @@
                                 <small class="text-muted">Recommended: 200x60px</small>
                             </div>
                         </div>
-                        
+
                         <div class="col-md-4 mb-4">
                             <label class="form-label">Site Favicon</label>
                             <div class="border rounded p-3 text-center">
@@ -97,7 +90,7 @@
                                 <small class="text-muted">Recommended: 32x32px or 64x64px</small>
                             </div>
                         </div>
-                        
+
                         <div class="col-md-4 mb-4">
                             <label class="form-label">Footer Logo</label>
                             <div class="border rounded p-3 text-center">
@@ -164,7 +157,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="card-footer">
             <button type="submit" class="btn btn-primary">
                 <i class="fas fa-save"></i> Save Settings

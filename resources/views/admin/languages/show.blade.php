@@ -6,7 +6,7 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h1 class="h3 mb-0 text-gray-800">View Language</h1>
     <div>
-        <a href="{{ route('admin.languages.edit', $languages->id) }}" class="btn btn-warning">
+        <a href="{{ route('admin.languages.edit', $language->id) }}" class="btn btn-warning">
             <i class="fas fa-edit"></i> Edit
         </a>
         <a href="{{ route('admin.languages.index') }}" class="btn btn-secondary">
@@ -24,31 +24,41 @@
             <div class="card-body">
                 <div class="mb-3">
                     <strong>Name:</strong>
-                    <p class="mb-0">{{ $languages->name }}</p>
+                    <p class="mb-0">{{ $language->name }}</p>
                 </div>
 
                 <div class="mb-3">
-                    <strong>Description:</strong>
-                    <p class="mb-0">{{ $languages->description ?? 'N/A' }}</p>
+                    <strong>Code:</strong>
+                    <p class="mb-0">{{ $language->code }}</p>
+                </div>
+
+                <div class="mb-3">
+                    <strong>Locale:</strong>
+                    <p class="mb-0">{{ $language->locale }}</p>
+                </div>
+
+                <div class="mb-3">
+                    <strong>Direction:</strong>
+                    <p class="mb-0">{{ $language->direction }}</p>
                 </div>
 
                 <div class="mb-3">
                     <strong>Status:</strong>
                     <p class="mb-0">
-                        <span class="badge bg-{{ $languages->status ? 'success' : 'danger' }}">
-                            {{ $languages->status ? 'Active' : 'Inactive' }}
+                        <span class="badge bg-{{ $language->status ? 'success' : 'danger' }}">
+                            {{ $language->status ? 'Active' : 'Inactive' }}
                         </span>
                     </p>
                 </div>
 
                 <div class="mb-3">
                     <strong>Created:</strong>
-                    <p class="mb-0">{{ $languages->created_at->format('M d, Y h:i A') }}</p>
+                    <p class="mb-0">{{ $language->created_at->format('M d, Y h:i A') }}</p>
                 </div>
 
                 <div class="mb-3">
                     <strong>Last Updated:</strong>
-                    <p class="mb-0">{{ $languages->updated_at->format('M d, Y h:i A') }}</p>
+                    <p class="mb-0">{{ $language->updated_at->format('M d, Y h:i A') }}</p>
                 </div>
             </div>
         </div>
@@ -60,11 +70,11 @@
                 <h6 class="m-0 font-weight-bold text-primary">Actions</h6>
             </div>
             <div class="card-body">
-                <a href="{{ route('admin.languages.edit', $languages->id) }}" class="btn btn-warning btn-block w-100 mb-2">
+                <a href="{{ route('admin.languages.edit', $language->id) }}" class="btn btn-warning btn-block w-100 mb-2">
                     <i class="fas fa-edit"></i> Edit
                 </a>
-                
-                <form action="{{ route('admin.languages.destroy', $languages->id) }}" method="POST" 
+
+                <form action="{{ route('admin.languages.destroy', $language->id) }}" method="POST"
                       onsubmit="return confirm('Are you sure you want to delete this item?')">
                     @csrf
                     @method('DELETE')

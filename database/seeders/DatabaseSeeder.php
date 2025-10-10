@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
             ShippingSeeder::class,
             EmailTemplateSeeder::class,
             SettingSeeder::class,
+            TaxSeeder::class,
         ]);
     }
 }

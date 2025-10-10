@@ -14,7 +14,7 @@ return new class extends Migration
             $table->json('states')->nullable();
             $table->foreignId('shipping_method_id')->constrained()->onDelete('cascade');
             $table->decimal('rate', 10, 2)->default(0);
-            $table->boolean('status')->default(1);
+            $table->boolean('status')->default(true);
             $table->timestamps();
         });
     }

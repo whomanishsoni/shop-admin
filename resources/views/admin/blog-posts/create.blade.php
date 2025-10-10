@@ -14,12 +14,12 @@
     <div class="card-body">
         <form action="{{ route('admin.blog-posts.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
-            
+
             <div class="row">
                 <div class="col-md-8">
                     <div class="mb-3">
                         <label for="title" class="form-label">Title <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control @error('title') is-invalid @enderror" 
+                        <input type="text" class="form-control @error('title') is-invalid @enderror"
                                id="title" name="title" value="{{ old('title') }}" required>
                         @error('title')
                             <div class="invalid-feedback">{{ $message }}</div>
@@ -28,8 +28,8 @@
 
                     <div class="mb-3">
                         <label for="slug" class="form-label">Slug</label>
-                        <input type="text" class="form-control @error('slug') is-invalid @enderror" 
-                               id="slug" name="slug" value="{{ old('slug') }}" 
+                        <input type="text" class="form-control @error('slug') is-invalid @enderror"
+                               id="slug" name="slug" value="{{ old('slug') }}"
                                placeholder="Leave blank to auto-generate from title">
                         @error('slug')
                             <div class="invalid-feedback">{{ $message }}</div>
@@ -38,8 +38,8 @@
 
                     <div class="mb-3">
                         <label for="content" class="form-label">Content <span class="text-danger">*</span></label>
-                        <textarea class="form-control @error('content') is-invalid @enderror" 
-                                  id="content" name="content" rows="15" required>{{ old('content') }}</textarea>
+                        <textarea class="form-control @error('content') is-invalid @enderror"
+                                  id="description" name="content" rows="15" required>{{ old('content') }}</textarea>
                         @error('content')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
@@ -49,7 +49,7 @@
                 <div class="col-md-4">
                     <div class="mb-3">
                         <label for="blog_category_id" class="form-label">Category <span class="text-danger">*</span></label>
-                        <select class="form-select @error('blog_category_id') is-invalid @enderror" 
+                        <select class="form-select @error('blog_category_id') is-invalid @enderror"
                                 id="blog_category_id" name="blog_category_id" required>
                             <option value="">Select Category</option>
                             @foreach($categories as $category)
@@ -65,7 +65,7 @@
 
                     <div class="mb-3">
                         <label for="status" class="form-label">Status <span class="text-danger">*</span></label>
-                        <select class="form-select @error('status') is-invalid @enderror" 
+                        <select class="form-select @error('status') is-invalid @enderror"
                                 id="status" name="status" required>
                             <option value="draft" {{ old('status') == 'draft' ? 'selected' : '' }}>Draft</option>
                             <option value="published" {{ old('status') == 'published' ? 'selected' : '' }}>Published</option>
@@ -77,7 +77,7 @@
 
                     <div class="mb-3">
                         <label for="featured_image" class="form-label">Featured Image</label>
-                        <input type="file" class="form-control @error('featured_image') is-invalid @enderror" 
+                        <input type="file" class="form-control @error('featured_image') is-invalid @enderror"
                                id="featured_image" name="featured_image" accept="image/*">
                         @error('featured_image')
                             <div class="invalid-feedback">{{ $message }}</div>
@@ -86,7 +86,7 @@
                     </div>
 
                     <div class="mb-3">
-                        <img id="image-preview" src="" alt="Image Preview" 
+                        <img id="image-preview" src="" alt="Image Preview"
                              style="display:none; max-width: 100%; margin-top: 10px; border-radius: 4px;">
                     </div>
                 </div>
@@ -104,26 +104,75 @@
 @endsection
 
 @push('scripts')
-<script>
-$(function() {
-    $('#title').on('keyup', function() {
-        var title = $(this).val();
-        var slug = title.toLowerCase()
-            .replace(/[^\w ]+/g, '')
-            .replace(/ +/g, '-');
-        $('#slug').val(slug);
-    });
+    <script>
+        $(function() {
+            $('#title').on('keyup', function() {
+                var title = $(this).val();
+                var slug = title.toLowerCase()
+                    .replace(/[^\w ]+/g, '')
+                    .replace(/ +/g, '-');
+                $('#slug').val(slug);
+            });
 
-    $('#featured_image').on('change', function(e) {
-        var file = e.target.files[0];
-        if (file) {
-            var reader = new FileReader();
-            reader.onload = function(e) {
-                $('#image-preview').attr('src', e.target.result).show();
-            }
-            reader.readAsDataURL(file);
-        }
-    });
-});
-</script>
+            $('#featured_image').on('change', function(e) {
+                var file = e.target.files[0];
+                if (file) {
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        $('#image-preview').attr('src', e.target.result).show();
+                    }
+                    reader.readAsDataURL(file);
+                }
+            });
+        });
+
+        CKEDITOR.replace('description', {
+            height: 300,
+            toolbar: [{
+                    name: 'document',
+                    items: ['Source']
+                },
+                {
+                    name: 'clipboard',
+                    items: ['Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo',
+                        'Redo'
+                    ]
+                },
+                {
+                    name: 'editing',
+                    items: ['Find', 'Replace', '-', 'SelectAll']
+                },
+                {
+                    name: 'basicstyles',
+                    items: ['Bold', 'Italic', 'Underline', 'Strike', '-', 'RemoveFormat']
+                },
+                {
+                    name: 'paragraph',
+                    items: ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-',
+                        'Blockquote'
+                    ]
+                },
+                {
+                    name: 'links',
+                    items: ['Link', 'Unlink']
+                },
+                {
+                    name: 'insert',
+                    items: ['Image', 'Table', 'HorizontalRule']
+                },
+                {
+                    name: 'styles',
+                    items: ['Styles', 'Format', 'Font', 'FontSize']
+                },
+                {
+                    name: 'colors',
+                    items: ['TextColor', 'BGColor']
+                },
+                {
+                    name: 'tools',
+                    items: ['Maximize']
+                }
+            ]
+        });
+    </script>
 @endpush
