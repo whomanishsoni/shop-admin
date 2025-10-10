@@ -6,7 +6,7 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h1 class="h3 mb-0 text-gray-800">View Payment Gateway</h1>
     <div>
-        <a href="{{ route('admin.payment-gateways.edit', $paymentGateways->id) }}" class="btn btn-warning">
+        <a href="{{ route('admin.payment-gateways.edit', $paymentGateway->id) }}" class="btn btn-warning">
             <i class="fas fa-edit"></i> Edit
         </a>
         <a href="{{ route('admin.payment-gateways.index') }}" class="btn btn-secondary">
@@ -24,31 +24,52 @@
             <div class="card-body">
                 <div class="mb-3">
                     <strong>Name:</strong>
-                    <p class="mb-0">{{ $paymentGateways->name }}</p>
+                    <p class="mb-0">{{ $paymentGateway->name }}</p>
                 </div>
 
                 <div class="mb-3">
-                    <strong>Description:</strong>
-                    <p class="mb-0">{{ $paymentGateways->description ?? 'N/A' }}</p>
+                    <strong>Gateway Key:</strong>
+                    <p class="mb-0">{{ $paymentGateway->gateway_key }}</p>
+                </div>
+
+                <div class="mb-3">
+                    <strong>API Key:</strong>
+                    <p class="mb-0">{{ $paymentGateway->api_key ?? 'N/A' }}</p>
+                </div>
+
+                <div class="mb-3">
+                    <strong>API Secret:</strong>
+                    <p class="mb-0">{{ $paymentGateway->api_secret ?? 'N/A' }}</p>
+                </div>
+
+                <div class="mb-3">
+                    <strong>Config:</strong>
+                    <p class="mb-0">
+                        @if($paymentGateway->config)
+                            <pre>{{ json_encode($paymentGateway->config, JSON_PRETTY_PRINT) }}</pre>
+                        @else
+                            N/A
+                        @endif
+                    </p>
                 </div>
 
                 <div class="mb-3">
                     <strong>Status:</strong>
                     <p class="mb-0">
-                        <span class="badge bg-{{ $paymentGateways->status ? 'success' : 'danger' }}">
-                            {{ $paymentGateways->status ? 'Active' : 'Inactive' }}
+                        <span class="badge bg-{{ $paymentGateway->status ? 'success' : 'danger' }}">
+                            {{ $paymentGateway->status ? 'Active' : 'Inactive' }}
                         </span>
                     </p>
                 </div>
 
                 <div class="mb-3">
                     <strong>Created:</strong>
-                    <p class="mb-0">{{ $paymentGateways->created_at->format('M d, Y h:i A') }}</p>
+                    <p class="mb-0">{{ $paymentGateway->created_at->format('M d, Y h:i A') }}</p>
                 </div>
 
                 <div class="mb-3">
                     <strong>Last Updated:</strong>
-                    <p class="mb-0">{{ $paymentGateways->updated_at->format('M d, Y h:i A') }}</p>
+                    <p class="mb-0">{{ $paymentGateway->updated_at->format('M d, Y h:i A') }}</p>
                 </div>
             </div>
         </div>
@@ -60,11 +81,11 @@
                 <h6 class="m-0 font-weight-bold text-primary">Actions</h6>
             </div>
             <div class="card-body">
-                <a href="{{ route('admin.payment-gateways.edit', $paymentGateways->id) }}" class="btn btn-warning btn-block w-100 mb-2">
+                <a href="{{ route('admin.payment-gateways.edit', $paymentGateway->id) }}" class="btn btn-warning btn-block w-100 mb-2">
                     <i class="fas fa-edit"></i> Edit
                 </a>
-                
-                <form action="{{ route('admin.payment-gateways.destroy', $paymentGateways->id) }}" method="POST" 
+
+                <form action="{{ route('admin.payment-gateways.destroy', $paymentGateway->id) }}" method="POST"
                       onsubmit="return confirm('Are you sure you want to delete this item?')">
                     @csrf
                     @method('DELETE')

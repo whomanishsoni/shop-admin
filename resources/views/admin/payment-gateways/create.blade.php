@@ -14,30 +14,61 @@
     <div class="card-body">
         <form action="{{ route('admin.payment-gateways.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
-            
+
             <div class="mb-3">
                 <label for="name" class="form-label">Name <span class="text-danger">*</span></label>
-                <input type="text" class="form-control @error('name') is-invalid @enderror" 
-                       id="name" name="name" value="{{ old('name') }}" required>
+                <input type="text" class="form-control @error('name') is-invalid @enderror"
+                       id="name" name="name" value="{{ old('name') }}" placeholder="e.g., Razorpay" required>
                 @error('name')
                     <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
             </div>
 
             <div class="mb-3">
-                <label for="description" class="form-label">Description</label>
-                <textarea class="form-control @error('description') is-invalid @enderror" 
-                          id="description" name="description" rows="4">{{ old('description') }}</textarea>
-                @error('description')
+                <label for="gateway_key" class="form-label">Gateway Key <span class="text-danger">*</span></label>
+                <input type="text" class="form-control @error('gateway_key') is-invalid @enderror"
+                       id="gateway_key" name="gateway_key" value="{{ old('gateway_key') }}" placeholder="e.g., razorpay" required>
+                @error('gateway_key')
                     <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
             </div>
 
             <div class="mb-3">
-                <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="status" name="status" value="1" {{ old('status', 1) ? 'checked' : '' }}>
-                    <label class="form-check-label" for="status">Active</label>
-                </div>
+                <label for="api_key" class="form-label">API Key</label>
+                <input type="text" class="form-control @error('api_key') is-invalid @enderror"
+                       id="api_key" name="api_key" value="{{ old('api_key') }}" placeholder="e.g., rzp_test_xxxxxxxxxxxx">
+                @error('api_key')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <div class="mb-3">
+                <label for="api_secret" class="form-label">API Secret</label>
+                <input type="text" class="form-control @error('api_secret') is-invalid @enderror"
+                       id="api_secret" name="api_secret" value="{{ old('api_secret') }}" placeholder="e.g., xxxxxxxxxxxxxxxx">
+                @error('api_secret')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <div class="mb-3">
+                <label for="config" class="form-label">Additional Config (JSON)</label>
+                <textarea class="form-control @error('config') is-invalid @enderror"
+                          id="config" name="config" rows="4" placeholder='e.g., {"webhook_url": "https://example.com/webhook"}'>{{ old('config') }}</textarea>
+                @error('config')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <div class="mb-3">
+                <label for="status" class="form-label">Status <span class="text-danger">*</span></label>
+                <select class="form-control @error('status') is-invalid @enderror" id="status" name="status" required>
+                    <option value="1" {{ old('status', 1) == 1 ? 'selected' : '' }}>Active</option>
+                    <option value="0" {{ old('status', 1) == 0 ? 'selected' : '' }}>Inactive</option>
+                </select>
+                @error('status')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
             </div>
 
             <div class="d-flex justify-content-end gap-2">

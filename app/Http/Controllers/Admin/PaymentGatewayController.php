@@ -12,7 +12,7 @@ class PaymentGatewayController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $paymentGateways = PaymentGateway::select('*');
+            $paymentGateways = PaymentGateway::select(['id', 'name', 'gateway_key', 'api_key', 'api_secret', 'status', 'config']);
             return DataTables::of($paymentGateways)
                 ->addColumn('checkbox', function($row) {
                     return '<input type="checkbox" class="select-item" value="'.$row->id.'">';
@@ -46,11 +46,11 @@ class PaymentGatewayController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'gateway_key' => 'required|string|unique:payment_gateways,gateway_key',
-            'api_key' => 'nullable|string',
-            'api_secret' => 'nullable|string',
-            'status' => 'boolean',
-            'config' => 'nullable|array'
+            'gateway_key' => 'required|string|max:255|unique:payment_gateways,gateway_key',
+            'api_key' => 'nullable|string|max:255',
+            'api_secret' => 'nullable|string|max:255',
+            'status' => 'required|in:0,1',
+            'config' => 'nullable|array',
         ]);
 
         if (isset($validated['config'])) {
@@ -76,14 +76,12 @@ class PaymentGatewayController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'gateway_key' => 'required|string|unique:payment_gateways,gateway_key,'.$paymentGateway->id,
-            'api_key' => 'nullable|string',
-            'api_secret' => 'nullable|string',
-            'status' => 'boolean',
-            'config' => 'nullable|array'
+            'gateway_key' => 'required|string|max:255|unique:payment_gateways,gateway_key,'.$paymentGateway->id,
+            'api_key' => 'nullable|string|max:255',
+            'api_secret' => 'nullable|string|max:255',
+            'status' => 'required|in:0,1',
+            'config' => 'nullable|array',
         ]);
-
-        $validated['status'] = $request->has('status') ? true : false;
 
         if (isset($validated['config'])) {
             $validated['config'] = json_encode($validated['config']);
