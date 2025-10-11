@@ -34,7 +34,7 @@
                   </svg>
                 </div>
                 <h4 class="title">address line</h4>
-                <p class="text">#101, Hyderabad, Telangana - 500001.</p>
+                <p class="text">{{ $settings['business_address'] ?? '#101, Hyderabad, Telangana - 500001' }}</p>
               </div>
             </div>
           </div>
@@ -50,7 +50,7 @@
 
                 </div>
                 <h4 class="title">Contact Us</h4>
-                  <p class="text"><a href="tel:+01234567890">+91 123 4567 890</a></p>
+                  <p class="text"><a href="tel:{{ $settings['site_phone'] ?? '+91 123 4567 890' }}">{{ $settings['site_phone'] ?? '+91 123 4567 890' }}</a></p>
               </div>
             </div>
           </div>
@@ -63,8 +63,7 @@
                   </svg>
                 </div>
                 <h4 class="title">Mail Adress</h4>
-                <p class="text"><a href="mailto:info@vyuga.in" class="__cf_email__">info@vyuga.in</a></p>
-              </div>
+                    <p class="text"><a href="mailto:{{ $settings['site_email'] ?? 'info@vyuga.in' }}" class="__cf_email__">{{ $settings['site_email'] ?? 'info@vyuga.in' }}</a></p>              </div>
             </div>
           </div>
         </div>

@@ -18,9 +18,9 @@
         <div class="container-fluid-2">
             <div class="row align-items-center position__relative">
                 <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-4 col-6">
-                    <div class="main__logo text-center">
-                        <h1 class="main__logo--title"><a class="main__logo--link" href="{{ route('home') }}"><img class="main__logo--img" src="{{ asset('assets/images/logo.png') }}" alt="logo-img"></a></h1>
-                    </div>
+                        <a class="main__logo--link" href="{{ route('home') }}">
+                            <img class="main__logo--img" src="{{ !empty($settings['footer_logo']) ? asset('storage/' . $settings['site_logo']) : asset('assets/images/logo.png') }}" alt="{{ $settings['site_name'] ?? 'Vyuga' }} Logo">
+                        </a>
                 </div>
                 <div class="col-xxl-5 col-xl-6 col-lg-6 col-md-4 col-3">
                     <div class="offcanvas__header--menu__open ">

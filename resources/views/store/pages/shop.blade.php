@@ -4,7 +4,7 @@
 
 @section('content')
     <main class="main__content_wrapper">
-        <section class="breadcrumb__section breadcrumb__bg" style="background: url({{ asset('assets/images/product-banner.jpg') }});">
+        <section class="breadcrumb__section breadcrumb__bg" style="background: url({{ asset('assets/images/product-banner.jpg') }}) no-repeat center; background-size: cover;">
             <div class="container">
                 <div class="row row-cols-1">
                     <div class="col">
@@ -12,13 +12,14 @@
                             <h1 class="breadcrumb__content--title text-white mb-25">Products</h1>
                             <ul class="breadcrumb__content--menu d-flex justify-content-center">
                                 <li class="breadcrumb__content--menu__items"><a class="text-white" href="{{ route('home') }}">Home</a></li>
-                                <li class="breadcrumb__content--menu__items"><span class="text-white">{{ $category ?? 'Products' }}</span></li>
+                                <li class="breadcrumb__content--menu__items"><span class="text-white">{{ is_string($category) ? $category : $category->name }}</span></li>
                             </ul>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
+
         <section class="shop__section section--padding">
             <div class="container-fluid">
                 <div class="shop__header bg__gray--color d-flex align-items-center justify-content-between mb-30">
@@ -33,34 +34,24 @@
                     </button>
                     <div class="product__view--mode d-flex align-items-center">
                         <div class="product__view--mode__list product__short--by align-items-center d-none d-lg-flex">
-                            <label class="product__view--label">Prev Page :</label>
-                            <div class="select shop__header--select">
-                                <select class="product__view--select">
-                                    <option selected="" value="1">1</option>
-                                    <option value="2">2</option>
-                                    <option value="3">3</option>
-                                    <option value="4">4</option>
-                                    <option value="5">5</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="product__view--mode__list product__short--by align-items-center d-none d-lg-flex">
-                            <label class="product__view--label">Sort By :</label>
-                            <div class="select shop__header--select">
-                                <select class="product__view--select">
-                                    <option selected="" value="1">Sort by latest</option>
-                                    <option value="2">Sort by popularity</option>
-                                    <option value="3">Sort by newness</option>
-                                    <option value="4">Sort by rating</option>
-                                </select>
-                            </div>
+                            <form action="{{ route('shop', request()->segment(2)) }}" method="GET">
+                                <label class="product__view--label">Sort By :</label>
+                                <div class="select shop__header--select">
+                                    <select class="product__view--select" name="sort" onchange="this.form.submit()">
+                                        <option value="latest" {{ request('sort', 'latest') == 'latest' ? 'selected' : '' }}>Sort by latest</option>
+                                        <option value="popularity" {{ request('sort') == 'popularity' ? 'selected' : '' }}>Sort by popularity</option>
+                                        <option value="rating" {{ request('sort') == 'rating' ? 'selected' : '' }}>Sort by rating</option>
+                                        <option value="newness" {{ request('sort') == 'newness' ? 'selected' : '' }}>Sort by newness</option>
+                                    </select>
+                                </div>
+                            </form>
                         </div>
                         <div class="product__view--mode__list product__view--search d-none d-lg-block">
-                            <form class="product__view--search__form" action="#">
+                            <form class="product__view--search__form" action="{{ route('shop', request()->segment(2)) }}" method="GET">
                                 <label style="border: 1px solid #ccc;">
-                                    <input class="product__view--search__input border-0" placeholder="Search by" type="text">
+                                    <input class="product__view--search__input border-0" placeholder="Search by" type="text" name="search" value="{{ request('search') }}">
                                 </label>
-                                <button class="product__view--search__btn" aria-label="shop button" type="submit">
+                                <button class="product__view--search__btn" aria-label="search button" type="submit">
                                     <svg class="product__view--search__btn--svg" xmlns="http://www.w3.org/2000/svg" width="22.51" height="20.443" viewBox="0 0 512 512">
                                         <path d="M221.09 64a157.09 157.09 0 10157.09 157.09A157.1 157.1 0 00221.09 64z" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32"></path>
                                         <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M338.29 338.29L448 448"></path>
@@ -69,7 +60,7 @@
                             </form>
                         </div>
                     </div>
-                    <p class="product__showing--count">Showing 1–{{ count($products) }} of {{ count($products) }} results</p>
+                    <p class="product__showing--count">Showing {{ $products->firstItem() }}–{{ $products->lastItem() }} of {{ $products->total() }} results</p>
                 </div>
 
                 <div class="row">
@@ -81,13 +72,13 @@
                                     @foreach ($categories as $category)
                                         <li class="widget__categories--menu__list">
                                             <label class="widget__categories--menu__label d-flex align-items-center">
-                                                <span class="widget__categories--menu__text">{{ $category->name }}</span>
+                                                <a class="widget__categories--menu__text" href="{{ route('shop', $category->slug) }}">{{ $category->name }}</a>
                                                 <svg class="widget__categories--menu__arrowdown--icon" xmlns="http://www.w3.org/2000/svg" width="12.355" height="8.394">
                                                     <path d="M15.138,8.59l-3.961,3.952L7.217,8.59,6,9.807l5.178,5.178,5.178-5.178Z" transform="translate(-6 -8.59)" fill="currentColor"></path>
                                                 </svg>
                                             </label>
                                             @if ($category->subcategories->count() > 0)
-                                                <ul class="widget__categories--sub__menu" style="display: none; box-sizing: border-box;">
+                                                <ul class="widget__categories--sub__menu" style="display: none;">
                                                     @foreach ($category->subcategories as $subcategory)
                                                         <li class="widget__categories--sub__menu--list">
                                                             <a class="widget__categories--sub__menu--link d-flex align-items-center" href="{{ route('shop', $subcategory->slug) }}">
@@ -103,18 +94,18 @@
                             </div>
                             <div class="single__widget price__filter widget__bg">
                                 <h2 class="widget__title h3">Filter By Price</h2>
-                                <form class="price__filter--form" action="#">
+                                <form class="price__filter--form" action="{{ route('shop', request()->segment(2)) }}" method="GET">
                                     <div class="price__filter--form__inner mb-15 d-flex align-items-center">
                                         <div class="price__filter--group">
                                             <label class="price__filter--label" for="Filter-Price-GTE2">From</label>
                                             <div class="price__filter--input border-radius-5 d-flex align-items-center">
                                                 <span class="price__filter--currency">Rs.</span>
                                                 <label>
-                                                    <input class="price__filter--input__field border-0" name="filter.v.price.gte" type="number" placeholder="250.00" min="0" max="250.00">
+                                                    <input class="price__filter--input__field border-0" name="filter[v][price][gte]" type="number" placeholder="250.00" min="0" value="{{ request('filter.v.price.gte') }}">
                                                 </label>
                                             </div>
                                         </div>
-                                        <div class="price__divider">
+                                        <div class="price__filter--divider">
                                             <span>-</span>
                                         </div>
                                         <div class="price__filter--group">
@@ -122,7 +113,7 @@
                                             <div class="price__filter--input border-radius-5 d-flex align-items-center">
                                                 <span class="price__filter--currency">Rs.</span>
                                                 <label>
-                                                    <input class="price__filter--input__field border-0" name="filter.v.price.lte" type="number" min="0" placeholder="200000.00" max="200000.00">
+                                                    <input class="price__filter--input__field border-0" name="filter[v][price][lte]" type="number" placeholder="200000.00" min="0" value="{{ request('filter.v.price.lte') }}">
                                                 </label>
                                             </div>
                                         </div>
@@ -150,63 +141,49 @@
                             <div class="tab_content">
                                 <div id="product_grid" class="tab_pane active show">
                                     <div class="product__section--inner product__grid--inner">
-                                        <div class="row row-cols-xl-4 row-cols-lg-3 row-cols-md-3 row-cols-2 mb--n30">
-                                            @foreach ($products as $product)
-                                                <div class="col mb-30">
-                                                    <div class="product__items">
-                                                        <div class="product__items--thumbnail">
-                                                            <a class="product__items--link" href="{{ route('product.detail', $product['slug']) }}">
-                                                                <img class="product__items--img product__primary--img" src="{{ asset($product['image_primary']) }}" alt="product-img">
-                                                                <img class="product__items--img product__secondary--img" src="{{ asset($product['image_secondary']) }}" alt="product-img">
-                                                            </a>
-                                                            @if ($product['on_sale'])
-                                                                <div class="product__badge">
-                                                                    <span class="product__badge--items sale">Sale</span>
-                                                                </div>
-                                                            @endif
-                                                        </div>
-                                                        <div class="product__items--content text-center">
-                                                            <h4 class="product__items--content__title"><a href="{{ route('product.detail', $product['slug']) }}">{{ $product['name'] }}</a></h4>
-                                                            <div class="product__items--price">
-                                                                @if (isset($product['old_price']))
-                                                                    <span class="old__price">Rs.{{ number_format($product['old_price'], 2) }}</span>
-                                                                @endif
-                                                                <span class="current__price">Rs.{{ number_format($product['price'], 2) }}</span>
-                                                            </div>
-                                                            <div class="product__items--action d-flex">
-                                                                <a class="product__items--action__btn" data-open="modal1" data-slug="{{ $product['slug'] }}" href="javascript:void(0)">
-                                                                    <span class="">Choose Options</span>
+                                        @if ($products->isEmpty())
+                                            <p class="text-center">No products found.</p>
+                                        @else
+                                            <div class="row row-cols-xl-4 row-cols-lg-3 row-cols-md-3 row-cols-2 mb--n30">
+                                                @foreach ($products as $product)
+                                                    <div class="col mb-30">
+                                                        <div class="product__items">
+                                                            <div class="product__items--thumbnail">
+                                                                <a class="product__items--link" href="{{ route('product.detail', $product['slug']) }}">
+                                                                    <img class="product__items--img product__primary--img" src="{{ $product['image_primary'] }}" alt="{{ $product['name'] }}">
+                                                                    <img class="product__items--img product__secondary--img" src="{{ $product['image_secondary'] }}" alt="{{ $product['name'] }}">
                                                                 </a>
+                                                                @if ($product['on_sale'])
+                                                                    <div class="product__badge">
+                                                                        <span class="product__badge--items sale">Sale</span>
+                                                                    </div>
+                                                                @endif
+                                                            </div>
+                                                            <div class="product__items--content text-center">
+                                                                <h4 class="product__items--content__title"><a href="{{ route('product.detail', $product['slug']) }}">{{ $product['name'] }}</a></h4>
+                                                                <div class="product__items--price">
+                                                                    @if ($product['old_price'])
+                                                                        <span class="old__price">Rs.{{ number_format($product['old_price'], 2) }}</span>
+                                                                    @endif
+                                                                    <span class="current__price">Rs.{{ number_format($product['price'], 2) }}</span>
+                                                                </div>
+                                                                <div class="product__items--action d-flex justify-content-center">
+                                                                    <a class="product__items--action__btn" data-open="modal1" data-slug="{{ $product['slug'] }}" href="javascript:void(0)">
+                                                                        <span>Choose Options</span>
+                                                                    </a>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            @endforeach
-                                        </div>
+                                                @endforeach
+                                            </div>
+                                        @endif
                                     </div>
                                 </div>
                             </div>
                             <div class="pagination__area bg__gray--color">
                                 <nav class="pagination justify-content-center">
-                                    <ul class="pagination__wrapper d-flex align-items-center justify-content-center">
-                                        <li class="pagination__list">
-                                            <a href="{{ route('shop') }}" class="pagination__item--arrow link">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="22.51" height="20.443" viewBox="0 0 512 512">
-                                                    <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="48" d="M244 400L100 256l144-144M120 256h292"></path>
-                                                </svg>
-                                                <span class="visually-hidden">pagination arrow</span>
-                                            </a>
-                                        </li>
-                                        <li class="pagination__list"><span class="pagination__item pagination__item--current">1</span></li>
-                                        <li class="pagination__list">
-                                            <a href="{{ route('shop') }}" class="pagination__item--arrow link">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="22.51" height="20.443" viewBox="0 0 512 512">
-                                                    <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="48" d="M268 112l144 144-144 144M392 256H100"></path>
-                                                </svg>
-                                                <span class="visually-hidden">pagination arrow</span>
-                                            </a>
-                                        </li>
-                                    </ul>
+                                    {{ $products->appends(request()->query())->links('vendor.pagination.custom') }}
                                 </nav>
                             </div>
                         </div>
@@ -214,12 +191,13 @@
                 </div>
             </div>
         </section>
+
         <section class="shipping__section2 shipping__style3 section--padding pt-0">
             <div class="container">
                 <div class="shipping__section2--inner shipping__style3--inner d-flex justify-content-between">
                     <div class="shipping__items2 d-flex align-items-center">
                         <div class="shipping__items2--icon">
-                            <img src="{{ asset('assets/images/shipping1.png') }}" alt="">
+                            <img src="{{ asset('assets/images/shipping1.png') }}" alt="Shipping">
                         </div>
                         <div class="shipping__items2--content">
                             <h2 class="shipping__items2--content__title h3">Shipping</h2>
@@ -228,29 +206,29 @@
                     </div>
                     <div class="shipping__items2 d-flex align-items-center">
                         <div class="shipping__items2--icon">
-                            <img src="{{ asset('assets/images/shipping2.png') }}" alt="">
+                            <img src="{{ asset('assets/images/shipping2.png') }}" alt="Payment">
                         </div>
                         <div class="shipping__items2--content">
                             <h2 class="shipping__items2--content__title h3">Payment</h2>
-                            <p class="shipping__items2--content__desc">From handpicked sellers</p>
+                            <p class="shipping__items2--content__desc">Secure payment options</p>
                         </div>
                     </div>
                     <div class="shipping__items2 d-flex align-items-center">
                         <div class="shipping__items2--icon">
-                            <img src="{{ asset('assets/images/shipping3.png') }}" alt="">
+                            <img src="{{ asset('assets/images/shipping3.png') }}" alt="Return">
                         </div>
                         <div class="shipping__items2--content">
                             <h2 class="shipping__items2--content__title h3">Return</h2>
-                            <p class="shipping__items2--content__desc">From handpicked sellers</p>
+                            <p class="shipping__items2--content__desc">Easy return policy</p>
                         </div>
                     </div>
                     <div class="shipping__items2 d-flex align-items-center">
                         <div class="shipping__items2--icon">
-                            <img src="{{ asset('assets/images/shipping4.png') }}" alt="">
+                            <img src="{{ asset('assets/images/shipping4.png') }}" alt="Support">
                         </div>
                         <div class="shipping__items2--content">
                             <h2 class="shipping__items2--content__title h3">Support</h2>
-                            <p class="shipping__items2--content__desc">From handpicked sellers</p>
+                            <p class="shipping__items2--content__desc">24/7 customer support</p>
                         </div>
                     </div>
                 </div>
