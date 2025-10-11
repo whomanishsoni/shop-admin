@@ -21,18 +21,6 @@
         </section>
         <section class="my__account--section section--padding">
             <div class="container">
-                @if (session('success'))
-                    <div class="alert alert-success">{{ session('success') }}</div>
-                @endif
-                @if ($errors->any())
-                    <div class="alert alert-danger">
-                        <ul>
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif
                 <p class="account__welcome--text">Hello, {{ Auth::guard('customer')->user()->first_name }} {{ Auth::guard('customer')->user()->last_name }}! Welcome to your dashboard!</p>
                 <div class="my__account--section__inner border-radius-10 d-flex">
                     <div class="account__left--sidebar">
@@ -75,12 +63,6 @@
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="account__details--footer__btn" onclick="return confirm('Are you sure you want to delete this address?')">Delete</button>
-                                            </form>
-                                            <form action="{{ route('address.like', ['id' => $address['id']]) }}" method="POST" style="margin: 0;">
-                                                @csrf
-                                                <button class="like-btn" type="submit" style="background:none;border:none;cursor:pointer;">
-                                                    <span class="heart-icon" style="color: {{ $address['liked'] ? '#ff0000' : '#ccc' }};">&#9829;</span>
-                                                </button>
                                             </form>
                                         </div>
                                     </div>

@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Facades\Log; // Added this line to import the Log facade
 
 class AccountController extends Controller
 {
@@ -36,7 +37,7 @@ class AccountController extends Controller
 
     public function register()
     {
-        return view('store.pages.account.login');
+        return view('store.pages.account.register');
     }
 
     public function registerAttempt(Request $request)
@@ -179,14 +180,29 @@ class AccountController extends Controller
             'state' => 'nullable|string|max:100',
             'pincode' => 'nullable|string|max:20',
             'country' => 'nullable|string|max:100',
-            'is_default' => 'boolean',
+            'is_default' => 'sometimes|boolean', // 'sometimes' allows it to be optional
         ]);
 
-        if ($validated['is_default']) {
-            $customer->addresses()->update(['is_default' => false]);
-        }
+        // Explicitly set is_default based on checkbox presence
+        $isDefault = $request->has('is_default') ? (bool)$request->input('is_default', false) : false;
+        Log::info('is_default value during store: ' . ($isDefault ? 'true' : 'false')); // Debug log
 
-        $customer->addresses()->create($validated);
+        // Create the address
+        $address = $customer->addresses()->create([
+            'name' => $validated['name'],
+            'address' => $validated['address'],
+            'city' => $validated['city'],
+            'state' => $validated['state'],
+            'pincode' => $validated['pincode'],
+            'country' => $validated['country'],
+            'is_default' => $isDefault,
+        ]);
+
+        // If is_default is true, set other addresses to false
+        if ($isDefault) {
+            $customer->addresses()->where('id', '!=', $address->id)->update(['is_default' => false]);
+            Log::info('Updated other addresses to is_default = false for customer ID: ' . $customer->id); // Debug log
+        }
 
         return redirect()->route('addresses')->with('success', 'Address added successfully');
     }
@@ -228,14 +244,29 @@ class AccountController extends Controller
             'state' => 'nullable|string|max:100',
             'pincode' => 'nullable|string|max:20',
             'country' => 'nullable|string|max:100',
-            'is_default' => 'boolean',
+            'is_default' => 'sometimes|boolean', // 'sometimes' allows it to be optional
         ]);
 
-        if ($validated['is_default']) {
-            $customer->addresses()->where('id', '!=', $id)->update(['is_default' => false]);
-        }
+        // Explicitly set is_default based on checkbox presence
+        $isDefault = $request->has('is_default') ? (bool)$request->input('is_default', false) : false;
+        Log::info('is_default value during update for address ID ' . $id . ': ' . ($isDefault ? 'true' : 'false')); // Debug log
 
-        $address->update($validated);
+        // Update the address
+        $address->update([
+            'name' => $validated['name'],
+            'address' => $validated['address'],
+            'city' => $validated['city'],
+            'state' => $validated['state'],
+            'pincode' => $validated['pincode'],
+            'country' => $validated['country'],
+            'is_default' => $isDefault,
+        ]);
+
+        // If is_default is true, set other addresses to false
+        if ($isDefault) {
+            $customer->addresses()->where('id', '!=', $id)->update(['is_default' => false]);
+            Log::info('Updated other addresses to is_default = false for customer ID: ' . $customer->id); // Debug log
+        }
 
         return redirect()->route('addresses')->with('success', 'Address updated successfully');
     }

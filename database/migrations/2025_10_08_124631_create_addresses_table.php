@@ -17,8 +17,7 @@ class CreateAddressesTable extends Migration
             $table->string('state')->nullable();
             $table->string('pincode')->nullable();
             $table->string('country')->nullable();
-            $table->boolean('is_default')->default(false);
-            $table->boolean('liked')->default(false); // For "Like" functionality
+            $table->boolean('is_default')->default(false)->nullable();
             $table->timestamps();
         });
     }

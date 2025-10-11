@@ -78,66 +78,27 @@
                             <div class="single__widget widget__bg">
                                 <h2 class="widget__title h3">Categories</h2>
                                 <ul class="widget__categories--menu">
-                                    <li class="widget__categories--menu__list">
-                                        <label class="widget__categories--menu__label d-flex align-items-center">
-                                            <span class="widget__categories--menu__text">Women</span>
-                                            <svg class="widget__categories--menu__arrowdown--icon" xmlns="http://www.w3.org/2000/svg" width="12.355" height="8.394">
-                                                <path d="M15.138,8.59l-3.961,3.952L7.217,8.59,6,9.807l5.178,5.178,5.178-5.178Z" transform="translate(-6 -8.59)" fill="currentColor"></path>
-                                            </svg>
-                                        </label>
-                                        <ul class="widget__categories--sub__menu" style="display: none; box-sizing: border-box;">
-                                            <li class="widget__categories--sub__menu--list">
-                                                <a class="widget__categories--sub__menu--link d-flex align-items-center" href="{{ route('shop') }}">
-                                                    <span class="widget__categories--sub__menu--text">Kurti</span>
-                                                </a>
-                                            </li>
-                                            <li class="widget__categories--sub__menu--list">
-                                                <a class="widget__categories--sub__menu--link d-flex align-items-center" href="{{ route('shop') }}">
-                                                    <span class="widget__categories--sub__menu--text">Tshirts</span>
-                                                </a>
-                                            </li>
-                                            <li class="widget__categories--sub__menu--list">
-                                                <a class="widget__categories--sub__menu--link d-flex align-items-center" href="{{ route('shop') }}">
-                                                    <span class="widget__categories--sub__menu--text">Lehenga</span>
-                                                </a>
-                                            </li>
-                                            <li class="widget__categories--sub__menu--list">
-                                                <a class="widget__categories--sub__menu--link d-flex align-items-center" href="{{ route('shop') }}">
-                                                    <span class="widget__categories--sub__menu--text">Dresses and Gowns</span>
-                                                </a>
-                                            </li>
-                                            <li class="widget__categories--sub__menu--list">
-                                                <a class="widget__categories--sub__menu--link d-flex align-items-center" href="{{ route('shop') }}">
-                                                    <span class="widget__categories--sub__menu--text">Saree</span>
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </li>
-                                    <li class="widget__categories--menu__list">
-                                        <label class="widget__categories--menu__label d-flex align-items-center">
-                                            <span class="widget__categories--menu__text">New In</span>
-                                            <svg class="widget__categories--menu__arrowdown--icon" xmlns="http://www.w3.org/2000/svg" width="12.355" height="8.394">
-                                                <path d="M15.138,8.59l-3.961,3.952L7.217,8.59,6,9.807l5.178,5.178,5.178-5.178Z" transform="translate(-6 -8.59)" fill="currentColor"></path>
-                                            </svg>
-                                        </label>
-                                        <ul class="widget__categories--sub__menu" style="box-sizing: border-box; display: none;">
-                                            <li class="widget__categories--sub__menu--list">
-                                                <a class="widget__categories--sub__menu--link d-flex align-items-center" href="{{ route('shop') }}">
-                                                    <span class="widget__categories--sub__menu--text">Tshirts</span>
-                                                </a>
-                                            </li>
-                                            <li class="widget__categories--sub__menu--list">
-                                                <a class="widget__categories--sub__menu--link d-flex align-items-center" href="{{ route('shop') }}">
-                                                    <span class="widget__categories--sub__menu--text">Sarees</span>
-                                                </a>
-                                            </li>
-                                            <li class="widget__categories--sub__menu--list">
-                                                <a class="widget__categories--sub__menu--link d-flex align-items-center" href="{{ route('shop') }}">
-                                                    <span class="widget__categories--sub__menu--text">Designer Dresses</span>
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </li>
+                                    @foreach ($categories as $category)
+                                        <li class="widget__categories--menu__list">
+                                            <label class="widget__categories--menu__label d-flex align-items-center">
+                                                <span class="widget__categories--menu__text">{{ $category->name }}</span>
+                                                <svg class="widget__categories--menu__arrowdown--icon" xmlns="http://www.w3.org/2000/svg" width="12.355" height="8.394">
+                                                    <path d="M15.138,8.59l-3.961,3.952L7.217,8.59,6,9.807l5.178,5.178,5.178-5.178Z" transform="translate(-6 -8.59)" fill="currentColor"></path>
+                                                </svg>
+                                            </label>
+                                            @if ($category->subcategories->count() > 0)
+                                                <ul class="widget__categories--sub__menu" style="display: none; box-sizing: border-box;">
+                                                    @foreach ($category->subcategories as $subcategory)
+                                                        <li class="widget__categories--sub__menu--list">
+                                                            <a class="widget__categories--sub__menu--link d-flex align-items-center" href="{{ route('shop', $subcategory->slug) }}">
+                                                                <span class="widget__categories--sub__menu--text">{{ $subcategory->name }}</span>
+                                                            </a>
+                                                        </li>
+                                                    @endforeach
+                                                </ul>
+                                            @endif
+                                        </li>
+                                    @endforeach
                                 </ul>
                             </div>
                             <div class="single__widget price__filter widget__bg">

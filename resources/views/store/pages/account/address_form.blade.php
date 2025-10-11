@@ -22,18 +22,6 @@
         </section>
         <section class="my__account--section section--padding">
             <div class="container">
-                @if (session('success'))
-                    <div class="alert alert-success">{{ session('success') }}</div>
-                @endif
-                @if ($errors->any())
-                    <div class="alert alert-danger">
-                        <ul>
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif
                 <p class="account__welcome--text">Hello, {{ Auth::guard('customer')->user()->first_name }} {{ Auth::guard('customer')->user()->last_name }}! Welcome to your dashboard!</p>
                 <div class="my__account--section__inner border-radius-10 d-flex">
                     <div class="account__left--sidebar">
@@ -84,10 +72,42 @@
                                             <label class="checkout__select--label" for="state">State:</label>
                                             <select class="checkout__input--select__field border-radius-5" id="state" name="state">
                                                 <option value="">Select State</option>
-                                                <option value="Telangana" {{ old('state', $address['state'] ?? '') === 'Telangana' ? 'selected' : '' }}>Telangana</option>
+                                                <option value="Andaman and Nicobar Islands" {{ old('state', $address['state'] ?? '') === 'Andaman and Nicobar Islands' ? 'selected' : '' }}>Andaman and Nicobar Islands</option>
                                                 <option value="Andhra Pradesh" {{ old('state', $address['state'] ?? '') === 'Andhra Pradesh' ? 'selected' : '' }}>Andhra Pradesh</option>
+                                                <option value="Arunachal Pradesh" {{ old('state', $address['state'] ?? '') === 'Arunachal Pradesh' ? 'selected' : '' }}>Arunachal Pradesh</option>
+                                                <option value="Assam" {{ old('state', $address['state'] ?? '') === 'Assam' ? 'selected' : '' }}>Assam</option>
+                                                <option value="Bihar" {{ old('state', $address['state'] ?? '') === 'Bihar' ? 'selected' : '' }}>Bihar</option>
+                                                <option value="Chandigarh" {{ old('state', $address['state'] ?? '') === 'Chandigarh' ? 'selected' : '' }}>Chandigarh</option>
+                                                <option value="Chhattisgarh" {{ old('state', $address['state'] ?? '') === 'Chhattisgarh' ? 'selected' : '' }}>Chhattisgarh</option>
+                                                <option value="Dadra and Nagar Haveli and Daman and Diu" {{ old('state', $address['state'] ?? '') === 'Dadra and Nagar Haveli and Daman and Diu' ? 'selected' : '' }}>Dadra and Nagar Haveli and Daman and Diu</option>
                                                 <option value="Delhi" {{ old('state', $address['state'] ?? '') === 'Delhi' ? 'selected' : '' }}>Delhi</option>
+                                                <option value="Goa" {{ old('state', $address['state'] ?? '') === 'Goa' ? 'selected' : '' }}>Goa</option>
+                                                <option value="Gujarat" {{ old('state', $address['state'] ?? '') === 'Gujarat' ? 'selected' : '' }}>Gujarat</option>
+                                                <option value="Haryana" {{ old('state', $address['state'] ?? '') === 'Haryana' ? 'selected' : '' }}>Haryana</option>
+                                                <option value="Himachal Pradesh" {{ old('state', $address['state'] ?? '') === 'Himachal Pradesh' ? 'selected' : '' }}>Himachal Pradesh</option>
+                                                <option value="Jammu and Kashmir" {{ old('state', $address['state'] ?? '') === 'Jammu and Kashmir' ? 'selected' : '' }}>Jammu and Kashmir</option>
+                                                <option value="Jharkhand" {{ old('state', $address['state'] ?? '') === 'Jharkhand' ? 'selected' : '' }}>Jharkhand</option>
+                                                <option value="Karnataka" {{ old('state', $address['state'] ?? '') === 'Karnataka' ? 'selected' : '' }}>Karnataka</option>
+                                                <option value="Kerala" {{ old('state', $address['state'] ?? '') === 'Kerala' ? 'selected' : '' }}>Kerala</option>
+                                                <option value="Ladakh" {{ old('state', $address['state'] ?? '') === 'Ladakh' ? 'selected' : '' }}>Ladakh</option>
+                                                <option value="Lakshadweep" {{ old('state', $address['state'] ?? '') === 'Lakshadweep' ? 'selected' : '' }}>Lakshadweep</option>
+                                                <option value="Madhya Pradesh" {{ old('state', $address['state'] ?? '') === 'Madhya Pradesh' ? 'selected' : '' }}>Madhya Pradesh</option>
+                                                <option value="Maharashtra" {{ old('state', $address['state'] ?? '') === 'Maharashtra' ? 'selected' : '' }}>Maharashtra</option>
+                                                <option value="Manipur" {{ old('state', $address['state'] ?? '') === 'Manipur' ? 'selected' : '' }}>Manipur</option>
+                                                <option value="Meghalaya" {{ old('state', $address['state'] ?? '') === 'Meghalaya' ? 'selected' : '' }}>Meghalaya</option>
+                                                <option value="Mizoram" {{ old('state', $address['state'] ?? '') === 'Mizoram' ? 'selected' : '' }}>Mizoram</option>
+                                                <option value="Nagaland" {{ old('state', $address['state'] ?? '') === 'Nagaland' ? 'selected' : '' }}>Nagaland</option>
+                                                <option value="Odisha" {{ old('state', $address['state'] ?? '') === 'Odisha' ? 'selected' : '' }}>Odisha</option>
+                                                <option value="Puducherry" {{ old('state', $address['state'] ?? '') === 'Puducherry' ? 'selected' : '' }}>Puducherry</option>
+                                                <option value="Punjab" {{ old('state', $address['state'] ?? '') === 'Punjab' ? 'selected' : '' }}>Punjab</option>
+                                                <option value="Rajasthan" {{ old('state', $address['state'] ?? '') === 'Rajasthan' ? 'selected' : '' }}>Rajasthan</option>
+                                                <option value="Sikkim" {{ old('state', $address['state'] ?? '') === 'Sikkim' ? 'selected' : '' }}>Sikkim</option>
+                                                <option value="Tamil Nadu" {{ old('state', $address['state'] ?? '') === 'Tamil Nadu' ? 'selected' : '' }}>Tamil Nadu</option>
+                                                <option value="Telangana" {{ old('state', $address['state'] ?? '') === 'Telangana' ? 'selected' : '' }}>Telangana</option>
+                                                <option value="Tripura" {{ old('state', $address['state'] ?? '') === 'Tripura' ? 'selected' : '' }}>Tripura</option>
                                                 <option value="Uttar Pradesh" {{ old('state', $address['state'] ?? '') === 'Uttar Pradesh' ? 'selected' : '' }}>Uttar Pradesh</option>
+                                                <option value="Uttarakhand" {{ old('state', $address['state'] ?? '') === 'Uttarakhand' ? 'selected' : '' }}>Uttarakhand</option>
+                                                <option value="West Bengal" {{ old('state', $address['state'] ?? '') === 'West Bengal' ? 'selected' : '' }}>West Bengal</option>
                                             </select>
                                         </div>
                                     </div>
@@ -101,13 +121,7 @@
                                         <div class="checkout__input--list checkout__input--select select">
                                             <label class="checkout__select--label" for="country">Country:</label>
                                             <select class="checkout__input--select__field border-radius-5" id="country" name="country">
-                                                <option value="">Select Country</option>
                                                 <option value="India" {{ old('country', $address['country'] ?? '') === 'India' ? 'selected' : '' }}>India</option>
-                                                <option value="United States" {{ old('country', $address['country'] ?? '') === 'United States' ? 'selected' : '' }}>United States</option>
-                                                <option value="Netherlands" {{ old('country', $address['country'] ?? '') === 'Netherlands' ? 'selected' : '' }}>Netherlands</option>
-                                                <option value="Afghanistan" {{ old('country', $address['country'] ?? '') === 'Afghanistan' ? 'selected' : '' }}>Afghanistan</option>
-                                                <option value="Albania" {{ old('country', $address['country'] ?? '') === 'Albania' ? 'selected' : '' }}>Albania</option>
-                                                <option value="Antigua Barbuda" {{ old('country', $address['country'] ?? '') === 'Antigua Barbuda' ? 'selected' : '' }}>Antigua Barbuda</option>
                                             </select>
                                         </div>
                                     </div>
@@ -120,8 +134,14 @@
                                         </div>
                                     </div>
                                     <div class="col-12 mb-12">
-                                        <button class="account__login--btn primary__btn" type="submit">{{ $action }} Address</button>
-                                        <a href="{{ route('addresses') }}" class="account__login--btn primary__btn ml-10">Cancel</a>
+                                        <div class="row">
+                                            <div class="col-8 text-center">
+                                                <button class="account__login--btn primary__btn" type="submit">{{ $action === 'Edit' ? 'Update Address' : 'Add Address' }}</button>
+                                            </div>
+                                            <div class="col-2 text-center">
+                                                <a href="{{ route('addresses') }}" class="account__login--btn primary__btn">Cancel</a>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </form>

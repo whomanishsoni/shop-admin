@@ -21,18 +21,6 @@
         </section>
         <section class="my__account--section section--padding">
             <div class="container">
-                @if (session('success'))
-                    <div class="alert alert-success">{{ session('success') }}</div>
-                @endif
-                @if ($errors->any())
-                    <div class="alert alert-danger">
-                        <ul>
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif
                 <p class="account__welcome--text">Hello, {{ $profileData['first_name'] }} {{ $profileData['last_name'] }}! Welcome to your dashboard!</p>
                 <div class="my__account--section__inner border-radius-10 d-flex">
                     <div class="account__left--sidebar">
@@ -88,9 +76,17 @@
                                         </div>
                                     </div>
                                     <div class="col-12 mb-12">
-                                        <button class="account__login--btn primary__btn" type="submit">Update Profile</button>
-                                        <a href="{{ route('profile') }}" class="account__login--btn primary__btn ml-10">Cancel</a>
-                                        <a href="{{ route('addresses') }}" class="account__login--btn primary__btn ml-10">Manage Addresses</a>
+                                        <div class="row">
+                                            <div class="col-8 text-center">
+                                                <button class="account__login--btn primary__btn" type="submit">Update Profile</button>
+                                            </div>
+                                            <div class="col-2 text-center">
+                                                <a href="{{ route('profile') }}" class="account__login--btn primary__btn">Cancel</a>
+                                            </div>
+                                            <div class="col-2 text-center">
+                                                <a href="{{ route('addresses') }}" class="account__login--btn primary__btn">Manage Addresses</a>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </form>

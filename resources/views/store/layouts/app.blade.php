@@ -7,7 +7,7 @@
     @include('store.partials.header')
 
     <main class="main__content_wrapper">
-        @yield('content')
+    @include('store.partials.message') <!-- Include message partial here -->        @yield('content')
     </main>
 
     @include('store.partials.footer')

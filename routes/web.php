@@ -21,7 +21,7 @@ use App\Http\Controllers\Store\{
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
 // Store frontend routes
-Route::get('/shop', [ShopController::class, 'index'])->name('shop');
+Route::get('/shop/{slug?}', [ShopController::class, 'index'])->name('shop');
 Route::get('/product/{slug}', [ProductController::class, 'show'])->name('product.detail');
 
 // Cart routes
@@ -40,28 +40,29 @@ Route::get('/wishlist', [WishlistController::class, '__invoke'])->name('wishlist
 Route::post('/wishlist/add', [WishlistController::class, 'add'])->name('wishlist.add');
 Route::post('/wishlist/remove', [WishlistController::class, 'remove'])->name('wishlist.remove');
 
-// Account routes
-Route::prefix('account')->group(function () {
+// Moved login and register routes outside the 'account' prefix
+Route::middleware(['guest:customer'])->group(function () {
     Route::get('/login', [AccountController::class, 'login'])->name('login');
     Route::post('/login', [AccountController::class, 'loginAttempt'])->name('login.attempt');
     Route::get('/register', [AccountController::class, 'register'])->name('register');
     Route::post('/register', [AccountController::class, 'registerAttempt'])->name('register.attempt');
     Route::match(['get', 'post'], '/forgot-password', [AccountController::class, 'forgotPassword'])->name('forgot_password');
+});
 
-    Route::middleware('auth:customer')->group(function () {
-        Route::get('/profile', [AccountController::class, 'profile'])->name('profile');
-        Route::get('/edit-profile', [AccountController::class, 'editProfile'])->name('editProfile');
-        Route::post('/edit-profile', [AccountController::class, 'updateProfile'])->name('update_profile');
-        Route::get('/orders', [OrderController::class, 'index'])->name('orders');
-        Route::get('/orders/{id}/invoice', [OrderController::class, 'invoice'])->name('order.invoice');
-        Route::get('/addresses', [AccountController::class, 'addresses'])->name('addresses');
-        Route::get('/addresses/create', [AccountController::class, 'createAddress'])->name('address.create');
-        Route::post('/addresses/store', [AccountController::class, 'storeAddress'])->name('address.store');
-        Route::get('/addresses/{id}/edit', [AccountController::class, 'editAddress'])->name('address.edit');
-        Route::put('/addresses/{id}', [AccountController::class, 'updateAddress'])->name('address.update');
-        Route::delete('/addresses/{id}', [AccountController::class, 'deleteAddress'])->name('address.delete');
-        Route::post('/logout', [AccountController::class, 'logout'])->name('logout');
-    });
+// Account routes (remaining routes under 'account' prefix)
+Route::prefix('account')->middleware('auth:customer')->group(function () {
+    Route::get('/profile', [AccountController::class, 'profile'])->name('profile');
+    Route::get('/edit-profile', [AccountController::class, 'editProfile'])->name('editProfile');
+    Route::post('/edit-profile', [AccountController::class, 'updateProfile'])->name('update_profile');
+    Route::get('/orders', [OrderController::class, 'index'])->name('orders');
+    Route::get('/orders/{id}/invoice', [OrderController::class, 'invoice'])->name('order.invoice');
+    Route::get('/addresses', [AccountController::class, 'addresses'])->name('addresses');
+    Route::get('/addresses/create', [AccountController::class, 'createAddress'])->name('address.create');
+    Route::post('/addresses/store', [AccountController::class, 'storeAddress'])->name('address.store');
+    Route::get('/addresses/{id}/edit', [AccountController::class, 'editAddress'])->name('address.edit');
+    Route::put('/addresses/{id}', [AccountController::class, 'updateAddress'])->name('address.update');
+    Route::delete('/addresses/{id}', [AccountController::class, 'deleteAddress'])->name('address.delete');
+    Route::post('/logout', [AccountController::class, 'logout'])->name('logout');
 });
 
 // Other frontend routes
@@ -81,7 +82,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::middleware(['auth'])->group(function () {
         Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-        Route::get('subcategories/{category_id}', [AdminProductController::class, 'getSubcategories'])->name('subcategories.get');
+        Route::get('subcategory-options/{category_id}', [AdminProductController::class, 'getSubcategories'])->name('subcategories.get');
 
         Route::resource('categories', CategoryController::class);
         Route::post('categories/bulk-delete', [CategoryController::class, 'bulkDelete'])->name('categories.bulk-delete');

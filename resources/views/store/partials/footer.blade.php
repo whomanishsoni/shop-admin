@@ -27,13 +27,20 @@
                             </button>
                         </h2>
                         <ul class="footer__widget--menu footer__menu--style3 footer__widget--inner">
-                            <li class="footer__widget--menu__list"><a class="footer__widget--menu__text" href="{{ route('shop') }}"> Kurti</a></li>
-                            <li class="footer__widget--menu__list"><a class="footer__widget--menu__text" href="{{ route('shop') }}"> Tshirt</a></li>
-                            <li class="footer__widget--menu__list"><a class="footer__widget--menu__text" href="{{ route('shop') }}"> Lehenga</a></li>
-                            <li class="footer__widget--menu__list"><a class="footer__widget--menu__text" href="{{ route('shop') }}"> Dresses and Gowns</a></li>
-                            <li class="footer__widget--menu__list"><a class="footer__widget--menu__text" href="{{ route('shop') }}"> Jeans</a></li>
-                            <li class="footer__widget--menu__list"><a class="footer__widget--menu__text" href="{{ route('shop') }}"> Saree</a></li>
-
+                            @foreach ($categories as $category)
+                                @if ($category->subcategories->count() > 0)
+                                    @foreach ($category->subcategories->take(5) as $subcategory)
+                                        <li class="footer__widget--menu__list">
+                                            <a class="footer__widget--menu__text" href="{{ route('shop', $subcategory->slug) }}">{{ $subcategory->name }}</a>
+                                        </li>
+                                    @endforeach
+                                    @if ($category->subcategories->count() > 5)
+                                        <li class="footer__widget--menu__list">
+                                            <a class="footer__widget--menu__text see-more" href="{{ route('shop', $category->slug) }}">+{{ $category->subcategories->count() - 5 }} more</a>
+                                        </li>
+                                    @endif
+                                @endif
+                            @endforeach
                         </ul>
                     </div>
                 </div>
@@ -68,7 +75,6 @@
                         <div class="footer__widget--inner footer__social--style3">
                             <ul class="social__shear">
                                 <li class="social__shear--list">
-
                                     <a class="social__shear--list__icon" target="_blank" href="https://www.facebook.com/">
                                         <span class="footer__social--icon__svg">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="8.667" height="18.524" viewBox="0 0 7.667 16.524">
@@ -114,7 +120,7 @@
                 </div>
                 <div class="col-lg-3 col-md-7">
                     <div class="footer__widget">
-                        <h2 class="footer__widget--title  h3">Newsletter
+                        <h2 class="footer__widget--title h3">Newsletter
                             <button class="footer__widget--button style3" aria-label="footer widget button">
                                 <svg class="footer__widget--title__arrowdown--icon" xmlns="http://www.w3.org/2000/svg" width="12.355" height="8.394" viewBox="0 0 10.355 6.394">
                                     <path d="M15.138,8.59l-3.961,3.952L7.217,8.59,6,9.807l5.178,5.178,5.178-5.178Z" transform="translate(-6 -8.59)" fill="currentColor"></path>
