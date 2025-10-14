@@ -26,6 +26,8 @@
                     href="{{ route('admin.categories.index') }}">Categories</a>
                 <a class="collapse-item {{ request()->routeIs('admin.subcategories.index') ? 'active' : '' }}"
                     href="{{ route('admin.subcategories.index') }}">Subcategories</a>
+                <a class="collapse-item {{ request()->routeIs('admin.brands.index') ? 'active' : '' }}"
+                    href="{{ route('admin.brands.index') }}">Brands</a>
                 <a class="collapse-item {{ request()->routeIs('admin.products.index') ? 'active' : '' }}"
                     href="{{ route('admin.products.index') }}">Products</a>
                 <a class="collapse-item {{ request()->routeIs('admin.product-attributes.index') ? 'active' : '' }}"

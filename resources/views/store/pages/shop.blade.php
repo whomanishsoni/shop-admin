@@ -121,19 +121,18 @@
                                     <button class="price__filter--btn primary__btn" type="submit">Filter</button>
                                 </form>
                             </div>
+                            <!-- ... (previous content remains the same) ... -->
                             <div class="single__widget widget__bg">
                                 <h2 class="widget__title h3">Brands</h2>
                                 <ul class="widget__tagcloud">
-                                    <li class="widget__tagcloud--list"><a class="widget__tagcloud--link" href="{{ route('shop') }}">Rangoli</a></li>
-                                    <li class="widget__tagcloud--list"><a class="widget__tagcloud--link" href="{{ route('shop') }}">Radhika</a></li>
-                                    <li class="widget__tagcloud--list"><a class="widget__tagcloud--link" href="{{ route('shop') }}">Mandir</a></li>
-                                    <li class="widget__tagcloud--list"><a class="widget__tagcloud--link" href="{{ route('shop') }}">Neeru's</a></li>
-                                    <li class="widget__tagcloud--list"><a class="widget__tagcloud--link" href="{{ route('shop') }}">Kashish</a></li>
-                                    <li class="widget__tagcloud--list"><a class="widget__tagcloud--link" href="{{ route('shop') }}">Kalanjali</a></li>
-                                    <li class="widget__tagcloud--list"><a class="widget__tagcloud--link" href="{{ route('shop') }}">Kalamandir</a></li>
-                                    <li class="widget__tagcloud--list"><a class="widget__tagcloud--link" href="{{ route('shop') }}">Sri Lakshmi</a></li>
+                                    @foreach ($brands as $brand)
+                                        <li class="widget__tagcloud--list">
+                                            <a class="widget__tagcloud--link" href="{{ route('shop', request()->segment(2)) }}?brand={{ $brand->id }}">{{ $brand->name }}</a>
+                                        </li>
+                                    @endforeach
                                 </ul>
                             </div>
+                            <!-- ... (remaining content remains the same) ... -->
                         </div>
                     </div>
                     <div class="col-xl-9 col-lg-8">

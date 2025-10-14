@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\Subcategory;
+use App\Models\Brand;
 use App\Models\ProductAttribute;
 use App\Models\ProductAttributeValue;
 use Illuminate\Http\Request;
@@ -17,7 +18,7 @@ class ProductController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $products = Product::with(['category', 'subcategory'])->select('*');
+            $products = Product::with(['category', 'subcategory', 'brand'])->select('*');
             return DataTables::of($products)
                 ->addColumn('checkbox', function($row) {
                     return '<input type="checkbox" class="select-item" value="'.$row->id.'">';
@@ -31,6 +32,9 @@ class ProductController extends Controller
                 })
                 ->addColumn('subcategory', function($row) {
                     return $row->subcategory ? $row->subcategory->name : 'N/A';
+                })
+                ->addColumn('brand', function($row) {
+                    return $row->brand ? $row->brand->name : 'N/A';
                 })
                 ->addColumn('price', function($row) {
                     return '$'.number_format($row->price, 2);
@@ -58,8 +62,9 @@ class ProductController extends Controller
     public function create()
     {
         $categories = Category::where('status', 1)->get();
+        $brands = Brand::where('status', 1)->get();
         $attributes = ProductAttribute::where('status', 1)->get();
-        return view('admin.products.create', compact('categories', 'attributes'));
+        return view('admin.products.create', compact('categories', 'brands', 'attributes'));
     }
 
     public function store(Request $request)
@@ -76,6 +81,7 @@ class ProductController extends Controller
             'sku' => 'nullable|string|unique:products,sku',
             'category_id' => 'nullable|exists:categories,id',
             'subcategory_id' => 'nullable|exists:subcategories,id',
+            'brand_id' => 'nullable|exists:brands,id',
             'status' => 'required|in:active,inactive',
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string',
@@ -158,13 +164,14 @@ class ProductController extends Controller
 
     public function show(Product $product)
     {
-        $product->load(['category', 'subcategory', 'images', 'reviews', 'attributeValues.attribute']);
+        $product->load(['category', 'subcategory', 'brand', 'images', 'reviews', 'attributeValues.attribute']);
         return view('admin.products.show', compact('product'));
     }
 
     public function edit(Product $product)
     {
         $categories = Category::where('status', 1)->get();
+        $brands = Brand::where('status', 1)->get();
         $subcategories = Subcategory::where('category_id', $product->category_id)->where('status', 1)->get();
         $attributes = ProductAttribute::where('status', 1)->get();
         $attributeValues = $product->attributeValues()->get()->keyBy('attribute_id')->map(function ($item) {
@@ -172,7 +179,7 @@ class ProductController extends Controller
             return $item->value;
         })->toArray();
 
-        return view('admin.products.edit', compact('product', 'categories', 'subcategories', 'attributes', 'attributeValues'));
+        return view('admin.products.edit', compact('product', 'categories', 'brands', 'subcategories', 'attributes', 'attributeValues'));
     }
 
     public function update(Request $request, Product $product)
@@ -188,6 +195,7 @@ class ProductController extends Controller
             'sku' => 'nullable|string|unique:products,sku,' . $product->id,
             'category_id' => 'nullable|exists:categories,id',
             'subcategory_id' => 'nullable|exists:subcategories,id',
+            'brand_id' => 'nullable|exists:brands,id',
             'status' => 'required|in:active,inactive',
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string',

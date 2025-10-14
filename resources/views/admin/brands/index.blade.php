@@ -1,19 +1,19 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Products')
+@section('title', 'Brands')
 
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h1 class="h3 mb-0 text-gray-800">Products</h1>
-    <a href="{{ route('admin.products.create') }}" class="btn btn-primary">
-        <i class="fas fa-plus"></i> Add Product
+    <h1 class="h3 mb-0 text-gray-800">Brands</h1>
+    <a href="{{ route('admin.brands.create') }}" class="btn btn-primary">
+        <i class="fas fa-plus"></i> Add Brand
     </a>
 </div>
 
 <div class="card shadow mb-4">
     <div class="card-header py-3">
         <div class="d-flex justify-content-between align-items-center">
-            <h6 class="m-0 font-weight-bold text-primary">Products List</h6>
+            <h6 class="m-0 font-weight-bold text-primary">Brands List</h6>
             <button id="bulk-delete" class="btn btn-danger btn-sm" style="display:none;">
                 <i class="fas fa-trash"></i> Delete Selected
             </button>
@@ -21,20 +21,15 @@
     </div>
     <div class="card-body">
         <div class="table-responsive">
-            <table class="table table-bordered" id="products-table" width="100%">
+            <table class="table table-bordered" id="brands-table" width="100%">
                 <thead>
                     <tr>
                         <th width="30"><input type="checkbox" id="select-all"></th>
                         <th>Image</th>
                         <th>Name</th>
-                        <th>SKU</th>
-                        <th>Category</th>
-                        <th>Subcategory</th>
-                        <th>Brand</th>
-                        <th>Price</th>
-                        <th>Stock</th>
+                        <th>Slug</th>
                         <th>Status</th>
-                        <th width="150">Actions</th>
+                        <th width="120">Actions</th>
                     </tr>
                 </thead>
             </table>
@@ -46,20 +41,15 @@
 @push('scripts')
 <script>
 $(function() {
-    var table = $('#products-table').DataTable({
+    var table = $('#brands-table').DataTable({
         processing: true,
         serverSide: true,
-        ajax: "{{ route('admin.products.index') }}",
+        ajax: "{{ route('admin.brands.index') }}",
         columns: [
             {data: 'checkbox', name: 'checkbox', orderable: false, searchable: false},
             {data: 'image', name: 'image', orderable: false, searchable: false},
             {data: 'name', name: 'name'},
-            {data: 'sku', name: 'sku'},
-            {data: 'category', name: 'category'},
-            {data: 'subcategory', name: 'subcategory'},
-            {data: 'brand', name: 'brand'},
-            {data: 'price', name: 'price'},
-            {data: 'stock', name: 'stock'},
+            {data: 'slug', name: 'slug'},
             {data: 'status', name: 'status'},
             {data: 'action', name: 'action', orderable: false, searchable: false}
         ]
@@ -87,9 +77,9 @@ $(function() {
             return $(this).val();
         }).get();
 
-        if (confirm('Are you sure you want to delete selected products?')) {
+        if (confirm('Are you sure you want to delete selected brands?')) {
             $.ajax({
-                url: "{{ route('admin.products.bulk-delete') }}",
+                url: "{{ route('admin.brands.bulk-delete') }}",
                 type: 'POST',
                 data: {
                     _token: '{{ csrf_token() }}',
@@ -99,13 +89,16 @@ $(function() {
                     table.ajax.reload();
                     $('#bulk-delete').hide();
                     alert(response.success);
+                },
+                error: function(xhr) {
+                    alert(xhr.responseJSON.error || 'Error deleting brands');
                 }
             });
         }
     });
 
     $(document).on('submit', '.delete-form', function(e) {
-        if (!confirm('Are you sure you want to delete this product?')) {
+        if (!confirm('Are you sure you want to delete this brand?')) {
             e.preventDefault();
         }
     });

@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('sku')->unique()->nullable();
             $table->foreignId('category_id')->nullable()->constrained()->onDelete('set null');
             $table->foreignId('subcategory_id')->nullable()->constrained()->onDelete('set null');
+            $table->foreignId('brand_id')->nullable()->constrained()->onDelete('set null');
             $table->string('status')->default('active');
             $table->string('meta_title')->nullable();
             $table->text('meta_description')->nullable();

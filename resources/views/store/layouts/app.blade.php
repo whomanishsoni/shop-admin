@@ -4,6 +4,9 @@
     @include('store.partials.head')
 </head>
 <body>
+    <div id="preloader" class="preloader">
+        <div class="loader"></div>
+    </div>
     @include('store.partials.header')
 
     <main class="main__content_wrapper">

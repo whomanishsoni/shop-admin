@@ -40,6 +40,10 @@ class ProductReviewController extends Controller
                             '.method_field('DELETE').'
                             <button type="submit" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
                         </form>
+                        <form action="'.route('admin.product-reviews.approve', $row->id).'" method="POST" class="d-inline">
+                            '.csrf_field().'
+                            <button type="submit" class="btn btn-sm btn-success"><i class="fas fa-check"></i></button>
+                        </form>
                     ';
                 })
                 ->rawColumns(['checkbox', 'rating', 'approved', 'action'])
@@ -110,5 +114,11 @@ class ProductReviewController extends Controller
     {
         ProductReview::whereIn('id', $request->ids)->delete();
         return response()->json(['success' => 'Product Reviews deleted successfully']);
+    }
+
+    public function approve(ProductReview $productReview)
+    {
+        $productReview->update(['approved' => true]);
+        return redirect()->back()->with('success', 'Review approved successfully.');
     }
 }

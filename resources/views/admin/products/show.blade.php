@@ -113,6 +113,13 @@
                 </div>
 
                 <div class="mb-3">
+                    <strong>Brand:</strong>
+                    <p class="mb-0">
+                        <span class="badge bg-info">{{ $product->brand->name ?? 'N/A' }}</span>
+                    </p>
+                </div>
+
+                <div class="mb-3">
                     <strong>Price:</strong>
                     <p class="mb-0">${{ number_format($product->price, 2) }}</p>
                 </div>
