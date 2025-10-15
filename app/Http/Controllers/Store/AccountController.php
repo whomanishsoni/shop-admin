@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
-use Illuminate\Support\Facades\Log; // Added this line to import the Log facade
+use Illuminate\Support\Facades\Log;
 
 class AccountController extends Controller
 {
@@ -307,10 +307,7 @@ class AccountController extends Controller
 
     public function logout(Request $request)
     {
-        Auth::guard('customer')->logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-
+        $this->logoutPreservingCart($request);
         return redirect()->route('home')->with('success', 'You have been logged out.');
     }
 }

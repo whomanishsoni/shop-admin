@@ -52,26 +52,19 @@
                                             <th class="account__table--header__child--items text-center">Status</th>
                                             <th class="account__table--header__child--items text-center">Total</th>
                                             <th class="account__table--header__child--items text-center">Action</th>
-                                            <th class="account__table--header__child--items text-center">Like</th>
                                         </tr>
                                     </thead>
                                     <tbody class="account__table--body mobile__none">
                                         @foreach ($orders as $order)
                                             <tr class="account__table--body__child text-center">
-                                                <td class="account__table--body__child--items">{{ $order['order_number'] }}</td>
-                                                <td class="account__table--body__child--items">{{ $order['date'] }}</td>
-                                                <td class="account__table--body__child--items">{{ $order['payment_status'] }}</td>
-                                                <td class="account__table--body__child--items">{{ $order['status'] }}</td>
-                                                <td class="account__table--body__child--items">Rs.{{ number_format($order['total'], 2) }}</td>
+                                                <td class="account__table--body__child--items">{{ $order->order_number }}</td>
+                                                <td class="account__table--body__child--items">{{ $order->created_at->format('M d, Y') }}</td>
+                                                <td class="account__table--body__child--items">{{ $order->payment_status }}</td>
+                                                <td class="account__table--body__child--items">{{ $order->status }}</td>
+                                                <td class="account__table--body__child--items">Rs.{{ number_format($order->total, 2) }}</td>
                                                 <td>
-                                                    <a class="wishlist__cart--btn primary__btn" href="{{ route('order.invoice', $order['id']) }}"
-                                                       @if($order['status'] !== 'Fulfilled') style="opacity:0.5" @endif>Invoice</a>
-                                                </td>
-                                                <td>
-                                                    <button class="like-btn" data-order-id="{{ $order['id'] }}"
-                                                            style="background:none;border:none;cursor:pointer;">
-                                                        <span class="heart-icon" style="color: {{ $order['liked'] ? '#ff0000' : '#ccc' }};">&#9829;</span>
-                                                    </button>
+                                                    <a class="wishlist__cart--btn primary__btn" href="{{ route('order.invoice', $order->id) }}"
+                                                       @if($order->status !== 'completed') style="opacity:0.5" @endif>Invoice</a>
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -81,30 +74,23 @@
                                             <tr class="account__table--body__child">
                                                 <td class="account__table--body__child--items">
                                                     <strong>Order</strong>
-                                                    <span>{{ $order['order_number'] }}</span>
+                                                    <span>{{ $order->order_number }}</span>
                                                 </td>
                                                 <td class="account__table--body__child--items">
                                                     <strong>Date</strong>
-                                                    <span>{{ $order['date'] }}</span>
+                                                    <span>{{ $order->created_at->format('M d, Y') }}</span>
                                                 </td>
                                                 <td class="account__table--body__child--items">
                                                     <strong>Payment Status</strong>
-                                                    <span>{{ $order['payment_status'] }}</span>
+                                                    <span>{{ $order->payment_status }}</span>
                                                 </td>
                                                 <td class="account__table--body__child--items">
                                                     <strong>Status</strong>
-                                                    <span>{{ $order['status'] }}</span>
+                                                    <span>{{ $order->status }}</span>
                                                 </td>
                                                 <td class="account__table--body__child--items">
                                                     <strong>Total</strong>
-                                                    <span>Rs.{{ number_format($order['total'], 2) }}</span>
-                                                </td>
-                                                <td class="account__table--body__child--items">
-                                                    <strong>Like</strong>
-                                                    <button class="like-btn" data-order-id="{{ $order['id'] }}"
-                                                            style="background:none;border:none;cursor:pointer;">
-                                                        <span class="heart-icon" style="color: {{ $order['liked'] ? '#ff0000' : '#ccc' }};">&#9829;</span>
-                                                    </button>
+                                                    <span>Rs.{{ number_format($order->total, 2) }}</span>
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -121,13 +107,4 @@
 
 @push('scripts')
     @include('store.partials.js')
-    <script>
-        document.querySelectorAll('.like-btn').forEach(button => {
-            button.addEventListener('click', function() {
-                const heart = this.querySelector('.heart-icon');
-                const isLiked = heart.style.color === 'rgb(255, 0, 0)';
-                heart.style.color = isLiked ? '#ccc' : '#ff0000';
-            });
-        });
-    </script>
 @endpush

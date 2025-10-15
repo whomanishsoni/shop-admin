@@ -30,16 +30,25 @@ Route::get('/cart', [CartController::class, '__invoke'])->name('cart');
 Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
 Route::post('/cart/update', [CartController::class, 'update'])->name('cart.update');
 Route::post('/cart/remove', [CartController::class, 'remove'])->name('cart.remove');
+Route::post('/cart/clear', [CartController::class, 'clear'])->name('cart.clear');
+
+// Checkout routes
+// Route::get('/checkout', [CheckoutController::class, '__invoke'])->name('checkout');
+// Route::post('/checkout/process', [CheckoutController::class, 'process'])->name('checkout.process');
+// Route::get('/payment', [CheckoutController::class, 'payment'])->name('payment');
 
 // Checkout routes
 Route::get('/checkout', [CheckoutController::class, '__invoke'])->name('checkout');
 Route::post('/checkout/process', [CheckoutController::class, 'process'])->name('checkout.process');
-Route::get('/payment', [CheckoutController::class, 'payment'])->name('payment');
+Route::post('/checkout/coupon', [CheckoutController::class, 'applyCoupon'])->name('checkout.applyCoupon');
+Route::get('/checkout/coupon/remove', [CheckoutController::class, 'removeCoupon'])->name('checkout.removeCoupon');
+Route::get('/checkout/success/{id}', [CheckoutController::class, 'success'])->name('checkout.success');
+Route::get('/payment', [CheckoutController::class, 'payment'])->name('checkout.payment');
 
-// Wishlist routes
 Route::get('/wishlist', [WishlistController::class, '__invoke'])->name('wishlist');
 Route::post('/wishlist/add', [WishlistController::class, 'add'])->name('wishlist.add');
 Route::post('/wishlist/remove', [WishlistController::class, 'remove'])->name('wishlist.remove');
+Route::post('/wishlist/move-to-cart', [WishlistController::class, 'moveToCart'])->name('wishlist.moveToCart');
 
 // Product reviews route
 Route::middleware(['auth:customer'])->group(function () {

@@ -48,6 +48,18 @@ class PaymentGatewaySeeder extends Seeder
                     'description' => 'Razorpay payment gateway for India',
                 ]),
             ],
+            [
+                'name' => 'Cash on Delivery',
+                'gateway_key' => 'cod',
+                'api_key' => '',
+                'api_secret' => '',
+                'status' => true,
+                'config' => json_encode([
+                    'description' => 'Pay when you receive the order',
+                    'instructions' => 'Please have exact amount ready for delivery',
+                    'additional_fee' => 0,
+                ]),
+            ],
         ];
 
         foreach ($gateways as $gateway) {
