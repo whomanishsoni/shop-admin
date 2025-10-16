@@ -160,6 +160,17 @@ class CheckoutController extends Controller
         }
     }
 
+    private function addressExists($customerId, $addressData)
+    {
+        return Address::where('customer_id', $customerId)
+            ->where('name', $addressData['name'])
+            ->where('address', $addressData['address'])
+            ->where('city', $addressData['city'])
+            ->where('pincode', $addressData['pincode'])
+            ->where('country', $addressData['country'])
+            ->exists();
+    }
+
     public function saveAddress(Request $request)
     {
         Log::info('Save address method started', ['request' => $request->all()]);
@@ -192,12 +203,12 @@ class CheckoutController extends Controller
         Log::info('Cart items retrieved', ['item_count' => count($cartItems)]);
 
         $shippingName = $request->first_name . ' ' . $request->last_name;
-        $shippingAddress = $request->address1 . ($request->address2 ? ' ' . $request->address2 : '') . ', ' . $request->city . ', ' . $request->postal_code . ', ' . $request->country;
+        $shippingAddress = $request->address1 . ($request->address2 ? ' ' . $request->address2 : '');
 
         $addressData = [
             'shipping' => [
                 'name' => $shippingName,
-                'address' => $request->address1 . ' ' . ($request->address2 ?? ''),
+                'address' => $shippingAddress,
                 'city' => $request->city,
                 'state' => '',
                 'pincode' => $request->postal_code,
@@ -221,24 +232,28 @@ class CheckoutController extends Controller
 
         DB::beginTransaction();
         try {
-            // Store shipping address as default if no default exists
-            $isDefault = !$customer->addresses()->where('is_default', true)->exists();
-            Address::create([
-                'customer_id' => $customer->id,
-                'name' => $addressData['shipping']['name'],
-                'address' => $addressData['shipping']['address'],
-                'city' => $addressData['shipping']['city'],
-                'state' => $addressData['shipping']['state'],
-                'pincode' => $addressData['shipping']['pincode'],
-                'country' => $addressData['shipping']['country'],
-                'phone' => $customer->contact_no,
-                'email' => $customer->email,
-                'is_default' => $isDefault,
-                'type' => 'shipping',
-            ]);
+            // Check if shipping address already exists
+            if (!$this->addressExists($customer->id, $addressData['shipping'])) {
+                $isDefault = !$customer->addresses()->where('is_default', true)->exists();
+                Address::create([
+                    'customer_id' => $customer->id,
+                    'name' => $addressData['shipping']['name'],
+                    'address' => $addressData['shipping']['address'],
+                    'city' => $addressData['shipping']['city'],
+                    'state' => $addressData['shipping']['state'],
+                    'pincode' => $addressData['shipping']['pincode'],
+                    'country' => $addressData['shipping']['country'],
+                    'phone' => $customer->contact_no,
+                    'email' => $customer->email,
+                    'is_default' => $isDefault,
+                ]);
+                Log::info('New shipping address created', ['customer_id' => $customer->id]);
+            } else {
+                Log::info('Shipping address already exists, skipping creation', ['customer_id' => $customer->id]);
+            }
 
             // Only create a separate billing address if it differs and a default already exists
-            if ($request->checkmethod === 'different' && $isDefault === false && $addressData['shipping'] !== $addressData['billing']) {
+            if ($request->checkmethod === 'different' && !$this->addressExists($customer->id, $addressData['billing'])) {
                 Address::create([
                     'customer_id' => $customer->id,
                     'name' => $addressData['billing']['name'],
@@ -250,8 +265,10 @@ class CheckoutController extends Controller
                     'phone' => $customer->contact_no,
                     'email' => $customer->email,
                     'is_default' => false,
-                    'type' => 'billing',
                 ]);
+                Log::info('New billing address created', ['customer_id' => $customer->id]);
+            } else {
+                Log::info('Billing address already exists or same as shipping, skipping creation', ['customer_id' => $customer->id]);
             }
 
             DB::commit();
@@ -262,6 +279,7 @@ class CheckoutController extends Controller
             return redirect()->route('checkout')->with('error', 'Failed to save address. Please try again.');
         }
 
+        // Store address data in session for display purposes
         Session::put('checkout_address', $addressData);
         Log::info('Address data saved to session', ['address_data' => $addressData]);
 
@@ -284,11 +302,33 @@ class CheckoutController extends Controller
             return redirect()->route('cart')->with('error', 'Your cart is empty.');
         }
 
-        $addressData = Session::get('checkout_address');
-        if (!$addressData || !isset($addressData['shipping']) || !isset($addressData['billing'])) {
-            Log::warning('Address data missing in session', ['session' => session()->all()]);
-            return redirect()->route('checkout')->with('error', 'Please complete the checkout form first');
+        // Fetch the latest address from the database
+        $latestAddress = $customer->addresses()->orderBy('created_at', 'desc')->first();
+        $defaultAddress = $customer->addresses()->where('is_default', true)->first() ?? $latestAddress;
+
+        if (!$latestAddress) {
+            Log::warning('No address found', ['session' => session()->all()]);
+            return redirect()->route('checkout')->with('error', 'Please provide an address.');
         }
+
+        $addressData = [
+            'shipping' => [
+                'name' => $latestAddress->name,
+                'address' => $latestAddress->address,
+                'city' => $latestAddress->city,
+                'state' => $latestAddress->state ?? '',
+                'pincode' => $latestAddress->pincode,
+                'country' => $latestAddress->country,
+            ],
+            'billing' => [
+                'name' => $defaultAddress->name,
+                'address' => $defaultAddress->address,
+                'city' => $defaultAddress->city,
+                'state' => $defaultAddress->state ?? '',
+                'pincode' => $defaultAddress->pincode,
+                'country' => $defaultAddress->country,
+            ]
+        ];
 
         DB::beginTransaction();
         Log::info('Transaction started');
@@ -332,8 +372,8 @@ class CheckoutController extends Controller
                 'status' => 'pending',
                 'payment_status' => 'pending',
                 'payment_method' => null,
-                'shipping_address' => $addressData['shipping']['address'],
-                'billing_address' => $addressData['billing']['address'],
+                'shipping_address' => $addressData['shipping']['address'] . ', ' . $addressData['shipping']['city'] . ', ' . $addressData['shipping']['pincode'] . ', ' . $addressData['shipping']['country'],
+                'billing_address' => $addressData['billing']['address'] . ', ' . $addressData['billing']['city'] . ', ' . $addressData['billing']['pincode'] . ', ' . $addressData['billing']['country'],
             ]);
             Log::info('Order created', ['order_id' => $order->id]);
 
@@ -348,37 +388,6 @@ class CheckoutController extends Controller
                 ]);
             }
             Log::info('Order items created', ['order_id' => $order->id, 'item_count' => count($cartItems)]);
-
-            Address::create([
-                'customer_id' => $customer->id,
-                'name' => $addressData['shipping']['name'],
-                'address' => $addressData['shipping']['address'],
-                'city' => $addressData['shipping']['city'],
-                'state' => $addressData['shipping']['state'],
-                'pincode' => $addressData['shipping']['pincode'],
-                'country' => $addressData['shipping']['country'],
-                'phone' => $customer->contact_no,
-                'email' => $customer->email,
-                'is_default' => !$customer->addresses()->where('is_default', true)->exists(),
-                'type' => 'shipping',
-            ]);
-
-            if ($addressData['shipping'] !== $addressData['billing']) {
-                Address::create([
-                    'customer_id' => $customer->id,
-                    'name' => $addressData['billing']['name'],
-                    'address' => $addressData['billing']['address'],
-                    'city' => $addressData['billing']['city'],
-                    'state' => $addressData['billing']['state'],
-                    'pincode' => $addressData['billing']['pincode'],
-                    'country' => $addressData['billing']['country'],
-                    'phone' => $customer->contact_no,
-                    'email' => $customer->email,
-                    'is_default' => !$customer->addresses()->where('is_default', true)->exists(),
-                    'type' => 'billing',
-                ]);
-            }
-            Log::info('Addresses saved', ['order_id' => $order->id]);
 
             DB::commit();
             Log::info('Transaction committed');
