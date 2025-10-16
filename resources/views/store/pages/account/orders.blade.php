@@ -64,7 +64,7 @@
                                                 <td class="account__table--body__child--items">Rs.{{ number_format($order->total, 2) }}</td>
                                                 <td>
                                                     <a class="wishlist__cart--btn primary__btn" href="{{ route('order.invoice', $order->id) }}"
-                                                       @if($order->status !== 'completed') style="opacity:0.5" @endif>Invoice</a>
+                                                       @if($order->status !== 'completed') @endif>Invoice</a>
                                                 </td>
                                             </tr>
                                         @endforeach

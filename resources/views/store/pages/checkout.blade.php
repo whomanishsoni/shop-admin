@@ -273,9 +273,10 @@
                             <div class="cart__summary--footer">
                                 <form action="{{ route('checkout.createOrderAndPayment') }}" method="POST" id="payNowForm" @if(!$cartSummary['defaultAddress']) class="disabled-form" @endif>
                                     @csrf
-                                    <button type="submit" class="cart__summary--footer__btn primary__btn checkout {{ !$cartSummary['defaultAddress'] ? 'disabled' : '' }}"
-                                            @if(!$cartSummary['defaultAddress']) onclick="event.preventDefault(); alert('Please add at least one default address to proceed.')" @endif>
-                                        Pay Now
+                                    <button type="submit" class="primary__btn checkout border-radius-5 w-100 {{ !$cartSummary['defaultAddress'] ? 'disabled' : '' }}"
+                                            @if(!$cartSummary['defaultAddress']) onclick="event.preventDefault(); alert('Please add at least one default address to proceed.')" @endif
+                                            style="width: 100% !important;">
+                                        Proceed To Payment
                                     </button>
                                 </form>
                             </div>
@@ -292,6 +293,11 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+
+            if (window.history.replaceState) {
+                window.history.replaceState(null, null, window.location.href);
+            }
+
             const addressWarning = document.getElementById('addressWarning');
             if (addressWarning) {
                 setTimeout(() => addressWarning.style.display = 'none', 5000);

@@ -132,7 +132,7 @@
                                 <div class="cart__summary--footer">
                                     <p class="cart__summary--footer__desc">Shipping & taxes calculated at checkout</p>
                                     <div class="text-center">
-                                        <a class="primary__btn checkout w-100" href="{{ route('checkout') }}">PROCEED TO CHECKOUT</a>
+                                        <a class="primary__btn checkout w-100" href="{{ route('checkout') }}">Proceed To Checkout</a>
                                     </div>
                                 </div>
                             </div>

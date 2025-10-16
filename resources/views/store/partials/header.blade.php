@@ -18,12 +18,12 @@
         <div class="container-fluid-2">
             <div class="row align-items-center position__relative">
                 <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-4 col-6">
-                        <a class="main__logo--link" href="{{ route('home') }}">
-                            <img class="main__logo--img" src="{{ !empty($settings['footer_logo']) ? asset('storage/' . $settings['site_logo']) : asset('assets/images/logo.png') }}" alt="{{ $settings['site_name'] ?? 'Vyuga' }} Logo">
-                        </a>
+                    <a class="main__logo--link" href="{{ route('home') }}">
+                        <img class="main__logo--img" src="{{ !empty($settings['footer_logo']) ? asset('storage/' . $settings['site_logo']) : asset('assets/images/logo.png') }}" alt="{{ $settings['site_name'] ?? 'Vyuga' }} Logo">
+                    </a>
                 </div>
                 <div class="col-xxl-5 col-xl-6 col-lg-6 col-md-4 col-3">
-                    <div class="offcanvas__header--menu__open ">
+                    <div class="offcanvas__header--menu__open">
                         <a class="offcanvas__header--menu__open--btn" href="javascript:void(0)" data-offcanvas>
                             <svg xmlns="http://www.w3.org/2000/svg" class="ionicon offcanvas__header--menu__open--svg" viewBox="0 0 512 512">
                                 <path fill="currentColor" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M80 160h352M80 256h352M80 352h352" />
@@ -94,7 +94,7 @@
                                     <svg xmlns="http://www.w3.org/2000/svg" width="28.51" height="23.443" viewBox="0 0 512 512">
                                         <path d="M352.92 80C288 80 256 144 256 144s-32-64-96.92-64c-52.76 0-94.54 44.14-95.08 96.81-1.1 109.33 86.73 187.08 183 252.42a16 16 0 0018 0c96.26-65.34 184.09-143.09 183-252.42-.54-52.67-42.32-96.81-95.08-96.81z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"></path>
                                     </svg>
-                                    <span class="items__count wishlist style2">02</span>
+                                    <span class="items__count wishlist style2">{{ session('wishlist', []) ? count(session('wishlist', [])) : 0 }}</span>
                                 </a>
                             </li>
                             <li class="header__account--items header__account2--items">
@@ -108,7 +108,7 @@
                                             </g>
                                         </g>
                                     </svg>
-                                    <span class="items__count style2">02</span>
+                                    <span class="items__count style2">{{ session('cart', []) ? count(session('cart', [])) : 0 }}</span>
                                 </a>
                             </li>
                         </ul>
@@ -194,7 +194,7 @@
                         </svg>
                     </span>
                     <span class="offcanvas__stikcy--toolbar__label">Cart</span>
-                    <span class="items__count">2</span>
+                    <span class="items__count">{{ session('cart', []) ? count(session('cart', [])) : 0 }}</span>
                 </a>
             </li>
             <li class="offcanvas__stikcy--toolbar__list">
@@ -205,18 +205,16 @@
                         </svg>
                     </span>
                     <span class="offcanvas__stikcy--toolbar__label">Wishlist</span>
-                    <span class="items__count">3</span>
+                    <span class="items__count">{{ session('wishlist', []) ? count(session('wishlist', [])) : 0 }}</span>
                 </a>
             </li>
         </ul>
     </div>
-    <!-- End Offcanvas stikcy toolbar -->
-
     <!-- Start offCanvas minicart -->
     <div class="offCanvas__minicart" data-offcanvas>
-        <div class="minicart__header ">
+        <div class="minicart__header">
             <div class="minicart__header--top d-flex justify-content-between align-items-center">
-                <h2 class="minicart__title h3"> Shopping Cart</h2>
+                <h2 class="minicart__title h3">Shopping Cart</h2>
                 <button class="minicart__close--btn" aria-label="minicart close button" data-offcanvas>
                     <svg class="minicart__close--icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
                         <path fill="currentColor" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" d="M368 368L144 144M368 144L144 368" />
@@ -226,86 +224,100 @@
             <p class="minicart__header--desc">Clothing and fashion products are limited</p>
         </div>
         <div class="minicart__product">
-            <div class="minicart__product--items d-flex">
-                <div class="minicart__thumb">
-                    <a href="{{ route('product.detail', 'casual-formal-blazer') }}"><img src="{{ asset('assets/images/product/p10.jpg') }}" alt="prduct-img"></a>
-                </div>
-                <div class="minicart__text">
-                    <h3 class="minicart__subtitle h4"><a href="{{ route('product.detail', 'casual-formal-blazer') }}"> Casual Formal Blazer for Women  </a></h3>
-                     <div class="minicart__price">
-                        <span class="current__price">Rs.2200.00</span>
-                        <span class="old__price">Rs.2500.00</span>
-                    </div>
-                    <div class="minicart__text--footer d-flex align-items-center">
-                        <div class="quantity__box minicart__quantity">
-                            <button type="button" class="quantity__value decrease" aria-label="quantity value" value="Decrease Value">-</button>
-                            <label>
-                                <input type="number" class="quantity__number" value="2" data-counter />
-                            </label>
-                            <button type="button" class="quantity__value increase" value="Increase Value">+</button>
+            @php
+                $cartItems = session('cart', []);
+                $subtotal = 0;
+                foreach ($cartItems as $item) {
+                    $subtotal += $item['price'] * $item['quantity'];
+                }
+                $tax = $subtotal * 0.12; // 12% tax
+                $total = $subtotal + $tax;
+            @endphp
+            @if (empty($cartItems))
+                <p class="minicart__empty">Your cart is empty.</p>
+            @else
+                @foreach ($cartItems as $key => $item)
+                    <div class="minicart__product--items d-flex">
+                        <div class="minicart__thumb">
+                            <a href="{{ route('product.detail', $item['slug']) }}">
+                                <img src="{{ !empty($item['image']) ? asset('storage/' . $item['image']) : asset('assets/images/product/placeholder.jpg') }}" alt="{{ $item['name'] }}">
+                            </a>
                         </div>
-                        <button class="minicart__product--remove">Remove</button>
-                    </div>
-                </div>
-            </div>
-            <div class="minicart__product--items d-flex">
-                <div class="minicart__thumb">
-                    <a href="{{ route('product.detail', 'rhysley-rayon-red-kurti') }}"><img src="{{ asset('assets/images/product/p2.jpg') }}" alt="prduct-img"></a>
-                </div>
-                <div class="minicart__text">
-                    <h3 class="minicart__subtitle h4"><a href="{{ route('product.detail', 'rhysley-rayon-red-kurti') }}">Rhysley Rayon Red Kurti</a></h3>
-                     <div class="minicart__price">
-                        <span class="current__price">Rs.1840.00</span>
-                        <span class="old__price">Rs.2300.00</span>
-                    </div>
-                    <div class="minicart__text--footer d-flex align-items-center">
-                        <div class="quantity__box minicart__quantity">
-                            <button type="button" class="quantity__value decrease" aria-label="quantity value" value="Decrease Value">-</button>
-                            <label>
-                                <input type="number" class="quantity__number" value="1" data-counter />
-                            </label>
-                            <button type="button" class="quantity__value increase" aria-label="quantity value" value="Increase Value">+</button>
+                        <div class="minicart__text">
+                            <h3 class="minicart__subtitle h4"><a href="{{ route('product.detail', $item['slug']) }}">{{ $item['name'] }}</a></h3>
+                            @if (!empty($item['attributes']))
+                                @foreach ($item['attributes'] as $attrKey => $attrValue)
+                                    <span class="minicart__variant">{{ ucfirst($attrKey) }}: {{ $attrValue }}</span>
+                                @endforeach
+                            @endif
+                            <div class="minicart__price">
+                                <span class="current__price">Rs. {{ number_format($item['price'], 2) }}</span>
+                                @if (!empty($item['old_price']))
+                                    <span class="old__price">Rs. {{ number_format($item['old_price'], 2) }}</span>
+                                @endif
+                            </div>
+                            <div class="minicart__text--footer d-flex align-items-center">
+                                <div class="quantity__box minicart__quantity">
+                                    <form action="{{ route('cart.update') }}" method="POST" class="minicart__quantity--form">
+                                        @csrf
+                                        <input type="hidden" name="key" value="{{ $key }}">
+                                        <button type="button" class="quantity__value decrease" aria-label="quantity value" value="Decrease Value">-</button>
+                                        <label>
+                                            <input type="number" class="quantity__number" name="quantity" value="{{ $item['quantity'] }}" data-counter />
+                                        </label>
+                                        <button type="button" class="quantity__value increase" value="Increase Value">+</button>
+                                    </form>
+                                </div>
+                                <form action="{{ route('cart.remove') }}" method="POST">
+                                    @csrf
+                                    <input type="hidden" name="key" value="{{ $key }}">
+                                    <button class="minicart__product--remove">Remove</button>
+                                </form>
+                            </div>
                         </div>
-                        <button class="minicart__product--remove">Remove</button>
                     </div>
+                @endforeach
+            @endif
+        </div>
+        @if (!empty($cartItems))
+            <div class="minicart__amount">
+                <div class="minicart__amount_list d-flex justify-content-between">
+                    <span>Sub Total:</span>
+                    <span><b>Rs. {{ number_format($subtotal, 2) }}</b></span>
+                </div>
+                <div class="minicart__amount_list d-flex justify-content-between">
+                    <span>Tax (12%):</span>
+                    <span><b>Rs. {{ number_format($tax, 2) }}</b></span>
+                </div>
+                <div class="minicart__amount_list d-flex justify-content-between">
+                    <span>Total:</span>
+                    <span><b>Rs. {{ number_format($total, 2) }}</b></span>
                 </div>
             </div>
-        </div>
-        <div class="minicart__amount">
-            <div class="minicart__amount_list d-flex justify-content-between">
-                <span>Sub Total:</span>
-                <span><b>Rs.4040</b></span>
+            <div class="minicart__conditions text-center">
+                <input class="minicart__conditions--input" id="accept" type="checkbox">
+                <label class="minicart__conditions--label" for="accept">I agree with the <a class="minicart__conditions--link" href="{{ route('privacy-policy') }}">Privacy and Policy</a></label>
             </div>
-            <div class="minicart__amount_list d-flex justify-content-between">
-                <span>Total:</span>
-                <span><b>Rs.6240.00</b></span>
+            <div class="minicart__button d-flex justify-content-center">
+                <a class="primary__btn minicart__button--link" href="{{ route('cart') }}">View cart</a>
+                <a class="primary__btn minicart__button--link" href="{{ route('checkout') }}">Checkout</a>
             </div>
-            <div class="minicart__amount_list d-flex justify-content-between">
-                <span>Tax(12%):</span>
-                <span><b>Rs.6240.00</b></span>
-            </div>
-        </div>
-        <div class="minicart__conditions text-center">
-            <input class="minicart__conditions--input" id="accept" type="checkbox">
-            <label class="minicart__conditions--label" for="accept">I agree with the <a class="minicart__conditions--link" href="{{ route('privacy-policy') }}">Privacy and Policy</a></label>
-        </div>
-        <div class="minicart__button d-flex justify-content-center">
-            <a class="primary__btn minicart__button--link" href="{{ route('cart') }}">View cart</a>
-            <a class="primary__btn minicart__button--link" href="{{ route('checkout') }}">Checkout</a>
-        </div>
+        @endif
     </div>
 
-    <div class="predictive__search--box ">
+    <div class="predictive__search--box">
         <div class="predictive__search--box__inner">
             <h2 class="predictive__search--title">Search Products</h2>
-            <form class="predictive__search--form" action="#">
+            <form class="predictive__search--form" action="{{ route('shop') }}">
                 <label>
-                    <input class="predictive__search--input" placeholder="Search Here" type="text">
+                    <input class="predictive__search--input" name="search" placeholder="Search Here" type="text">
                 </label>
-                <button class="predictive__search--button" aria-label="search button" type="submit"><svg class="header__search--button__svg" xmlns="http://www.w3.org/2000/svg" width="30.51" height="25.443" viewBox="0 0 512 512">
+                <button class="predictive__search--button" aria-label="search button" type="submit">
+                    <svg class="header__search--button__svg" xmlns="http://www.w3.org/2000/svg" width="30.51" height="25.443" viewBox="0 0 512 512">
                         <path d="M221.09 64a157.09 157.09 0 10157.09 157.09A157.1 157.1 0 00221.09 64z" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32" />
                         <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M338.29 338.29L448 448" />
-                    </svg> </button>
+                    </svg>
+                </button>
             </form>
         </div>
         <button class="predictive__search--close__btn" aria-label="search close button" data-offcanvas>
@@ -314,5 +326,4 @@
             </svg>
         </button>
     </div>
-    <!-- End search box area -->
 </header>
