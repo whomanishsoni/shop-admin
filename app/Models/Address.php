@@ -15,12 +15,10 @@ class Address extends Model
         'pincode',
         'country',
         'is_default',
-        'liked',
     ];
 
     protected $casts = [
         'is_default' => 'boolean',
-        'liked' => 'boolean',
     ];
 
     public function customer()

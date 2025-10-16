@@ -33,17 +33,14 @@ Route::post('/cart/remove', [CartController::class, 'remove'])->name('cart.remov
 Route::post('/cart/clear', [CartController::class, 'clear'])->name('cart.clear');
 
 // Checkout routes
-// Route::get('/checkout', [CheckoutController::class, '__invoke'])->name('checkout');
-// Route::post('/checkout/process', [CheckoutController::class, 'process'])->name('checkout.process');
-// Route::get('/payment', [CheckoutController::class, 'payment'])->name('payment');
-
-// Checkout routes
 Route::get('/checkout', [CheckoutController::class, '__invoke'])->name('checkout');
-Route::post('/checkout/process', [CheckoutController::class, 'process'])->name('checkout.process');
+Route::post('/checkout/save-address', [CheckoutController::class, 'saveAddress'])->name('checkout.saveAddress');
+Route::post('/checkout/create-order', [CheckoutController::class, 'createOrderAndPayment'])->name('checkout.createOrderAndPayment');
 Route::post('/checkout/coupon', [CheckoutController::class, 'applyCoupon'])->name('checkout.applyCoupon');
 Route::get('/checkout/coupon/remove', [CheckoutController::class, 'removeCoupon'])->name('checkout.removeCoupon');
 Route::get('/checkout/success/{id}', [CheckoutController::class, 'success'])->name('checkout.success');
-Route::get('/payment', [CheckoutController::class, 'payment'])->name('checkout.payment');
+Route::get('/checkout/payment/{orderId?}', [CheckoutController::class, 'payment'])->name('checkout.payment');
+Route::post('/checkout/initiate-payment/{orderId}', [CheckoutController::class, 'initiatePayment'])->name('checkout.initiatePayment');
 
 Route::get('/wishlist', [WishlistController::class, '__invoke'])->name('wishlist');
 Route::post('/wishlist/add', [WishlistController::class, 'add'])->name('wishlist.add');

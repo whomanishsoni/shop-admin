@@ -36,13 +36,11 @@ class CheckoutController extends Controller
         if ($couponCode) {
             $coupon = Coupon::where('code', strtoupper($couponCode))
                 ->where('status', 1)
-                ->where(function($query) {
-                    $query->whereNull('valid_from')
-                          ->orWhere('valid_from', '<=', now());
+                ->where(function ($query) {
+                    $query->whereNull('valid_from')->orWhere('valid_from', '<=', now());
                 })
-                ->where(function($query) {
-                    $query->whereNull('valid_to')
-                          ->orWhere('valid_to', '>=', now());
+                ->where(function ($query) {
+                    $query->whereNull('valid_to')->orWhere('valid_to', '>=', now());
                 })
                 ->first();
 
@@ -89,13 +87,11 @@ class CheckoutController extends Controller
 
         $coupon = Coupon::where('code', $couponCode)
             ->where('status', 1)
-            ->where(function($query) {
-                $query->whereNull('valid_from')
-                      ->orWhere('valid_from', '<=', now());
+            ->where(function ($query) {
+                $query->whereNull('valid_from')->orWhere('valid_from', '<=', now());
             })
-            ->where(function($query) {
-                $query->whereNull('valid_to')
-                      ->orWhere('valid_to', '>=', now());
+            ->where(function ($query) {
+                $query->whereNull('valid_to')->orWhere('valid_to', '>=', now());
             })
             ->first();
 
@@ -164,9 +160,9 @@ class CheckoutController extends Controller
         }
     }
 
-    public function process(Request $request)
+    public function saveAddress(Request $request)
     {
-        Log::info('Process method started', ['request' => $request->all()]);
+        Log::info('Save address method started', ['request' => $request->all()]);
 
         $rules = [
             'first_name' => 'required|string|max:255',
@@ -177,17 +173,6 @@ class CheckoutController extends Controller
             'country' => 'required|string|max:100',
             'checkmethod' => 'required|in:same,different',
         ];
-
-        if ($request->checkmethod === 'different') {
-            $rules = array_merge($rules, [
-                'billing_first_name' => 'required|string|max:255',
-                'billing_last_name' => 'required|string|max:255',
-                'billing_address1' => 'required|string|max:500',
-                'billing_city' => 'required|string|max:100',
-                'billing_postal_code' => 'required|string|max:20',
-                'billing_country' => 'required|string|max:100',
-            ]);
-        }
 
         $request->validate($rules);
         Log::info('Validation passed', ['rules' => $rules]);
@@ -205,6 +190,105 @@ class CheckoutController extends Controller
             return redirect()->route('cart')->with('error', 'Your cart is empty.');
         }
         Log::info('Cart items retrieved', ['item_count' => count($cartItems)]);
+
+        $shippingName = $request->first_name . ' ' . $request->last_name;
+        $shippingAddress = $request->address1 . ($request->address2 ? ' ' . $request->address2 : '') . ', ' . $request->city . ', ' . $request->postal_code . ', ' . $request->country;
+
+        $addressData = [
+            'shipping' => [
+                'name' => $shippingName,
+                'address' => $request->address1 . ' ' . ($request->address2 ?? ''),
+                'city' => $request->city,
+                'state' => '',
+                'pincode' => $request->postal_code,
+                'country' => $request->country,
+            ]
+        ];
+
+        if ($request->checkmethod === 'same') {
+            $addressData['billing'] = $addressData['shipping'];
+        } else {
+            $defaultAddress = $customer->addresses()->where('is_default', true)->first();
+            $addressData['billing'] = $defaultAddress ? [
+                'name' => $defaultAddress->name,
+                'address' => $defaultAddress->address,
+                'city' => $defaultAddress->city,
+                'state' => $defaultAddress->state ?? '',
+                'pincode' => $defaultAddress->pincode,
+                'country' => $defaultAddress->country ?? 'India',
+            ] : $addressData['shipping'];
+        }
+
+        DB::beginTransaction();
+        try {
+            // Store shipping address as default if no default exists
+            $isDefault = !$customer->addresses()->where('is_default', true)->exists();
+            Address::create([
+                'customer_id' => $customer->id,
+                'name' => $addressData['shipping']['name'],
+                'address' => $addressData['shipping']['address'],
+                'city' => $addressData['shipping']['city'],
+                'state' => $addressData['shipping']['state'],
+                'pincode' => $addressData['shipping']['pincode'],
+                'country' => $addressData['shipping']['country'],
+                'phone' => $customer->contact_no,
+                'email' => $customer->email,
+                'is_default' => $isDefault,
+                'type' => 'shipping',
+            ]);
+
+            // Only create a separate billing address if it differs and a default already exists
+            if ($request->checkmethod === 'different' && $isDefault === false && $addressData['shipping'] !== $addressData['billing']) {
+                Address::create([
+                    'customer_id' => $customer->id,
+                    'name' => $addressData['billing']['name'],
+                    'address' => $addressData['billing']['address'],
+                    'city' => $addressData['billing']['city'],
+                    'state' => $addressData['billing']['state'],
+                    'pincode' => $addressData['billing']['pincode'],
+                    'country' => $addressData['billing']['country'],
+                    'phone' => $customer->contact_no,
+                    'email' => $customer->email,
+                    'is_default' => false,
+                    'type' => 'billing',
+                ]);
+            }
+
+            DB::commit();
+            Log::info('Addresses saved to database', ['customer_id' => $customer->id]);
+        } catch (\Exception $e) {
+            DB::rollback();
+            Log::error('Failed to save addresses', ['error' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
+            return redirect()->route('checkout')->with('error', 'Failed to save address. Please try again.');
+        }
+
+        Session::put('checkout_address', $addressData);
+        Log::info('Address data saved to session', ['address_data' => $addressData]);
+
+        return redirect()->route('checkout')->with('success', 'Address saved successfully. Proceed to payment.');
+    }
+
+    public function createOrderAndPayment(Request $request)
+    {
+        Log::info('Create order and payment method started', ['request' => $request->all(), 'session_order_id' => session('order_id')]);
+
+        $customer = Auth::guard('customer')->user();
+        if (!$customer) {
+            Log::warning('No authenticated customer');
+            return redirect()->route('login')->with('error', 'Please login to checkout.');
+        }
+
+        $cartItems = app(CartController::class)->getCartItems();
+        if (empty($cartItems)) {
+            Log::warning('Cart is empty');
+            return redirect()->route('cart')->with('error', 'Your cart is empty.');
+        }
+
+        $addressData = Session::get('checkout_address');
+        if (!$addressData || !isset($addressData['shipping']) || !isset($addressData['billing'])) {
+            Log::warning('Address data missing in session', ['session' => session()->all()]);
+            return redirect()->route('checkout')->with('error', 'Please complete the checkout form first');
+        }
 
         DB::beginTransaction();
         Log::info('Transaction started');
@@ -236,23 +320,6 @@ class CheckoutController extends Controller
 
             $grandTotal = $subtotal + $tax + $shipping - $couponDiscount;
 
-            $shippingName = $request->first_name . ' ' . $request->last_name;
-            $shippingAddress = $request->address1 . ($request->address2 ? ' ' . $request->address2 : '') . ', ' . $request->city . ', ' . $request->postal_code . ', ' . $request->country;
-
-            if ($request->checkmethod === 'same') {
-                $billingName = $shippingName;
-                $billingAddress = $shippingAddress;
-            } else {
-                $billingName = $request->billing_first_name . ' ' . $request->billing_last_name;
-                $billingAddress = $request->billing_address1 . ($request->billing_address2 ? ' ' . $request->billing_address2 : '') . ', ' . $request->billing_city . ', ' . $request->billing_postal_code . ', ' . $request->billing_country;
-            }
-            Log::info('Addresses prepared', [
-                'shipping_name' => $shippingName,
-                'shipping_address' => $shippingAddress,
-                'billing_name' => $billingName,
-                'billing_address' => $billingAddress
-            ]);
-
             $order = Order::create([
                 'customer_id' => $customer->id,
                 'order_number' => 'ORD-' . Str::upper(Str::random(8)),
@@ -265,8 +332,8 @@ class CheckoutController extends Controller
                 'status' => 'pending',
                 'payment_status' => 'pending',
                 'payment_method' => null,
-                'shipping_address' => $shippingAddress,
-                'billing_address' => $billingAddress,
+                'shipping_address' => $addressData['shipping']['address'],
+                'billing_address' => $addressData['billing']['address'],
             ]);
             Log::info('Order created', ['order_id' => $order->id]);
 
@@ -284,30 +351,30 @@ class CheckoutController extends Controller
 
             Address::create([
                 'customer_id' => $customer->id,
-                'name' => $shippingName,
-                'address' => $request->address1 . ' ' . ($request->address2 ?? ''),
-                'city' => $request->city,
-                'state' => '',
-                'pincode' => $request->postal_code,
-                'country' => $request->country,
+                'name' => $addressData['shipping']['name'],
+                'address' => $addressData['shipping']['address'],
+                'city' => $addressData['shipping']['city'],
+                'state' => $addressData['shipping']['state'],
+                'pincode' => $addressData['shipping']['pincode'],
+                'country' => $addressData['shipping']['country'],
                 'phone' => $customer->contact_no,
                 'email' => $customer->email,
-                'is_default' => false,
+                'is_default' => !$customer->addresses()->where('is_default', true)->exists(),
                 'type' => 'shipping',
             ]);
 
-            if ($request->checkmethod === 'different') {
+            if ($addressData['shipping'] !== $addressData['billing']) {
                 Address::create([
                     'customer_id' => $customer->id,
-                    'name' => $billingName,
-                    'address' => $request->billing_address1 . ' ' . ($request->billing_address2 ?? ''),
-                    'city' => $request->billing_city,
-                    'state' => '',
-                    'pincode' => $request->billing_postal_code,
-                    'country' => $request->billing_country,
+                    'name' => $addressData['billing']['name'],
+                    'address' => $addressData['billing']['address'],
+                    'city' => $addressData['billing']['city'],
+                    'state' => $addressData['billing']['state'],
+                    'pincode' => $addressData['billing']['pincode'],
+                    'country' => $addressData['billing']['country'],
                     'phone' => $customer->contact_no,
                     'email' => $customer->email,
-                    'is_default' => false,
+                    'is_default' => !$customer->addresses()->where('is_default', true)->exists(),
                     'type' => 'billing',
                 ]);
             }
@@ -325,24 +392,18 @@ class CheckoutController extends Controller
             Log::info('Coupon usage updated', ['coupon_code' => $couponCode]);
 
             session(['order_id' => $order->id]);
-            Log::info('Session updated with order_id', [
-                'order_id' => $order->id,
-                'session_data' => session()->all()
-            ]);
+            Log::info('Session updated with order_id', ['order_id' => $order->id, 'session_data' => session()->all()]);
 
-            return redirect()->route('checkout')
-                ->with('success', 'Order created successfully. Proceed to payment.')
-                ->with('order_id', $order->id);
-
+            return redirect()->route('checkout.payment', $order->id)->with('success', 'Proceed to payment.');
         } catch (\Exception $e) {
             DB::rollback();
-            Log::error('Checkout process failed', [
+            Log::error('Order creation failed', [
                 'error' => $e->getMessage(),
                 'session' => session()->all(),
                 'request' => $request->all(),
                 'trace' => $e->getTraceAsString()
             ]);
-            return back()->with('error', 'Something went wrong! Please try again.');
+            return redirect()->route('checkout')->with('error', 'Something went wrong during order creation!');
         }
     }
 
@@ -354,13 +415,14 @@ class CheckoutController extends Controller
             'session_success' => session('success'),
             'all_session' => session()->all()
         ]);
+
         if (!$orderId && !session('order_id')) {
             Log::warning('Payment method called without orderId', ['session' => session()->all()]);
-            return redirect()->route('checkout')->with('error', 'Please complete checkout form first');
+            return redirect()->route('checkout')->with('error', 'Please complete the checkout form first');
         }
 
         $orderId = $orderId ?: session('order_id');
-        $order = Order::with(['items.product', 'customer', 'shippingAddress'])->findOrFail($orderId);
+        $order = Order::with(['items.product', 'customer'])->findOrFail($orderId);
         Log::info('Order retrieved', ['orderId' => $orderId, 'customerId' => $order->customer_id]);
 
         if ($order->customer_id != Auth::guard('customer')->id()) {
@@ -371,9 +433,10 @@ class CheckoutController extends Controller
             return redirect()->route('checkout')->with('error', 'Order not found');
         }
 
-        $cartSummary = $this->getCartSummary();
+        $cartSummary = $this->getCartSummary($order);
+        $gateways = PaymentGateway::where('status', 1)->get();
 
-        return view('store.pages.payment', compact('order', 'cartSummary'));
+        return view('store.pages.payment', compact('order', 'cartSummary', 'gateways'));
     }
 
     public function initiatePayment(Request $request, $orderId)
@@ -406,7 +469,7 @@ class CheckoutController extends Controller
             ]);
         }
 
-        Session::forget(['cart', 'coupon_code', 'order_id']);
+        Session::forget(['cart', 'coupon_code', 'checkout_address', 'order_id']);
         Log::info('Payment initiated and session cleared', ['orderId' => $orderId, 'gateway' => $gatewayKey]);
 
         return redirect()->route('checkout.success', $order->id);
@@ -420,5 +483,22 @@ class CheckoutController extends Controller
         }
 
         return view('store.pages.checkout-success', compact('order'));
+    }
+
+    protected function getCartSummary($order)
+    {
+        $subtotal = $order->subtotal;
+        $tax = $order->tax;
+        $shipping = $order->shipping;
+        $couponDiscount = $order->discount;
+        $grandTotal = $order->total;
+
+        return [
+            'subtotal' => $subtotal,
+            'tax' => $tax,
+            'shipping' => $shipping,
+            'couponDiscount' => $couponDiscount,
+            'grandTotal' => $grandTotal,
+        ];
     }
 }
