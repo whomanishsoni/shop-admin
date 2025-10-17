@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Oct 16, 2025 at 11:53 AM
+-- Generation Time: Oct 17, 2025 at 10:06 AM
 -- Server version: 9.1.0
 -- PHP Version: 8.2.26
 
@@ -113,14 +113,18 @@ CREATE TABLE IF NOT EXISTS `blog_categories` (
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `blog_categories_slug_unique` (`slug`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `blog_categories`
 --
 
 INSERT INTO `blog_categories` (`id`, `name`, `slug`, `description`, `status`, `created_at`, `updated_at`) VALUES
-(1, 'sdf', 'sdf', 'sdfsfd', 1, '2025-10-13 22:40:28', '2025-10-13 22:40:28');
+(2, 'Kurti Fashion Trends', 'kurti-fashion-trends', 'Explore the latest trends, styles, and designs in kurtis, a versatile and timeless piece of women’s fashion. This category covers seasonal must-haves, styling tips, and innovative ways to wear kurtis for various occasions.', 1, '2025-10-17 01:56:06', '2025-10-17 01:56:06'),
+(3, 'Body Type Fashion Guide', 'body-type-fashion-guide', 'Discover expert advice on choosing clothing, particularly kurtis, that complements different body shapes. This category focuses on helping women find flattering fits to enhance their confidence and style.', 1, '2025-10-17 01:56:29', '2025-10-17 01:56:29'),
+(4, 'Occasion-Based Styling', 'occasion-based-styling', 'Get inspired with tips and ideas for styling kurtis and other outfits for every occasion, from casual outings to festive celebrations. This category offers versatile looks for work, parties, and everyday wear.', 1, '2025-10-17 01:56:55', '2025-10-17 01:56:55'),
+(5, 'Sustainable Fashion', 'sustainable-fashion', 'Dive into the world of eco-friendly fashion, focusing on sustainable fabrics and ethical practices. This category highlights how women can make environmentally conscious choices without compromising style.', 1, '2025-10-17 01:57:21', '2025-10-17 01:57:21'),
+(6, 'Fashion Styling Hacks', 'fashion-styling-hacks', 'Unlock creative and practical styling tips to elevate your wardrobe. This category provides quick hacks and innovative ideas to transform outfits using accessories, layering, and more.', 1, '2025-10-17 01:57:42', '2025-10-17 01:57:42');
 
 -- --------------------------------------------------------
 
@@ -164,14 +168,18 @@ CREATE TABLE IF NOT EXISTS `blog_posts` (
   UNIQUE KEY `blog_posts_slug_unique` (`slug`),
   KEY `blog_posts_blog_category_id_foreign` (`blog_category_id`),
   KEY `blog_posts_author_id_foreign` (`author_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `blog_posts`
 --
 
 INSERT INTO `blog_posts` (`id`, `title`, `slug`, `content`, `blog_category_id`, `author_id`, `featured_image`, `status`, `created_at`, `updated_at`) VALUES
-(1, 'sdf', 'sdf', '<p>sdfsdf</p>', 1, 1, 'blog-posts/XkZkwHARxxL0KgstlyJWmu0LDZEY1vYzsiGr6jhD.jpg', 'published', '2025-10-13 22:40:53', '2025-10-13 22:40:53');
+(2, 'Top 10 Trending Kurti Styles Every Woman Should Own in 2025', 'top-10-trending-kurti-styles-every-woman-should-own-in-2025', '<p>Stay ahead of the fashion curve with our curated list of the top 10 kurti styles dominating 2025. From bold prints to minimalist designs, discover must-have kurtis to refresh your wardrobe.</p>', 2, 1, 'blog-posts/zeN3YvQJqEpZD17iwzp4QsiJkeqhbhGgcf66V0mP.jpg', 'published', '2025-10-17 02:05:40', '2025-10-17 02:05:40'),
+(3, 'The Secret to Choosing the Perfect Kurti for Your Body Type', 'the-secret-to-choosing-the-perfect-kurti-for-your-body-type', '<p>Find the ideal kurti that flatters your unique body shape. This guide breaks down expert tips to select cuts, lengths, and fabrics that enhance your silhouette and boost confidence.</p>', 3, 1, 'blog-posts/NhstLmdRVrsefm2j0aCHqc2MkD2eDnHrQvVSVYv0.jpg', 'published', '2025-10-17 02:08:28', '2025-10-17 02:08:28'),
+(4, 'How to Style Your Kurtis for Every Occasion', 'how-to-style-your-kurtis-for-every-occasion', '<p>Learn how to transform your kurtis for any event, from casual brunches to festive gatherings. Explore pairing ideas, accessories, and styling tips for versatile, chic looks.</p>', 4, 1, 'blog-posts/OOrLtnCHJ6u0WXBYcqHHw9UHJB3XZ6iBHWqjFzmN.jpg', 'published', '2025-10-17 02:09:23', '2025-10-17 02:09:23'),
+(5, 'Why Sustainable Fabrics Are the Future of Women’s Fashion', 'why-sustainable-fabrics-are-the-future-of-womens-fashion', '<p>Discover why sustainable fabrics like organic cotton and bamboo are revolutionizing women&rsquo;s fashion. This blog explores eco-friendly kurti options and their impact on style and the planet.</p>', 5, 1, 'blog-posts/s5709rbIz59rrBXiHD5lHmlDv8nSDqjPmJKUUvIn.jpg', 'published', '2025-10-17 02:10:06', '2025-10-17 02:10:06'),
+(6, 'Transform Your Outfit with These Styling Hacks', 'transform-your-outfit-with-these-styling-hacks', '<p>Elevate your kurti outfits with simple yet effective styling hacks. From layering techniques to accessorizing, learn how to create stunning looks with minimal effort.</p>', 6, 1, 'blog-posts/nl7AWgLDDUj7pIihTfCEkTwqJfKVH2b7WpEyoT3R.jpg', 'published', '2025-10-17 02:10:33', '2025-10-17 02:10:33');
 
 -- --------------------------------------------------------
 
@@ -372,7 +380,7 @@ CREATE TABLE IF NOT EXISTS `email_templates` (
   `name` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
   `subject` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
   `body` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `variables` json DEFAULT NULL,
+  `variables` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `status` tinyint(1) NOT NULL DEFAULT '1',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
@@ -606,13 +614,14 @@ CREATE TABLE IF NOT EXISTS `orders` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `orders_order_number_unique` (`order_number`),
   KEY `orders_customer_id_foreign` (`customer_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=46 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=47 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `orders`
 --
 
 INSERT INTO `orders` (`id`, `order_number`, `customer_id`, `subtotal`, `tax`, `shipping`, `discount`, `total`, `status`, `payment_method`, `payment_status`, `shipping_address`, `billing_address`, `notes`, `created_at`, `updated_at`) VALUES
+(46, 'ORD-GPREGYYU', 1, 3680.00, 662.40, 0.00, 0.00, 4342.40, 'pending', NULL, 'pending', '31 West Fabien Boulevard Lorem ad ex aliquam, Iusto rem aliquip do, 311001, India', '762 North Nobel Freeway Aperiam id quidem vo, Aute quia sed volupt, Non nostrud ipsum v, India', NULL, '2025-10-16 07:10:52', '2025-10-16 07:10:52'),
 (45, 'ORD-2EQC6TTR', 1, 1840.00, 331.20, 0.00, 100.00, 2071.20, 'pending', 'cod', 'pending', '31 West Fabien Boulevard Lorem ad ex aliquam, Iusto rem aliquip do, 311001, India', '762 North Nobel Freeway Aperiam id quidem vo, Aute quia sed volupt, Non nostrud ipsum v, India', NULL, '2025-10-16 05:58:39', '2025-10-16 06:06:05');
 
 -- --------------------------------------------------------
@@ -629,20 +638,21 @@ CREATE TABLE IF NOT EXISTS `order_items` (
   `name` varchar(255) NOT NULL,
   `price` decimal(10,2) NOT NULL,
   `quantity` int NOT NULL,
-  `attributes` json DEFAULT NULL,
+  `attributes` text DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `order_id` (`order_id`),
   KEY `product_id` (`product_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=43 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=44 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `order_items`
 --
 
 INSERT INTO `order_items` (`id`, `order_id`, `product_id`, `name`, `price`, `quantity`, `attributes`, `created_at`, `updated_at`) VALUES
-(42, 45, 1, 'Rhysley Rayon Red Kurti', 1840.00, 1, '{\"size\": \"L\", \"color\": \"Yellow\"}', '2025-10-16 05:58:39', '2025-10-16 05:58:39');
+(42, 45, 1, 'Rhysley Rayon Red Kurti', 1840.00, 1, '{\"size\": \"L\", \"color\": \"Yellow\"}', '2025-10-16 05:58:39', '2025-10-16 05:58:39'),
+(43, 46, 1, 'Rhysley Rayon Red Kurti', 1840.00, 2, '{\"size\": \"XS\", \"color\": \"Red\"}', '2025-10-16 07:10:52', '2025-10-16 07:10:52');
 
 -- --------------------------------------------------------
 
@@ -704,12 +714,12 @@ CREATE TABLE IF NOT EXISTS `payment_gateways` (
   `api_key` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `api_secret` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `status` tinyint(1) NOT NULL DEFAULT '1',
-  `config` json DEFAULT NULL,
+  `config` text DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `payment_gateways_gateway_key_unique` (`gateway_key`)
-) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `payment_gateways`
@@ -879,19 +889,15 @@ CREATE TABLE IF NOT EXISTS `product_reviews` (
 --
 
 INSERT INTO `product_reviews` (`id`, `product_id`, `customer_id`, `rating`, `comment`, `approved`, `created_at`, `updated_at`) VALUES
-(1, 1, 1, 5, 'Excellent product! The quality exceeded my expectations. Fast shipping and great customer service.', 1, '2025-10-13 08:59:40', '2025-10-13 08:59:40'),
+(1, 1, 1, 5, 'Excellent product! The quality exceeded my expectations. Fast shipping and great customer service.', 0, '2025-10-13 08:59:40', '2025-10-17 04:32:52'),
 (2, 2, 1, 4, 'Good product overall. Works as described but took longer to arrive than expected.', 1, '2025-10-13 08:59:40', '2025-10-13 08:59:40'),
 (3, 1, 2, 3, 'Average product. Does the job but nothing special. The packaging could be better.', 1, '2025-10-13 08:59:40', '2025-10-13 08:59:40'),
-(4, 3, 2, 5, 'Absolutely love this! Better than I imagined. Will definitely purchase again.', 1, '2025-10-13 08:59:40', '2025-10-13 08:59:40'),
-(5, 4, 1, 2, 'Not happy with the quality. Product arrived damaged and customer service was unhelpful.', 0, '2025-10-13 08:59:40', '2025-10-13 08:59:40'),
-(6, 5, 2, 4, 'Very satisfied with this purchase. Good value for money and fast delivery.', 1, '2025-10-13 08:59:40', '2025-10-13 08:59:40'),
 (7, 1, 1, 5, 'Excellent product! The quality exceeded my expectations. Fast shipping and great customer service.', 1, '2025-10-13 09:00:56', '2025-10-13 09:00:56'),
 (8, 1, 2, 3, 'Average product. Does the job but nothing special. The packaging could be better.', 1, '2025-10-13 09:00:56', '2025-10-13 09:00:56'),
 (9, 2, 1, 4, 'Good product overall. Works as described but took longer to arrive than expected.', 1, '2025-10-13 09:00:56', '2025-10-13 09:00:56'),
 (10, 2, 2, 5, 'Absolutely love this! Better than I imagined. Will definitely purchase again.', 1, '2025-10-13 09:00:56', '2025-10-13 09:00:56'),
-(11, 1, 1, 2, 'Not happy with the quality. Product arrived damaged and customer service was unhelpful.', 0, '2025-10-13 09:00:56', '2025-10-13 09:00:56'),
-(12, 2, 2, 4, 'Very satisfied with this purchase. Good value for money and fast delivery.', 1, '2025-10-13 09:00:56', '2025-10-13 09:00:56'),
-(14, 1, 1, 2, 'asdasdsdf', 0, '2025-10-13 23:17:43', '2025-10-13 23:17:43');
+(11, 1, 1, 2, 'Not happy with the quality. Product arrived damaged and customer service was unhelpful.', 0, '2025-10-13 09:00:56', '2025-10-17 04:08:14'),
+(12, 2, 2, 4, 'Very satisfied with this purchase. Good value for money and fast delivery.', 1, '2025-10-13 09:00:56', '2025-10-13 09:00:56');
 
 -- --------------------------------------------------------
 
@@ -906,13 +912,13 @@ CREATE TABLE IF NOT EXISTS `product_variants` (
   `sku` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
   `price` decimal(10,2) NOT NULL,
   `stock` int NOT NULL DEFAULT '0',
-  `attributes` json DEFAULT NULL,
+  `attributes` text DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `product_variants_sku_unique` (`sku`),
   KEY `product_variants_product_id_foreign` (`product_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -938,7 +944,7 @@ CREATE TABLE IF NOT EXISTS `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('ID22uVyw95NwvsPWw2LHOfpV3EMWEw9hN1fudXkT', 1, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36', 'YToxMDp7czo2OiJfdG9rZW4iO3M6NDA6InJpeGtHSVRVeHJkaWJJeDJyZE84QVFtSzhiUDJtVUoxT1VGZ3JXcjIiO3M6ODoid2lzaGxpc3QiO2E6MDp7fXM6NjoiX2ZsYXNoIjthOjI6e3M6MzoibmV3IjthOjA6e31zOjM6Im9sZCI7YTowOnt9fXM6OToiX3ByZXZpb3VzIjthOjE6e3M6MzoidXJsIjtzOjc0OiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvcHJvZHVjdC93b21lbi1zLXJheW9uLXZpc2Nvc2UtYW5hcmthbGktcHJpbnRlZC1rdXJ0YSI7fXM6NTU6ImxvZ2luX2N1c3RvbWVyXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6MTtzOjE1OiJjb3Vwb25fZGlzY291bnQiO3M6NjoiMTAwLjAwIjtzOjE1OiJvcmRlcl9jb21wbGV0ZWQiO2I6MTtzOjM6InVybCI7YTowOnt9czo1MDoibG9naW5fd2ViXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6MTtzOjQ6ImNhcnQiO2E6Mjp7czozNDoiMS0xNGMzYzAyYTAyY2YzZTA3YTc1MTljMzk3NjY0NzQ4YSI7YTo3OntzOjEwOiJwcm9kdWN0X2lkIjtpOjE7czo0OiJzbHVnIjtzOjIzOiJyaHlzbGV5LXJheW9uLXJlZC1rdXJ0aSI7czo0OiJuYW1lIjtzOjIzOiJSaHlzbGV5IFJheW9uIFJlZCBLdXJ0aSI7czo1OiJwcmljZSI7czo3OiIxODQwLjAwIjtzOjU6ImltYWdlIjtzOjgzOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvc3RvcmFnZS9wcm9kdWN0cy9hZnR5b1RtSXN3OVplcGpERGhxdkIwbmRwWlpFZ3QyeVVUcGxXRk9KLmpwZyI7czo4OiJxdWFudGl0eSI7aToxO3M6MTA6ImF0dHJpYnV0ZXMiO2E6Mjp7czo1OiJjb2xvciI7czozOiJSZWQiO3M6NDoic2l6ZSI7czoyOiJYUyI7fX1zOjM0OiIyLTM4YTQ1YzRkYzVhZTA2NWUzMDQ1YzBlMWE5ZGU5YmFhIjthOjc6e3M6MTA6InByb2R1Y3RfaWQiO2k6MjtzOjQ6InNsdWciO3M6NDQ6IndvbWVuLXMtcmF5b24tdmlzY29zZS1hbmFya2FsaS1wcmludGVkLWt1cnRhIjtzOjQ6Im5hbWUiO3M6NDQ6IldvbWVuJ3MgUmF5b24gVmlzY29zZSBBbmFya2FsaSBQcmludGVkIEt1cnRhIjtzOjU6InByaWNlIjtzOjc6IjEyMDAuMDAiO3M6NToiaW1hZ2UiO3M6ODM6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9zdG9yYWdlL3Byb2R1Y3RzL2pwb1A0VTNNV1hxVzlaY0VISlNRT3F2TEpvVDVmYVVyc3BtM1hOb3IuanBnIjtzOjg6InF1YW50aXR5IjtzOjE6IjEiO3M6MTA6ImF0dHJpYnV0ZXMiO2E6Mjp7czo1OiJjb2xvciI7czo1OiJHcmVlbiI7czo0OiJzaXplIjtzOjE6IlMiO319fX0=', 1760615377);
+('Nr55bNo4pu5dnYKlkBkNMIbJGxUh3vOzFM5ajwBh', 1, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36', 'YTo3OntzOjY6Il90b2tlbiI7czo0MDoiZUhmYmhSRThHWHZIOXFKNlV6aHNWZ3o3VmZmY3pQeG11bTVMMzdSayI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czozOiJ1cmwiO2E6MDp7fXM6OToiX3ByZXZpb3VzIjthOjE6e3M6MzoidXJsIjtzOjcwOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYmxvZy9ob3ctdG8tc3R5bGUteW91ci1rdXJ0aXMtZm9yLWV2ZXJ5LW9jY2FzaW9uIjt9czo1NToibG9naW5fY3VzdG9tZXJfNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI7aToxO3M6NTA6ImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjE7czo0OiJjYXJ0IjthOjI6e3M6MzQ6IjEtODcxMjJiZTNkMjZmNjhiODQyYjgwOTRmMjg3ZThmNWUiO2E6Nzp7czoxMDoicHJvZHVjdF9pZCI7aToxO3M6NDoic2x1ZyI7czoyMzoicmh5c2xleS1yYXlvbi1yZWQta3VydGkiO3M6NDoibmFtZSI7czoyMzoiUmh5c2xleSBSYXlvbiBSZWQgS3VydGkiO3M6NToicHJpY2UiO3M6NzoiMTg0MC4wMCI7czo1OiJpbWFnZSI7czo4MzoiaHR0cDovLzEyNy4wLjAuMTo4MDAwL3N0b3JhZ2UvcHJvZHVjdHMvYWZ0eW9UbUlzdzlaZXBqRERocXZCMG5kcFpaRWd0MnlVVHBsV0ZPSi5qcGciO3M6ODoicXVhbnRpdHkiO3M6MToiMSI7czoxMDoiYXR0cmlidXRlcyI7YToyOntzOjQ6InNpemUiO3M6MToiTSI7czo1OiJjb2xvciI7czo0OiJCbHVlIjt9fXM6MzQ6IjEtZDkwYzI0YzhmZjU1MWNmNGMyYTk2MmY0NDBlOTFhMmQiO2E6Nzp7czoxMDoicHJvZHVjdF9pZCI7aToxO3M6NDoic2x1ZyI7czoyMzoicmh5c2xleS1yYXlvbi1yZWQta3VydGkiO3M6NDoibmFtZSI7czoyMzoiUmh5c2xleSBSYXlvbiBSZWQgS3VydGkiO3M6NToicHJpY2UiO3M6NzoiMTg0MC4wMCI7czo1OiJpbWFnZSI7czo4MzoiaHR0cDovLzEyNy4wLjAuMTo4MDAwL3N0b3JhZ2UvcHJvZHVjdHMvYWZ0eW9UbUlzdzlaZXBqRERocXZCMG5kcFpaRWd0MnlVVHBsV0ZPSi5qcGciO3M6ODoicXVhbnRpdHkiO3M6MToiMSI7czoxMDoiYXR0cmlidXRlcyI7YToyOntzOjQ6InNpemUiO3M6MjoiWFMiO3M6NToiY29sb3IiO3M6MzoiUmVkIjt9fX19', 1760695453);
 
 -- --------------------------------------------------------
 
@@ -1045,7 +1051,7 @@ DROP TABLE IF EXISTS `shipping_zones`;
 CREATE TABLE IF NOT EXISTS `shipping_zones` (
   `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `states` json DEFAULT NULL,
+  `states` text DEFAULT NULL,
   `shipping_method_id` bigint UNSIGNED NOT NULL,
   `rate` decimal(10,2) NOT NULL DEFAULT '0.00',
   `status` tinyint(1) NOT NULL DEFAULT '1',
@@ -1053,7 +1059,7 @@ CREATE TABLE IF NOT EXISTS `shipping_zones` (
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `shipping_zones_shipping_method_id_foreign` (`shipping_method_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `shipping_zones`

@@ -9,53 +9,12 @@ use App\Models\Subcategory;
 use App\Models\Slider;
 use App\Models\Product;
 use App\Models\BlogPost;
-use Illuminate\Support\Str; // Import the Str facade
+use Illuminate\Support\Str;
 
 class HomeController extends Controller
 {
-    // public function index()
-    // {
-    //     // Fetch active categories with active subcategories
-    //     $categories = Category::where('status', true)
-    //         ->with(['subcategories' => function ($query) {
-    //             $query->where('status', true);
-    //         }])
-    //         ->get();
 
-    //     // Fetch active sliders ordered by 'order' column
-    //     $sliders = Slider::where('status', 1)->orderBy('order', 'asc')->get();
-
-    //     // Fetch the latest 8 active products with images
-    //     $products = Product::where('status', 'active')
-    //         ->with(['images' => function ($query) {
-    //             $query->orderBy('is_primary', 'desc')->orderBy('sort_order', 'asc');
-    //         }])
-    //         ->orderBy('created_at', 'desc')
-    //         ->take(8)
-    //         ->get()
-    //         ->map(function ($product) {
-    //             $primaryImage = $product->images->first();
-    //             $secondaryImage = $product->images->skip(1)->first() ?? $primaryImage;
-    //             return [
-    //                 'slug' => $product->slug,
-    //                 'name' => $product->name,
-    //                 'price' => $product->sale_price ?? $product->price,
-    //                 'old_price' => $product->sale_price && $product->sale_price < $product->price ? $product->price : null,
-    //                 'image_primary' => $primaryImage ? 'storage/' . $primaryImage->image : 'assets/images/product/placeholder.jpg',
-    //                 'image_secondary' => $secondaryImage ? 'storage/' . $secondaryImage->image : ($primaryImage ? 'storage/' . $primaryImage->image : 'assets/images/product/placeholder.jpg'),
-    //                 'on_sale' => !is_null($product->sale_price) && $product->sale_price < $product->price,
-    //                 'product_url' => route('product.detail', $product->slug),
-    //             ];
-    //         });
-
-    //     // Log products for debugging
-    //     \Log::info('Latest Products: ', $products->toArray());
-
-    //     // Pass data to the view
-    //     return view('store.pages.home', compact('categories', 'products', 'sliders'));
-    // }
-
-public function index()
+    public function index()
     {
         // Fetch active categories with active subcategories
         $categories = Category::where('status', true)
