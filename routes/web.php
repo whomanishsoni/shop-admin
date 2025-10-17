@@ -16,7 +16,8 @@ use App\Http\Controllers\Admin\{
 use App\Http\Controllers\Store\{
     HomeController, AccountController, AboutController, CartController,
     ContactController, LegalController, OrderController, ProductController,
-    ShopController, WishlistController, CheckoutController, ProductReviewController
+    ShopController, WishlistController, CheckoutController, ProductReviewController,
+    BlogController // Added for blog routes
 };
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -24,6 +25,7 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 // Store frontend routes
 Route::get('/shop/{slug?}', [ShopController::class, 'index'])->name('shop');
 Route::get('/product/{slug}', [ProductController::class, 'show'])->name('product.detail');
+Route::get('/product/quickview/{slug}', [ProductController::class, 'quickview'])->name('product.quickview');
 
 // Cart routes
 Route::get('/cart', [CartController::class, '__invoke'])->name('cart');
@@ -31,6 +33,7 @@ Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
 Route::post('/cart/update', [CartController::class, 'update'])->name('cart.update');
 Route::post('/cart/remove', [CartController::class, 'remove'])->name('cart.remove');
 Route::post('/cart/clear', [CartController::class, 'clear'])->name('cart.clear');
+Route::get('/cart/data', [CartController::class, 'getCartData'])->name('cart.data');
 
 // Checkout routes
 Route::get('/checkout', [CheckoutController::class, '__invoke'])->name('checkout');
@@ -46,6 +49,7 @@ Route::get('/wishlist', [WishlistController::class, '__invoke'])->name('wishlist
 Route::post('/wishlist/add', [WishlistController::class, 'add'])->name('wishlist.add');
 Route::post('/wishlist/remove', [WishlistController::class, 'remove'])->name('wishlist.remove');
 Route::post('/wishlist/move-to-cart', [WishlistController::class, 'moveToCart'])->name('wishlist.moveToCart');
+Route::get('/wishlist/count', [WishlistController::class, 'getCount'])->name('wishlist.count');
 
 // Product reviews route
 Route::middleware(['auth:customer'])->group(function () {
@@ -85,6 +89,11 @@ Route::get('/terms-conditions', [LegalController::class, 'termsConditions'])->na
 Route::get('/refund-policy', [LegalController::class, 'refundPolicy'])->name('refund-policy');
 Route::get('/shipping-policy', [LegalController::class, 'shippingPolicy'])->name('shipping-policy');
 
+// Blog routes
+Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
+Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show');
+Route::get('/blog/{category?}', [BlogController::class, 'index'])->name('blog.index');
+
 // Admin routes
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('login', [AuthController::class, 'showLogin'])->name('login');
@@ -112,7 +121,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('product-attributes', ProductAttributeController::class);
         Route::post('product-attributes/bulk-delete', [ProductAttributeController::class, 'bulkDelete'])->name('product-attributes.bulk-delete');
 
-        Route::resource('product-reviews', AdminProductReviewController::class)->only(['index', 'edit', 'update', 'destroy']);
+        Route::resource('product-reviews', AdminProductReviewController::class)->only(['index', 'edit', 'update', 'destroy', 'show']);
         Route::post('product-reviews/{id}/approve', [AdminProductReviewController::class, 'approve'])->name('product-reviews.approve');
         Route::post('product-reviews/bulk-delete', [AdminProductReviewController::class, 'bulkDelete'])->name('product-reviews.bulk-delete');
 

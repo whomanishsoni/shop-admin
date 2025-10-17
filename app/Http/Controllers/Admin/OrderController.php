@@ -22,7 +22,7 @@ class OrderController extends Controller
                     return $row->customer ? $row->customer->name : 'N/A';
                 })
                 ->addColumn('total', function($row) {
-                    return '$'.number_format($row->total, 2);
+                    return '₹'.number_format($row->total, 2);
                 })
                 ->addColumn('status', function($row) {
                     $badges = [

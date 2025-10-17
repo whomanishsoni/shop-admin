@@ -7,7 +7,6 @@ use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
-
 class ProductController extends Controller
 {
     public function show($slug)
@@ -101,5 +100,53 @@ class ProductController extends Controller
             });
 
         return view('store.pages.product-detail', compact('productData', 'relatedProducts'));
+    }
+
+    public function quickview($slug)
+    {
+        try {
+            $product = Product::where('slug', $slug)
+                ->where('status', 'active')
+                ->with(['images' => function ($query) {
+                    $query->orderBy('is_primary', 'desc')->orderBy('sort_order', 'asc');
+                }, 'category', 'subcategory', 'brand', 'attributeValues.attribute', 'reviews' => function ($query) {
+                    $query->where('approved', true);
+                }])
+                ->firstOrFail();
+
+            $averageRating = $product->reviews->avg('rating') ?? 0;
+            $reviewCount = $product->reviews->count();
+
+            $attributes = $product->attributeValues->groupBy('attribute.name')->map(function ($values) {
+                return $values->map(function ($value) {
+                    $decodedValue = is_array($value->value) ? $value->value : (json_decode($value->value, true) ?: [$value->value]);
+                    return is_array($decodedValue) ? $decodedValue : [$decodedValue];
+                })->flatten()->unique()->values();
+            });
+
+            return response()->json([
+                'success' => true,
+                'product' => [
+                    'id' => $product->id,
+                    'slug' => $product->slug,
+                    'name' => $product->name,
+                    'description' => $product->short_description ?? strip_tags(substr($product->description, 0, 200)),
+                    'price' => $product->price,
+                    'sale_price' => $product->sale_price,
+                    'stock' => $product->stock,
+                    'sku' => $product->sku,
+                    'images' => $product->images->map(function($img) {
+                        return asset('storage/' . $img->image);
+                    }),
+                    'attributes' => $attributes,
+                    'rating' => round($averageRating, 1),
+                    'review_count' => $reviewCount,
+                    'product_url' => route('product.detail', $product->slug)
+                ]
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Quickview error for slug ' . $slug . ': ' . $e->getMessage());
+            return response()->json(['success' => false, 'message' => 'Error loading product'], 500);
+        }
     }
 }

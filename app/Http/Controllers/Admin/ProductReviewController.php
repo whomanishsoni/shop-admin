@@ -14,44 +14,52 @@ class ProductReviewController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $reviews = ProductReview::with(['product', 'customer'])->select('*');
-            return DataTables::of($reviews)
-                ->addColumn('checkbox', function($row) {
-                    return '<input type="checkbox" class="select-item" value="'.$row->id.'">';
-                })
-                ->addColumn('product', function($row) {
-                    return $row->product ? $row->product->name : 'N/A';
-                })
-                ->addColumn('customer', function($row) {
-                    return $row->customer ? $row->customer->name : 'N/A';
-                })
-                ->addColumn('rating', function($row) {
-                    return str_repeat('⭐', $row->rating);
-                })
-                ->addColumn('approved', function($row) {
-                    return $row->approved ? '<span class="badge bg-success">Approved</span>' : '<span class="badge bg-warning">Pending</span>';
-                })
-                ->addColumn('action', function($row) {
-                    return '
-                        <a href="'.route('admin.product-reviews.show', $row->id).'" class="btn btn-sm btn-info"><i class="fas fa-eye"></i></a>
-                        <a href="'.route('admin.product-reviews.edit', $row->id).'" class="btn btn-sm btn-primary"><i class="fas fa-edit"></i></a>
-                        <form action="'.route('admin.product-reviews.destroy', $row->id).'" method="POST" class="d-inline delete-form">
-                            '.csrf_field().'
-                            '.method_field('DELETE').'
-                            <button type="submit" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
-                        </form>
-                        <form action="'.route('admin.product-reviews.approve', $row->id).'" method="POST" class="d-inline">
-                            '.csrf_field().'
-                            <button type="submit" class="btn btn-sm btn-success"><i class="fas fa-check"></i></button>
-                        </form>
-                    ';
-                })
-                ->rawColumns(['checkbox', 'rating', 'approved', 'action'])
-                ->make(true);
+            try {
+                $reviews = ProductReview::with(['product', 'customer'])
+                    ->select('id', 'product_id', 'customer_id', 'rating', 'comment', 'created_at')
+                    ->get();
+
+                return DataTables::of($reviews)
+                    ->addColumn('checkbox', function($row) {
+                        return '<input type="checkbox" class="select-item" value="'.$row->id.'">';
+                    })
+                    ->addColumn('product', function($row) {
+                        return $row->product ? $row->product->name : 'N/A';
+                    })
+                    ->addColumn('customer', function($row) {
+                        return $row->customer ? $row->customer->name : 'N/A';
+                    })
+                    ->addColumn('rating', function($row) {
+                        return str_repeat('⭐', $row->rating);
+                    })
+                    ->addColumn('comment', function($row) {
+                        return $row->comment ? $row->comment : 'N/A';
+                    })
+                    ->addColumn('created_at', function($row) {
+                        return $row->created_at ? $row->created_at->format('Y-m-d H:i:s') : 'N/A';
+                    })
+                    ->addColumn('action', function($row) {
+                        return '
+                            <a href="'.route('admin.product-reviews.show', $row->id).'" class="btn btn-sm btn-info"><i class="fas fa-eye"></i></a>
+                            <a href="'.route('admin.product-reviews.edit', $row->id).'" class="btn btn-sm btn-primary"><i class="fas fa-edit"></i></a>
+                            <form action="'.route('admin.product-reviews.destroy', $row->id).'" method="POST" class="d-inline delete-form">
+                                '.csrf_field().'
+                                '.method_field('DELETE').'
+                                <button type="submit" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+                            </form>
+                        ';
+                    })
+                    ->rawColumns(['checkbox', 'rating', 'action'])
+                    ->make(true);
+            } catch (\Exception $e) {
+                \Log::error('DataTable Error: ' . $e->getMessage());
+                return response()->json(['error' => 'Failed to load reviews'], 500);
+            }
         }
         return view('admin.product-reviews.index');
     }
 
+    // [Rest of the methods remain unchanged]
     public function create()
     {
         $products = Product::where('status', 'active')->get();
@@ -94,10 +102,10 @@ class ProductReviewController extends Controller
             'customer_id' => 'required|exists:customers,id',
             'rating' => 'required|integer|min:1|max:5',
             'comment' => 'nullable|string',
-            'approved' => 'boolean'
+            'approved' => 'required|boolean' // Ensure validated as boolean
         ]);
 
-        $validated['approved'] = $request->has('approved') ? true : false;
+        $validated['approved'] = (bool) $request->input('approved', false); // Convert 1/0 to true/false
 
         $productReview->update($validated);
 

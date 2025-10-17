@@ -92,7 +92,7 @@
                         </div>
                         <div class="col-lg-4">
                             <div class="cart__summary border-radius-10">
-                                <div class="coupon__code mb-30">
+                                {{-- <div class="coupon__code mb-30">
                                     <h3 class="coupon__code--title">Coupon</h3>
                                     <p class="coupon__code--desc">Enter your coupon code if you have one.</p>
                                     <div class="coupon__code--field d-flex">
@@ -101,7 +101,7 @@
                                         </label>
                                         <button class="coupon__code--field__btn primary__btn" type="submit">Apply Coupon</button>
                                     </div>
-                                </div>
+                                </div> --}}
                                 <div class="cart__note mb-20">
                                     <h3 class="cart__note--title">Note</h3>
                                     <p class="cart__note--desc">Add special instructions for your seller...</p>

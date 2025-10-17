@@ -240,4 +240,55 @@ class CartController extends Controller
             return $item['price'] * $item['quantity'];
         }, $cartItems));
     }
+
+    public function getCartData(Request $request)
+    {
+        $cartItems = $this->getCartItems();
+        $subtotal = $this->calculateSubtotal($cartItems);
+        $tax = $subtotal * 0.12;
+        $total = $subtotal + $tax;
+
+        $html = '';
+        if (empty($cartItems)) {
+            $html = '<p class="minicart__empty">Your cart is empty.</p>';
+        } else {
+            foreach ($cartItems as $key => $item) {
+                $html .= '<div class="minicart__product--items d-flex" data-cart-key="' . $key . '">';
+                $html .= '<div class="minicart__thumb">';
+                $html .= '<a href="' . route('product.detail', $item['slug']) . '">';
+                $html .= '<img src="' . (!empty($item['image']) ? $item['image'] : asset('assets/images/product/placeholder.jpg')) . '" alt="' . htmlspecialchars($item['name']) . '">';
+                $html .= '</a></div>';
+                $html .= '<div class="minicart__text">';
+                $html .= '<h3 class="minicart__subtitle h4"><a href="' . route('product.detail', $item['slug']) . '">' . htmlspecialchars($item['name']) . '</a></h3>';
+
+                if (!empty($item['attributes'])) {
+                    foreach ($item['attributes'] as $attrKey => $attrValue) {
+                        $html .= '<span class="minicart__variant">' . ucfirst($attrKey) . ': ' . htmlspecialchars($attrValue) . '</span>';
+                    }
+                }
+
+                $html .= '<div class="minicart__price">';
+                $html .= '<span class="current__price">Rs. ' . number_format($item['price'], 2) . '</span>';
+                $html .= '</div>';
+                $html .= '<div class="minicart__text--footer d-flex align-items-center">';
+                $html .= '<div class="quantity__box minicart__quantity">';
+                $html .= '<button type="button" class="quantity__value decrease minicart-decrease" data-key="' . $key . '">-</button>';
+                $html .= '<input type="number" class="quantity__number minicart-qty" value="' . $item['quantity'] . '" data-key="' . $key . '" readonly />';
+                $html .= '<button type="button" class="quantity__value increase minicart-increase" data-key="' . $key . '">+</button>';
+                $html .= '</div>';
+                $html .= '<button class="minicart__product--remove" data-key="' . $key . '">Remove</button>';
+                $html .= '</div></div></div>';
+            }
+        }
+
+        return response()->json([
+            'success' => true,
+            'count' => count($cartItems),
+            'html' => $html,
+            'subtotal' => number_format($subtotal, 2),
+            'tax' => number_format($tax, 2),
+            'total' => number_format($total, 2),
+            'hasItems' => !empty($cartItems)
+        ]);
+    }
 }

@@ -223,86 +223,31 @@
             </div>
             <p class="minicart__header--desc">Clothing and fashion products are limited</p>
         </div>
-        <div class="minicart__product">
-            @php
-                $cartItems = session('cart', []);
-                $subtotal = 0;
-                foreach ($cartItems as $item) {
-                    $subtotal += $item['price'] * $item['quantity'];
-                }
-                $tax = $subtotal * 0.12; // 12% tax
-                $total = $subtotal + $tax;
-            @endphp
-            @if (empty($cartItems))
-                <p class="minicart__empty">Your cart is empty.</p>
-            @else
-                @foreach ($cartItems as $key => $item)
-                    <div class="minicart__product--items d-flex">
-                        <div class="minicart__thumb">
-                            <a href="{{ route('product.detail', $item['slug']) }}">
-                                <img src="{{ !empty($item['image']) ? asset('storage/' . $item['image']) : asset('assets/images/product/placeholder.jpg') }}" alt="{{ $item['name'] }}">
-                            </a>
-                        </div>
-                        <div class="minicart__text">
-                            <h3 class="minicart__subtitle h4"><a href="{{ route('product.detail', $item['slug']) }}">{{ $item['name'] }}</a></h3>
-                            @if (!empty($item['attributes']))
-                                @foreach ($item['attributes'] as $attrKey => $attrValue)
-                                    <span class="minicart__variant">{{ ucfirst($attrKey) }}: {{ $attrValue }}</span>
-                                @endforeach
-                            @endif
-                            <div class="minicart__price">
-                                <span class="current__price">Rs. {{ number_format($item['price'], 2) }}</span>
-                                @if (!empty($item['old_price']))
-                                    <span class="old__price">Rs. {{ number_format($item['old_price'], 2) }}</span>
-                                @endif
-                            </div>
-                            <div class="minicart__text--footer d-flex align-items-center">
-                                <div class="quantity__box minicart__quantity">
-                                    <form action="{{ route('cart.update') }}" method="POST" class="minicart__quantity--form">
-                                        @csrf
-                                        <input type="hidden" name="key" value="{{ $key }}">
-                                        <button type="button" class="quantity__value decrease" aria-label="quantity value" value="Decrease Value">-</button>
-                                        <label>
-                                            <input type="number" class="quantity__number" name="quantity" value="{{ $item['quantity'] }}" data-counter />
-                                        </label>
-                                        <button type="button" class="quantity__value increase" value="Increase Value">+</button>
-                                    </form>
-                                </div>
-                                <form action="{{ route('cart.remove') }}" method="POST">
-                                    @csrf
-                                    <input type="hidden" name="key" value="{{ $key }}">
-                                    <button class="minicart__product--remove">Remove</button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                @endforeach
-            @endif
+        <div class="minicart__product" id="minicart-items">
+            <!-- Cart items will be loaded here via AJAX -->
         </div>
-        @if (!empty($cartItems))
-            <div class="minicart__amount">
-                <div class="minicart__amount_list d-flex justify-content-between">
-                    <span>Sub Total:</span>
-                    <span><b>Rs. {{ number_format($subtotal, 2) }}</b></span>
-                </div>
-                <div class="minicart__amount_list d-flex justify-content-between">
-                    <span>Tax (12%):</span>
-                    <span><b>Rs. {{ number_format($tax, 2) }}</b></span>
-                </div>
-                <div class="minicart__amount_list d-flex justify-content-between">
-                    <span>Total:</span>
-                    <span><b>Rs. {{ number_format($total, 2) }}</b></span>
-                </div>
+        <div class="minicart__amount" id="minicart-totals" style="display: none;">
+            <div class="minicart__amount_list d-flex justify-content-between">
+                <span>Sub Total:</span>
+                <span><b>Rs. <span id="minicart-subtotal">0.00</span></b></span>
             </div>
-            <div class="minicart__conditions text-center">
-                <input class="minicart__conditions--input" id="accept" type="checkbox">
-                <label class="minicart__conditions--label" for="accept">I agree with the <a class="minicart__conditions--link" href="{{ route('privacy-policy') }}">Privacy and Policy</a></label>
+            <div class="minicart__amount_list d-flex justify-content-between">
+                <span>Tax (12%):</span>
+                <span><b>Rs. <span id="minicart-tax">0.00</span></b></span>
             </div>
-            <div class="minicart__button d-flex justify-content-center">
-                <a class="primary__btn minicart__button--link" href="{{ route('cart') }}">View cart</a>
-                <a class="primary__btn minicart__button--link" href="{{ route('checkout') }}">Checkout</a>
+            <div class="minicart__amount_list d-flex justify-content-between">
+                <span>Total:</span>
+                <span><b>Rs. <span id="minicart-total">0.00</span></b></span>
             </div>
-        @endif
+        </div>
+        <div class="minicart__conditions text-center" id="minicart-conditions" style="display: none;">
+            <input class="minicart__conditions--input" id="accept" type="checkbox">
+            <label class="minicart__conditions--label" for="accept">I agree with the <a class="minicart__conditions--link" href="{{ route('privacy-policy') }}">Privacy and Policy</a></label>
+        </div>
+        <div class="minicart__button d-flex justify-content-center" id="minicart-buttons" style="display: none;">
+            <a class="primary__btn minicart__button--link" href="{{ route('cart') }}">View cart</a>
+            <a class="primary__btn minicart__button--link" href="{{ route('checkout') }}">Checkout</a>
+        </div>
     </div>
 
     <div class="predictive__search--box">
@@ -326,4 +271,102 @@
             </svg>
         </button>
     </div>
+
+    <script>
+    (function() {
+        function updateMiniCart() {
+            fetch('{{ route("cart.data") }}', {
+                headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.querySelectorAll('.items__count:not(.wishlist)').forEach(el => { el.textContent = data.count; });
+                    document.getElementById('minicart-items').innerHTML = data.html;
+                    if (data.hasItems) {
+                        document.getElementById('minicart-subtotal').textContent = data.subtotal;
+                        document.getElementById('minicart-tax').textContent = data.tax;
+                        document.getElementById('minicart-total').textContent = data.total;
+                        document.getElementById('minicart-totals').style.display = 'block';
+                        document.getElementById('minicart-conditions').style.display = 'block';
+                        document.getElementById('minicart-buttons').style.display = 'flex';
+                    } else {
+                        document.getElementById('minicart-totals').style.display = 'none';
+                        document.getElementById('minicart-conditions').style.display = 'none';
+                        document.getElementById('minicart-buttons').style.display = 'none';
+                    }
+                    attachMinicartEventListeners();
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        function updateWishlistCount() {
+            fetch('{{ route("wishlist.count") }}', {
+                headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.querySelectorAll('.items__count.wishlist').forEach(el => { el.textContent = data.count; });
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        function attachMinicartEventListeners() {
+            document.querySelectorAll('.minicart__product--remove').forEach(button => {
+                button.addEventListener('click', function() {
+                    const formData = new FormData();
+                    formData.append('cart_key', this.dataset.key);
+                    formData.append('_token', '{{ csrf_token() }}');
+                    fetch('{{ route("cart.remove") }}', { method: 'POST', headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' }, body: formData })
+                    .then(response => response.json())
+                    .then(data => { if (data.success) updateMiniCart(); });
+                });
+            });
+            document.querySelectorAll('.minicart-increase').forEach(button => {
+                button.addEventListener('click', function() {
+                    const key = this.dataset.key;
+                    const qtyInput = document.querySelector(`.minicart-qty[data-key="${key}"]`);
+                    const newQty = parseInt(qtyInput.value) + 1;
+                    const formData = new FormData();
+                    formData.append('cart_key', key);
+                    formData.append('quantity', newQty);
+                    formData.append('_token', '{{ csrf_token() }}');
+                    fetch('{{ route("cart.update") }}', { method: 'POST', headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' }, body: formData })
+                    .then(response => response.json())
+                    .then(data => { if (data.success) updateMiniCart(); });
+                });
+            });
+            document.querySelectorAll('.minicart-decrease').forEach(button => {
+                button.addEventListener('click', function() {
+                    const key = this.dataset.key;
+                    const qtyInput = document.querySelector(`.minicart-qty[data-key="${key}"]`);
+                    const newQty = Math.max(1, parseInt(qtyInput.value) - 1);
+                    const formData = new FormData();
+                    formData.append('cart_key', key);
+                    formData.append('quantity', newQty);
+                    formData.append('_token', '{{ csrf_token() }}');
+                    fetch('{{ route("cart.update") }}', { method: 'POST', headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' }, body: formData })
+                    .then(response => response.json())
+                    .then(data => { if (data.success) updateMiniCart(); });
+                });
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            updateMiniCart();
+            updateWishlistCount();
+            document.querySelectorAll('.minicart__open--btn').forEach(btn => {
+                btn.addEventListener('click', function() { updateMiniCart(); });
+            });
+        });
+
+        window.addEventListener('cart-updated', function() {
+            updateMiniCart();
+            updateWishlistCount();
+        });
+    })();
+    </script>
 </header>

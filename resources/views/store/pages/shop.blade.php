@@ -238,4 +238,16 @@
 
 @push('scripts')
     @include('store.partials.js')
+
+    <script>
+        document.querySelectorAll('.product__items--action__btn[data-open="modal1"]').forEach(button => {
+            button.addEventListener('click', function() {
+                const slug = this.getAttribute('data-slug');
+                loadQuickview(slug);
+                // Open the modal (adjust based on your modal implementation)
+                document.getElementById('modal1').style.display = 'block'; // For custom modal
+                // Or for Bootstrap: $('#modal1').modal('show');
+            });
+        });
+    </script>
 @endpush

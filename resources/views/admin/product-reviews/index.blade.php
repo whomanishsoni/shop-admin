@@ -3,14 +3,6 @@
 @section('title', 'Product Reviews')
 
 @section('content')
-
-@if(session('success'))
-<div class="alert alert-success alert-dismissible fade show" role="alert">
-    {{ session('success') }}
-    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-</div>
-@endif
-
 <div class="card shadow mb-4">
     <div class="card-header py-3">
         <div class="d-flex justify-content-between align-items-center">
@@ -30,7 +22,6 @@
                         <th>Customer</th>
                         <th>Rating</th>
                         <th>Comment</th>
-                        <th>Status</th>
                         <th>Date</th>
                         <th width="150">Actions</th>
                     </tr>
@@ -47,14 +38,19 @@ $(function() {
     var table = $('#reviews-table').DataTable({
         processing: true,
         serverSide: true,
-        ajax: "{{ route('admin.product-reviews.index') }}",
+        ajax: {
+            url: "{{ route('admin.product-reviews.index') }}",
+            type: "GET",
+            error: function(xhr, error, thrown) {
+                console.log('AJAX Error: ', xhr.responseText);
+            }
+        },
         columns: [
             {data: 'checkbox', name: 'checkbox', orderable: false, searchable: false},
             {data: 'product', name: 'product'},
             {data: 'customer', name: 'customer'},
             {data: 'rating', name: 'rating'},
             {data: 'comment', name: 'comment'},
-            {data: 'approved', name: 'approved'},
             {data: 'created_at', name: 'created_at'},
             {data: 'action', name: 'action', orderable: false, searchable: false}
         ]
@@ -94,6 +90,9 @@ $(function() {
                     table.ajax.reload();
                     $('#bulk-delete').hide();
                     alert(response.success);
+                },
+                error: function(xhr, error, thrown) {
+                    console.log('Bulk Delete Error: ', xhr.responseText);
                 }
             });
         }

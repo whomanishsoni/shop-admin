@@ -172,4 +172,13 @@ class WishlistController extends Controller
             return $item;
         }, $wishlist);
     }
+
+    public function getCount(Request $request)
+    {
+        $wishlist = Session::get('wishlist', []);
+        return response()->json([
+            'success' => true,
+            'count' => count($wishlist)
+        ]);
+    }
 }

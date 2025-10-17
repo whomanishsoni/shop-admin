@@ -105,52 +105,52 @@ class ShopController extends Controller
         return view('store.pages.shop', compact('products', 'category', 'categories', 'brands'));
     }
 
-    public function quickView($slug)
-    {
-        $product = Product::where('slug', $slug)
-            ->where('status', 'active')
-            ->with(['images' => function ($query) {
-                $query->orderBy('is_primary', 'desc')->orderBy('sort_order', 'asc');
-            }, 'attributeValues.attribute'])
-            ->firstOrFail();
+    // public function quickView($slug)
+    // {
+    //     $product = Product::where('slug', $slug)
+    //         ->where('status', 'active')
+    //         ->with(['images' => function ($query) {
+    //             $query->orderBy('is_primary', 'desc')->orderBy('sort_order', 'asc');
+    //         }, 'attributeValues.attribute'])
+    //         ->firstOrFail();
 
-        $images = $product->images->map(function ($image) {
-            return asset('storage/' . $image->image);
-        })->toArray();
+    //     $images = $product->images->map(function ($image) {
+    //         return asset('storage/' . $image->image);
+    //     })->toArray();
 
-        // Extract sizes and colors from attributeValues
-        $sizes = $product->attributeValues
-            ->where('attribute.name', 'Size')
-            ->flatMap(function ($value) {
-                $decodedValue = is_array($value->value) ? $value->value : (json_decode($value->value, true) ?: [$value->value]);
-                return $decodedValue;
-            })
-            ->unique()
-            ->values()
-            ->toArray();
+    //     // Extract sizes and colors from attributeValues
+    //     $sizes = $product->attributeValues
+    //         ->where('attribute.name', 'Size')
+    //         ->flatMap(function ($value) {
+    //             $decodedValue = is_array($value->value) ? $value->value : (json_decode($value->value, true) ?: [$value->value]);
+    //             return $decodedValue;
+    //         })
+    //         ->unique()
+    //         ->values()
+    //         ->toArray();
 
-        $colors = $product->attributeValues
-            ->where('attribute.name', 'Color')
-            ->flatMap(function ($value) {
-                $decodedValue = is_array($value->value) ? $value->value : (json_decode($value->value, true) ?: [$value->value]);
-                return $decodedValue;
-            })
-            ->unique()
-            ->values()
-            ->toArray();
+    //     $colors = $product->attributeValues
+    //         ->where('attribute.name', 'Color')
+    //         ->flatMap(function ($value) {
+    //             $decodedValue = is_array($value->value) ? $value->value : (json_decode($value->value, true) ?: [$value->value]);
+    //             return $decodedValue;
+    //         })
+    //         ->unique()
+    //         ->values()
+    //         ->toArray();
 
-        return response()->json([
-            'id' => $product->id,
-            'name' => $product->name,
-            'slug' => $product->slug,
-            'price' => floatval($product->sale_price ?? $product->price),
-            'old_price' => $product->sale_price && $product->sale_price < $product->price ? floatval($product->price) : null,
-            'description' => $product->description,
-            'images' => $images,
-            'sizes' => $sizes,
-            'colors' => $colors,
-            'average_rating' => $product->reviews->avg('rating') ?? 0,
-            'review_count' => $product->reviews->count(),
-        ]);
-    }
+    //     return response()->json([
+    //         'id' => $product->id,
+    //         'name' => $product->name,
+    //         'slug' => $product->slug,
+    //         'price' => floatval($product->sale_price ?? $product->price),
+    //         'old_price' => $product->sale_price && $product->sale_price < $product->price ? floatval($product->price) : null,
+    //         'description' => $product->description,
+    //         'images' => $images,
+    //         'sizes' => $sizes,
+    //         'colors' => $colors,
+    //         'average_rating' => $product->reviews->avg('rating') ?? 0,
+    //         'review_count' => $product->reviews->count(),
+    //     ]);
+    // }
 }
