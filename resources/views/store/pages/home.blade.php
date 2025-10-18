@@ -164,6 +164,7 @@
 
 @push('scripts')
     @include('store.partials.js')
+    @include('store.partials.quickview-js')
 
     <script>
         // Product Column 3 Slider
