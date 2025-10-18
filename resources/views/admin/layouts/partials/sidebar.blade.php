@@ -104,6 +104,8 @@
                     href="{{ route('admin.pages.index') }}">Pages</a>
                 <a class="collapse-item {{ request()->routeIs('admin.faqs.index') ? 'active' : '' }}"
                     href="{{ route('admin.faqs.index') }}">FAQs</a>
+                <a class="collapse-item {{ request()->routeIs('admin.testimonials.index') ? 'active' : '' }}"
+                    href="{{ route('admin.testimonials.index') }}">Testimonials</a>
             </div>
         </div>
     </li>

@@ -33,6 +33,11 @@
                         <i class="fas fa-phone"></i> Contact Info
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="mail-tab" data-toggle="tab" data-target="#mail" href="#mail" role="tab">
+                        <i class="fas fa-envelope"></i> Mail Settings
+                    </a>
+                </li>
             </ul>
         </div>
 
@@ -152,6 +157,96 @@
                         <div class="col-md-12 mb-3">
                             <label class="form-label"><i class="fas fa-clock"></i> Business Hours</label>
                             <textarea name="business_hours" class="form-control" rows="3" placeholder="Mon-Fri: 9:00 AM - 6:00 PM">{{ $settings['business_hours'] ?? '' }}</textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="mail" role="tabpanel">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i> <strong>Note:</strong> Mail settings are stored in environment variables for security. After saving, clear cache if needed.
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Mail Driver <span class="text-danger">*</span></label>
+                            <select name="mail_mailer" class="form-control" required>
+                                <option value="smtp" {{ ($settings['mail_mailer'] ?? env('MAIL_MAILER')) == 'smtp' ? 'selected' : '' }}>SMTP</option>
+                                <option value="sendmail" {{ ($settings['mail_mailer'] ?? env('MAIL_MAILER')) == 'sendmail' ? 'selected' : '' }}>Sendmail</option>
+                                <option value="mailgun" {{ ($settings['mail_mailer'] ?? env('MAIL_MAILER')) == 'mailgun' ? 'selected' : '' }}>Mailgun</option>
+                                <option value="ses" {{ ($settings['mail_mailer'] ?? env('MAIL_MAILER')) == 'ses' ? 'selected' : '' }}>Amazon SES</option>
+                                <option value="log" {{ ($settings['mail_mailer'] ?? env('MAIL_MAILER')) == 'log' ? 'selected' : '' }}>Log (Testing)</option>
+                            </select>
+                            <small class="text-muted">Choose your email service provider</small>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Mail Encryption</label>
+                            <select name="mail_encryption" class="form-control">
+                                <option value="tls" {{ ($settings['mail_encryption'] ?? env('MAIL_ENCRYPTION')) == 'tls' ? 'selected' : '' }}>TLS</option>
+                                <option value="ssl" {{ ($settings['mail_encryption'] ?? env('MAIL_ENCRYPTION')) == 'ssl' ? 'selected' : '' }}>SSL</option>
+                                <option value="" {{ empty($settings['mail_encryption'] ?? env('MAIL_ENCRYPTION')) ? 'selected' : '' }}>None</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">SMTP Host <span class="text-danger">*</span></label>
+                            <input type="text" name="mail_host" class="form-control" value="{{ $settings['mail_host'] ?? env('MAIL_HOST') }}" placeholder="smtp.gmail.com" required>
+                            <small class="text-muted">e.g., smtp.gmail.com, smtp.sendgrid.net</small>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">SMTP Port <span class="text-danger">*</span></label>
+                            <input type="number" name="mail_port" class="form-control" value="{{ $settings['mail_port'] ?? env('MAIL_PORT') }}" placeholder="587" required>
+                            <small class="text-muted">Common ports: 587 (TLS), 465 (SSL), 25</small>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">SMTP Username <span class="text-danger">*</span></label>
+                            <input type="text" name="mail_username" class="form-control" value="{{ $settings['mail_username'] ?? env('MAIL_USERNAME') }}" placeholder="your-email@gmail.com" required>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">SMTP Password <span class="text-danger">*</span></label>
+                            <input type="password" name="mail_password" class="form-control" value="{{ $settings['mail_password'] ?? env('MAIL_PASSWORD') }}" placeholder="••••••••" required>
+                            <small class="text-muted">For Gmail, use App Password</small>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Mail From Address <span class="text-danger">*</span></label>
+                            <input type="email" name="mail_from_address" class="form-control" value="{{ $settings['mail_from_address'] ?? env('MAIL_FROM_ADDRESS') }}" placeholder="noreply@yoursite.com" required>
+                            <small class="text-muted">Default sender email address</small>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Mail From Name <span class="text-danger">*</span></label>
+                            <input type="text" name="mail_from_name" class="form-control" value="{{ $settings['mail_from_name'] ?? env('MAIL_FROM_NAME') }}" placeholder="Your Store Name" required>
+                            <small class="text-muted">Default sender name</small>
+                        </div>
+                    </div>
+
+                    <div class="card bg-light mt-3">
+                        <div class="card-body">
+                            <h6 class="mb-3"><i class="fas fa-book"></i> Popular Email Service Settings:</h6>
+                            <div class="row small">
+                                <div class="col-md-6">
+                                    <strong>Gmail:</strong>
+                                    <ul>
+                                        <li>Host: smtp.gmail.com</li>
+                                        <li>Port: 587 (TLS) or 465 (SSL)</li>
+                                        <li>Username: your-email@gmail.com</li>
+                                        <li>Password: App Password (not Gmail password)</li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-6">
+                                    <strong>SendGrid:</strong>
+                                    <ul>
+                                        <li>Host: smtp.sendgrid.net</li>
+                                        <li>Port: 587</li>
+                                        <li>Username: apikey</li>
+                                        <li>Password: Your SendGrid API Key</li>
+                                    </ul>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

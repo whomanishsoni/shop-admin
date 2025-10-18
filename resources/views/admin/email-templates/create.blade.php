@@ -29,11 +29,11 @@
                     <div class="mb-3">
                         <label for="subject" class="form-label">Email Subject <span class="text-danger">*</span></label>
                         <input type="text" class="form-control @error('subject') is-invalid @enderror"
-                               id="subject" name="subject" value="{{ old('subject') }}" required placeholder="Welcome to {{ $site_name }}!">
+                               id="subject" name="subject" value="{{ old('subject') }}" required placeholder="Welcome to {{ '{{site_name}}' }}!">
                         @error('subject')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
-                        {{-- <small class="text-muted">You can use variables like {{$site_name}}, {{$user_name}}, etc.</small> --}}
+                        <small class="text-muted">You can use variables like {{ '{{site_name}}' }}, {{ '{{user_name}}' }}, etc.</small>
                     </div>
 
                     <div class="mb-3">
@@ -43,7 +43,7 @@
                         @error('body')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
-                        {{-- <small class="text-muted">Use HTML and variables like {{user_name}}, {{order_number}}, etc.</small> --}}
+                        <small class="text-muted">Use HTML and variables like {{ '{{user_name}}' }}, {{ '{{order_number}}' }}, etc.</small>
                     </div>
                 </div>
 
@@ -56,10 +56,7 @@
                             <div class="mb-3">
                                 <label for="variables" class="form-label">Variables (one per line)</label>
                                 <textarea class="form-control @error('variables') is-invalid @enderror"
-                                          id="variables" name="variables" rows="8" placeholder="
-{{-- {{user_email}} --}}
-{{-- {{site_name}} --}}
-">{{ old('variables') }}</textarea>
+                                          id="variables" name="variables" rows="8" placeholder="{{ '{{user_name}}' }}&#10;{{ '{{user_email}}' }}&#10;{{ '{{site_name}}' }}&#10;{{ '{{order_number}}' }}">{{ old('variables') }}</textarea>
                                 @error('variables')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -88,12 +85,15 @@
                         <div class="card-body">
                             <h6 class="text-white">💡 Common Variables:</h6>
                             <ul class="mb-0 small">
-                                {{-- <li>{{user_name}}</li> --}}
-                                {{-- <li>{{user_email}}</li> --}}
-                                {{-- <li>{{site_name}}</li> --}}
-                                {{-- <li>{{site_url}}</li> --}}
-                                {{-- <li>{{order_number}}</li> --}}
-                                {{-- <li>{{order_total}}</li> --}}
+                                <li>{{ '{{user_name}}' }}</li>
+                                <li>{{ '{{user_email}}' }}</li>
+                                <li>{{ '{{site_name}}' }}</li>
+                                <li>{{ '{{site_url}}' }}</li>
+                                <li>{{ '{{order_number}}' }}</li>
+                                <li>{{ '{{order_total}}' }}</li>
+                                <li>{{ '{{customer_name}}' }}</li>
+                                <li>{{ '{{order_id}}' }}</li>
+                                <li>{{ '{{product_name}}' }}</li>
                             </ul>
                         </div>
                     </div>

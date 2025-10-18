@@ -54,12 +54,28 @@ class ShopController extends Controller
             });
         }
 
-        // Price filtering
-        if ($request->has('filter.v.price.gte') && is_numeric($request->input('filter.v.price.gte'))) {
-            $query->where('price', '>=', $request->input('filter.v.price.gte'));
+        // Price filtering with debugging
+        $gtePrice = $request->input('filter.v.price.gte');
+        $ltePrice = $request->input('filter.v.price.lte');
+        if ($gtePrice && is_numeric($gtePrice)) {
+            \Log::info("Applying price filter gte: {$gtePrice}");
+            $query->where(function ($q) use ($gtePrice) {
+                $q->where('price', '>=', floatval($gtePrice))
+                  ->orWhere(function ($q2) use ($gtePrice) {
+                      $q2->whereNotNull('sale_price')
+                         ->where('sale_price', '>=', floatval($gtePrice));
+                  });
+            });
         }
-        if ($request->has('filter.v.price.lte') && is_numeric($request->input('filter.v.price.lte'))) {
-            $query->where('price', '<=', $request->input('filter.v.price.lte'));
+        if ($ltePrice && is_numeric($ltePrice)) {
+            \Log::info("Applying price filter lte: {$ltePrice}");
+            $query->where(function ($q) use ($ltePrice) {
+                $q->where('price', '<=', floatval($ltePrice))
+                  ->orWhere(function ($q2) use ($ltePrice) {
+                      $q2->whereNotNull('sale_price')
+                         ->where('sale_price', '<=', floatval($ltePrice));
+                  });
+            });
         }
 
         // Brand filtering
@@ -105,52 +121,38 @@ class ShopController extends Controller
         return view('store.pages.shop', compact('products', 'category', 'categories', 'brands'));
     }
 
-    // public function quickView($slug)
-    // {
-    //     $product = Product::where('slug', $slug)
-    //         ->where('status', 'active')
-    //         ->with(['images' => function ($query) {
-    //             $query->orderBy('is_primary', 'desc')->orderBy('sort_order', 'asc');
-    //         }, 'attributeValues.attribute'])
-    //         ->firstOrFail();
+    public function searchSuggestions(Request $request)
+    {
+        $query = $request->input('q', '');
 
-    //     $images = $product->images->map(function ($image) {
-    //         return asset('storage/' . $image->image);
-    //     })->toArray();
+        if (strlen($query) < 2) {
+            return response()->json([]);
+        }
 
-    //     // Extract sizes and colors from attributeValues
-    //     $sizes = $product->attributeValues
-    //         ->where('attribute.name', 'Size')
-    //         ->flatMap(function ($value) {
-    //             $decodedValue = is_array($value->value) ? $value->value : (json_decode($value->value, true) ?: [$value->value]);
-    //             return $decodedValue;
-    //         })
-    //         ->unique()
-    //         ->values()
-    //         ->toArray();
+        $products = Product::where('status', 'active')
+            ->where(function ($q) use ($query) {
+                $q->where('name', 'like', "%{$query}%")
+                  ->orWhere('sku', 'like', "%{$query}%");
+            })
+            ->with(['images' => function ($q) {
+                $q->where('is_primary', true)->orderByDesc('is_primary')->limit(1);
+            }])
+            ->limit(8)
+            ->get();
 
-    //     $colors = $product->attributeValues
-    //         ->where('attribute.name', 'Color')
-    //         ->flatMap(function ($value) {
-    //             $decodedValue = is_array($value->value) ? $value->value : (json_decode($value->value, true) ?: [$value->value]);
-    //             return $decodedValue;
-    //         })
-    //         ->unique()
-    //         ->values()
-    //         ->toArray();
+        $suggestions = $products->map(function ($product) {
+            $image = $product->images->first();
+            return [
+                'id' => $product->id,
+                'name' => $product->name,
+                'slug' => $product->slug,
+                'price' => $product->sale_price ?? $product->price,
+                'old_price' => $product->sale_price && $product->sale_price < $product->price ? $product->price : null,
+                'image' => $image ? asset('storage/' . $image->image) : asset('assets/images/no-image.png'),
+                'url' => route('product.detail', $product->slug)
+            ];
+        });
 
-    //     return response()->json([
-    //         'id' => $product->id,
-    //         'name' => $product->name,
-    //         'slug' => $product->slug,
-    //         'price' => floatval($product->sale_price ?? $product->price),
-    //         'old_price' => $product->sale_price && $product->sale_price < $product->price ? floatval($product->price) : null,
-    //         'description' => $product->description,
-    //         'images' => $images,
-    //         'sizes' => $sizes,
-    //         'colors' => $colors,
-    //         'average_rating' => $product->reviews->avg('rating') ?? 0,
-    //         'review_count' => $product->reviews->count(),
-    //     ]);
-    // }
+        return response()->json($suggestions);
+    }
 }

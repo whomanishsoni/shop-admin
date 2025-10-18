@@ -83,21 +83,73 @@ class SettingController extends Controller
     public function bulkUpdate(Request $request)
     {
         $fileFields = ['site_logo', 'site_favicon', 'footer_logo'];
+        $mailFields = ['mail_mailer', 'mail_host', 'mail_port', 'mail_username', 'mail_password', 'mail_encryption', 'mail_from_address', 'mail_from_name'];
 
         foreach ($request->except(['_token']) as $key => $value) {
             if ($request->hasFile($key)) {
                 $value = $request->file($key)->store('settings', 'public');
             }
 
-            Setting::updateOrCreate(
-                ['key' => $key],
-                [
-                    'value' => $value,
-                    'type' => in_array($key, $fileFields) ? 'image' : 'text'
-                ]
-            );
+            // Handle mail settings separately - save to both DB and .env
+            if (in_array($key, $mailFields)) {
+                $this->updateEnvVariable(strtoupper($key), $value);
+
+                Setting::updateOrCreate(
+                    ['key' => $key],
+                    [
+                        'value' => $value,
+                        'type' => 'text'
+                    ]
+                );
+            } else {
+                // Regular settings - save to DB only
+                Setting::updateOrCreate(
+                    ['key' => $key],
+                    [
+                        'value' => $value,
+                        'type' => in_array($key, $fileFields) ? 'image' : 'text'
+                    ]
+                );
+            }
+        }
+
+        // Clear config cache to apply new mail settings
+        if ($request->hasAny($mailFields)) {
+            \Artisan::call('config:clear');
         }
 
         return redirect()->route('admin.settings.index')->with('success', 'Settings updated successfully');
+    }
+
+    /**
+     * Update environment variable in .env file
+     */
+    private function updateEnvVariable($key, $value)
+    {
+        $path = base_path('.env');
+
+        if (!file_exists($path)) {
+            return;
+        }
+
+        $envContent = file_get_contents($path);
+
+        // Escape special characters in value
+        $value = str_replace('"', '\"', $value);
+
+        // Check if key exists
+        if (preg_match("/^{$key}=.*/m", $envContent)) {
+            // Update existing key
+            $envContent = preg_replace(
+                "/^{$key}=.*/m",
+                "{$key}=\"{$value}\"",
+                $envContent
+            );
+        } else {
+            // Add new key
+            $envContent .= "\n{$key}=\"{$value}\"";
+        }
+
+        file_put_contents($path, $envContent);
     }
 }

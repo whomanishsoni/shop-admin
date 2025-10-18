@@ -11,7 +11,8 @@ use App\Http\Controllers\Admin\{
     SettingController, SliderController, EmailTemplateController, LanguageController,
     FaqController, BlogCategoryController, BlogPostController, PageController,
     SubscriberController, BannerController, ActivityLogController, NotificationController,
-    UserController, AnalyticsController, BackupController, ProductImportExportController
+    UserController, AnalyticsController, BackupController, ProductImportExportController,
+    TestimonialController
 };
 use App\Http\Controllers\Store\{
     HomeController, AccountController, AboutController, CartController,
@@ -26,6 +27,7 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/shop/{slug?}', [ShopController::class, 'index'])->name('shop');
 Route::get('/product/{slug}', [ProductController::class, 'show'])->name('product.detail');
 Route::get('/product/quickview/{slug}', [ProductController::class, 'quickview'])->name('product.quickview');
+Route::get('/search/suggestions', [ShopController::class, 'searchSuggestions'])->name('search.suggestions');
 
 // Cart routes
 Route::get('/cart', [CartController::class, '__invoke'])->name('cart');
@@ -200,6 +202,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         Route::resource('faqs', FaqController::class);
         Route::post('faqs/bulk-delete', [FaqController::class, 'bulkDelete'])->name('faqs.bulk-delete');
+
+        Route::resource('testimonials', TestimonialController::class);
+        Route::post('testimonials/bulk-delete', [TestimonialController::class, 'bulkDelete'])->name('testimonials.bulk-delete');
 
         // System
         Route::get('activity-logs', [ActivityLogController::class, 'index'])->name('activity-logs.index');

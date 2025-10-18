@@ -255,7 +255,7 @@
             <h2 class="predictive__search--title">Search Products</h2>
             <form class="predictive__search--form" action="{{ route('shop') }}">
                 <label>
-                    <input class="predictive__search--input" name="search" placeholder="Search Here" type="text">
+                    <input class="predictive__search--input" id="search-input" name="search" placeholder="Search Here" type="text" autocomplete="off">
                 </label>
                 <button class="predictive__search--button" aria-label="search button" type="submit">
                     <svg class="header__search--button__svg" xmlns="http://www.w3.org/2000/svg" width="30.51" height="25.443" viewBox="0 0 512 512">
@@ -264,6 +264,7 @@
                     </svg>
                 </button>
             </form>
+            <div class="search__suggestions" id="search-suggestions" style="display: none; position: absolute; background: white; width: 100%; max-height: 400px; overflow-y: auto; border: 1px solid #ddd; border-radius: 5px; margin-top: 5px; z-index: 1000;"></div>
         </div>
         <button class="predictive__search--close__btn" aria-label="search close button" data-offcanvas>
             <svg class="predictive__search--close__icon" xmlns="http://www.w3.org/2000/svg" width="40.51" height="30.443" viewBox="0 0 512 512">
@@ -273,16 +274,17 @@
     </div>
 
     <script>
-    (function() {
-        function updateMiniCart() {
-            fetch('{{ route("cart.data") }}', {
-                headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    document.querySelectorAll('.items__count:not(.wishlist)').forEach(el => { el.textContent = data.count; });
-                    document.getElementById('minicart-items').innerHTML = data.html;
+    window.updateMiniCart = function() {
+        fetch('{{ route("cart.data") }}', {
+            headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                document.querySelectorAll('.items__count:not(.wishlist)').forEach(el => { el.textContent = data.count; });
+                const minicartItems = document.getElementById('minicart-items');
+                if (minicartItems) {
+                    minicartItems.innerHTML = data.html;
                     if (data.hasItems) {
                         document.getElementById('minicart-subtotal').textContent = data.subtotal;
                         document.getElementById('minicart-tax').textContent = data.tax;
@@ -297,76 +299,154 @@
                     }
                     attachMinicartEventListeners();
                 }
-            })
-            .catch(error => console.error('Error:', error));
-        }
+            }
+        })
+        .catch(error => console.error('Error updating cart:', error));
+    };
 
-        function updateWishlistCount() {
-            fetch('{{ route("wishlist.count") }}', {
-                headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    document.querySelectorAll('.items__count.wishlist').forEach(el => { el.textContent = data.count; });
-                }
-            })
-            .catch(error => console.error('Error:', error));
-        }
+    window.updateWishlistCount = function() {
+        fetch('{{ route("wishlist.count") }}', {
+            headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                document.querySelectorAll('.items__count.wishlist').forEach(el => { el.textContent = data.count; });
+            }
+        })
+        .catch(error => console.error('Error updating wishlist:', error));
+    };
 
-        function attachMinicartEventListeners() {
-            document.querySelectorAll('.minicart__product--remove').forEach(button => {
-                button.addEventListener('click', function() {
-                    const formData = new FormData();
-                    formData.append('cart_key', this.dataset.key);
-                    formData.append('_token', '{{ csrf_token() }}');
-                    fetch('{{ route("cart.remove") }}', { method: 'POST', headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' }, body: formData })
-                    .then(response => response.json())
-                    .then(data => { if (data.success) updateMiniCart(); });
-                });
-            });
-            document.querySelectorAll('.minicart-increase').forEach(button => {
-                button.addEventListener('click', function() {
-                    const key = this.dataset.key;
-                    const qtyInput = document.querySelector(`.minicart-qty[data-key="${key}"]`);
-                    const newQty = parseInt(qtyInput.value) + 1;
-                    const formData = new FormData();
-                    formData.append('cart_key', key);
-                    formData.append('quantity', newQty);
-                    formData.append('_token', '{{ csrf_token() }}');
-                    fetch('{{ route("cart.update") }}', { method: 'POST', headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' }, body: formData })
-                    .then(response => response.json())
-                    .then(data => { if (data.success) updateMiniCart(); });
-                });
-            });
-            document.querySelectorAll('.minicart-decrease').forEach(button => {
-                button.addEventListener('click', function() {
-                    const key = this.dataset.key;
-                    const qtyInput = document.querySelector(`.minicart-qty[data-key="${key}"]`);
-                    const newQty = Math.max(1, parseInt(qtyInput.value) - 1);
-                    const formData = new FormData();
-                    formData.append('cart_key', key);
-                    formData.append('quantity', newQty);
-                    formData.append('_token', '{{ csrf_token() }}');
-                    fetch('{{ route("cart.update") }}', { method: 'POST', headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' }, body: formData })
-                    .then(response => response.json())
-                    .then(data => { if (data.success) updateMiniCart(); });
-                });
-            });
-        }
+    function attachMinicartEventListeners() {
+        document.querySelectorAll('.minicart__product--remove').forEach(button => {
+            button.removeEventListener('click', button._removeHandler);
+            button._removeHandler = function() {
+                const formData = new FormData();
+                formData.append('cart_key', this.dataset.key);
+                formData.append('_token', '{{ csrf_token() }}');
+                fetch('{{ route("cart.remove") }}', { method: 'POST', headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' }, body: formData })
+                .then(response => response.json())
+                .then(data => { if (data.success) { window.updateMiniCart(); window.dispatchEvent(new Event('cart-updated')); } });
+            };
+            button.addEventListener('click', button._removeHandler);
+        });
+        document.querySelectorAll('.minicart-increase').forEach(button => {
+            button.removeEventListener('click', button._increaseHandler);
+            button._increaseHandler = function() {
+                const key = this.dataset.key;
+                const qtyInput = document.querySelector(`.minicart-qty[data-key="${key}"]`);
+                const newQty = parseInt(qtyInput.value) + 1;
+                const formData = new FormData();
+                formData.append('cart_key', key);
+                formData.append('quantity', newQty);
+                formData.append('_token', '{{ csrf_token() }}');
+                fetch('{{ route("cart.update") }}', { method: 'POST', headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' }, body: formData })
+                .then(response => response.json())
+                .then(data => { if (data.success) { window.updateMiniCart(); window.dispatchEvent(new Event('cart-updated')); } });
+            };
+            button.addEventListener('click', button._increaseHandler);
+        });
+        document.querySelectorAll('.minicart-decrease').forEach(button => {
+            button.removeEventListener('click', button._decreaseHandler);
+            button._decreaseHandler = function() {
+                const key = this.dataset.key;
+                const qtyInput = document.querySelector(`.minicart-qty[data-key="${key}"]`);
+                const newQty = Math.max(1, parseInt(qtyInput.value) - 1);
+                const formData = new FormData();
+                formData.append('cart_key', key);
+                formData.append('quantity', newQty);
+                formData.append('_token', '{{ csrf_token() }}');
+                fetch('{{ route("cart.update") }}', { method: 'POST', headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' }, body: formData })
+                .then(response => response.json())
+                .then(data => { if (data.success) { window.updateMiniCart(); window.dispatchEvent(new Event('cart-updated')); } });
+            };
+            button.addEventListener('click', button._decreaseHandler);
+        });
+    }
 
-        document.addEventListener('DOMContentLoaded', function() {
-            updateMiniCart();
-            updateWishlistCount();
-            document.querySelectorAll('.minicart__open--btn').forEach(btn => {
-                btn.addEventListener('click', function() { updateMiniCart(); });
-            });
+    document.addEventListener('DOMContentLoaded', function() {
+        window.updateMiniCart();
+        window.updateWishlistCount();
+        document.querySelectorAll('.minicart__open--btn').forEach(btn => {
+            btn.addEventListener('click', function() { window.updateMiniCart(); });
+        });
+    });
+
+    window.addEventListener('cart-updated', function() {
+        window.updateMiniCart();
+        window.updateWishlistCount();
+    });
+
+    window.addEventListener('wishlist-updated', function() {
+        window.updateWishlistCount();
+    });
+
+    let searchTimeout = null;
+    const searchInput = document.getElementById('search-input');
+    const searchSuggestions = document.getElementById('search-suggestions');
+
+    if (searchInput && searchSuggestions) {
+        searchInput.addEventListener('input', function() {
+            const query = this.value.trim();
+
+            clearTimeout(searchTimeout);
+
+            if (query.length < 2) {
+                searchSuggestions.style.display = 'none';
+                searchSuggestions.innerHTML = '';
+                return;
+            }
+
+            searchTimeout = setTimeout(() => {
+                fetch(`{{ route('search.suggestions') }}?q=${encodeURIComponent(query)}`)
+                    .then(response => response.json())
+                    .then(products => {
+                        if (products.length === 0) {
+                            searchSuggestions.innerHTML = '<div style="padding: 15px; text-align: center; color: #999;">No products found</div>';
+                            searchSuggestions.style.display = 'block';
+                            return;
+                        }
+
+                        let html = '<div style="padding: 10px;">';
+                        products.forEach(product => {
+                            const price = product.old_price
+                                ? `<span style="color: #e74c3c; font-weight: bold;">Rs. ${product.price}</span> <del style="color: #999; font-size: 0.9em;">Rs. ${product.old_price}</del>`
+                                : `<span style="font-weight: bold;">Rs. ${product.price}</span>`;
+
+                            html += `
+                                <a href="${product.url}" style="display: flex; align-items: center; padding: 10px; border-bottom: 1px solid #f0f0f0; text-decoration: none; color: #333; transition: background 0.2s;"
+                                   onmouseover="this.style.background='#f9f9f9'" onmouseout="this.style.background='transparent'">
+                                    <img src="${product.image}" alt="${product.name}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 5px; margin-right: 15px;">
+                                    <div style="flex: 1;">
+                                        <div style="font-weight: 500; margin-bottom: 5px;">${product.name}</div>
+                                        <div>${price}</div>
+                                    </div>
+                                </a>
+                            `;
+                        });
+                        html += '</div>';
+
+                        searchSuggestions.innerHTML = html;
+                        searchSuggestions.style.display = 'block';
+                    })
+                    .catch(error => {
+                        console.error('Search error:', error);
+                        searchSuggestions.style.display = 'none';
+                    });
+            }, 300);
         });
 
-        window.addEventListener('cart-updated', function() {
-            updateMiniCart();
-            updateWishlistCount();
+        searchInput.addEventListener('blur', function() {
+            setTimeout(() => {
+                searchSuggestions.style.display = 'none';
+            }, 200);
         });
-    })();
+
+        searchInput.addEventListener('focus', function() {
+            if (this.value.trim().length >= 2 && searchSuggestions.innerHTML !== '') {
+                searchSuggestions.style.display = 'block';
+            }
+        });
+    }
     </script>
 </header>
