@@ -123,36 +123,45 @@ class ShopController extends Controller
 
     public function searchSuggestions(Request $request)
     {
-        $query = $request->input('q', '');
+        try {
+            \Log::info('Search suggestions called with query: ' . $request->input('q', ''));
 
-        if (strlen($query) < 2) {
-            return response()->json([]);
+            $query = $request->input('q', '');
+            if (strlen($query) < 2) {
+                return response()->json([]);
+            }
+
+            // Fetch products without eager loading images
+            $products = Product::where('status', 'active')
+                ->where(function ($q) use ($query) {
+                    $q->where('name', 'like', "%{$query}%")
+                    ->orWhere('sku', 'like', "%{$query}%");
+                })
+                ->limit(8)
+                ->get();
+
+            \Log::info('Products found: ' . $products->count());
+
+            // Manually fetch the primary image for each product
+            $suggestions = $products->map(function ($product) {
+                $image = $product->images()->where('is_primary', true)->first();
+                \Log::info('Processing product: ' . $product->name);
+                return [
+                    'id' => $product->id,
+                    'name' => $product->name,
+                    'slug' => $product->slug,
+                    'price' => $product->sale_price ?? $product->price,
+                    'old_price' => $product->sale_price && $product->sale_price < $product->price ? $product->price : null,
+                    'image' => $image ? asset('storage/' . $image->image) : asset('assets/images/no-image.png'),
+                    'url' => route('product.detail', $product->slug)
+                ];
+            });
+
+            return response()->json($suggestions);
+        } catch (\Exception $e) {
+            \Log::error('Search suggestions error: ' . $e->getMessage());
+            return response()->json(['error' => 'Internal server error'], 500);
         }
-
-        $products = Product::where('status', 'active')
-            ->where(function ($q) use ($query) {
-                $q->where('name', 'like', "%{$query}%")
-                  ->orWhere('sku', 'like', "%{$query}%");
-            })
-            ->with(['images' => function ($q) {
-                $q->where('is_primary', true)->orderByDesc('is_primary')->limit(1);
-            }])
-            ->limit(8)
-            ->get();
-
-        $suggestions = $products->map(function ($product) {
-            $image = $product->images->first();
-            return [
-                'id' => $product->id,
-                'name' => $product->name,
-                'slug' => $product->slug,
-                'price' => $product->sale_price ?? $product->price,
-                'old_price' => $product->sale_price && $product->sale_price < $product->price ? $product->price : null,
-                'image' => $image ? asset('storage/' . $image->image) : asset('assets/images/no-image.png'),
-                'url' => route('product.detail', $product->slug)
-            ];
-        });
-
-        return response()->json($suggestions);
     }
+
 }

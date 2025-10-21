@@ -99,78 +99,41 @@ let swiperMediaPreview = null;
 
 if (typeof Swiper !== "undefined") {
     const initSwiper = () => {
-        const navElement = document.querySelector(".product__media--nav");
-        const previewElement = document.querySelector(".product__media--preview");
-        const heroElement = document.querySelector(".hero__slider--activation");
-        const productElement = document.querySelector(".product__swiper--activation");
-        const productColumn4Element = document.querySelector(".product__swiper--column4__activation");
-        const productSidebarElement = document.querySelector(".product__sidebar--column4__activation");
-        const productColumn3Element = document.querySelector(".product__swiper--column3");
-        const testimonialElement = document.querySelector(".testimonial__swiper--activation");
-        const testimonialColumn1Element = document.querySelector(".testimonial__activation--column1");
-        const blogElement = document.querySelector(".blog__swiper--activation");
-        const quickviewElement = document.querySelector(".quickview__swiper--activation");
-        const relatedProductsElement = document.querySelector(".product__swiper--column4__activation");
-
-        if (navElement) {
-            const navSlides = navElement.querySelectorAll(".swiper-slide").length;
-            const navWrapper = navElement.querySelector(".swiper-wrapper");
-            const navNext = navElement.querySelector(".swiper-button-next");
-            const navPrev = navElement.querySelector(".swiper-button-prev");
-            if (navSlides === 0) {
-                return;
+        // Helper function to initialize a Swiper instance
+        const initializeSlider = (selector, config) => {
+            const element = document.querySelector(selector);
+            if (element && element.querySelector(".swiper-wrapper") && element.querySelectorAll(".swiper-slide").length > 0) {
+                try {
+                    new Swiper(selector, config);
+                    console.log(`Swiper initialized for ${selector}`);
+                } catch (error) {
+                    console.error(`Error initializing Swiper for ${selector}:`, error);
+                }
+            } else {
+                console.warn(`Swiper not initialized for ${selector}: missing wrapper or slides`);
             }
-            if (!navWrapper) {
-                return;
-            }
-            if (!navNext || !navPrev) {
-            }
-        }
-        if (previewElement) {
-            const previewSlides = previewElement.querySelectorAll(".swiper-slide").length;
-            const previewWrapper = previewElement.querySelector(".swiper-wrapper");
-            if (previewSlides === 0) {
-                return;
-            }
-            if (!previewWrapper) {
-                return;
-            }
-        }
-        if (relatedProductsElement) {
-            const relatedSlides = relatedProductsElement.querySelectorAll(".swiper-slide").length;
-            const relatedWrapper = relatedProductsElement.querySelector(".swiper-wrapper");
-            const relatedNext = relatedProductsElement.querySelector(".swiper-button-next");
-            const relatedPrev = relatedProductsElement.querySelector(".swiper-button-prev");
-            if (relatedSlides === 0) {
-                return;
-            }
-            if (!relatedWrapper) {
-                return;
-            }
-        }
+        };
 
         // Hero Slider
-        if (heroElement && heroElement.querySelector(".swiper-wrapper")) {
-            new Swiper(".hero__slider--activation", {
-                slidesPerView: 1,
-                loop: true,
-                clickable: true,
-                speed: 800,
-                spaceBetween: 30,
-                autoplay: {
-                    delay: 3000,
-                    disableOnInteraction: false,
-                },
-                navigation: {
-                    nextEl: ".swiper-button-next",
-                    prevEl: ".swiper-button-prev",
-                },
-            });
-        }
+        initializeSlider(".hero__slider--activation", {
+            slidesPerView: 1,
+            loop: true,
+            clickable: true,
+            speed: 800,
+            spaceBetween: 30,
+            autoplay: {
+                delay: 3000,
+                disableOnInteraction: false,
+            },
+            navigation: {
+                nextEl: ".hero__slider--activation .swiper-button-next",
+                prevEl: ".hero__slider--activation .swiper-button-prev",
+            },
+        });
 
         // Product Slider
-        if (productElement && productElement.querySelector(".swiper-wrapper")) {
-            new Swiper(".product__swiper--activation", {
+        if (document.querySelector(".product__swiper--activation") && document.querySelector(".product__swiper--activation .swiper-wrapper")) {
+            initializeSlider(".product__swiper--activation", {
                 slidesPerView: 5,
                 loop: true,
                 clickable: true,
@@ -190,8 +153,8 @@ if (typeof Swiper !== "undefined") {
         }
 
         // Product Column 4 Slider
-        if (productColumn4Element && productColumn4Element.querySelector(".swiper-wrapper")) {
-            new Swiper(".product__swiper--column4__activation", {
+        if (document.querySelector(".product__swiper--column4__activation") && document.querySelector(".product__swiper--column4__activation .swiper-wrapper")) {
+            initializeSlider(".product__swiper--column4__activation", {
                 slidesPerView: 4,
                 loop: true,
                 clickable: true,
@@ -211,8 +174,8 @@ if (typeof Swiper !== "undefined") {
         }
 
         // Product Sidebar Slider
-        if (productSidebarElement && productSidebarElement.querySelector(".swiper-wrapper")) {
-            new Swiper(".product__sidebar--column4__activation", {
+        if (document.querySelector(".product__sidebar--column4__activation") && document.querySelector(".product__sidebar--column4__activation .swiper-wrapper")) {
+            initializeSlider(".product__sidebar--column4__activation", {
                 slidesPerView: 4,
                 loop: true,
                 clickable: true,
@@ -232,17 +195,20 @@ if (typeof Swiper !== "undefined") {
         }
 
         // Product Column 3 Slider
-        if (productColumn3Element && productColumn3Element.querySelector(".swiper-wrapper")) {
-            new Swiper(".product__swiper--column3", {
+        if (document.querySelector(".product__swiper--column3") && document.querySelector(".product__swiper--column3 .swiper-wrapper")) {
+            initializeSlider(".product__swiper--column3", {
                 slidesPerView: 4,
                 loop: true,
-                autoplay: true,
+                autoplay: {
+                    delay: 3000,
+                    disableOnInteraction: false,
+                },
                 spaceBetween: 30,
                 breakpoints: {
                     1200: { slidesPerView: 4 },
-                    992: { slidesPerView: 2 },
-                    768: { slidesPerView: 2, spaceBetween: 30 },
-                    280: { slidesPerView: 2, spaceBetween: 20 },
+                    992: { slidesPerView: 3 },
+                    768: { slidesPerView: 3, spaceBetween: 30 },
+                    480: { slidesPerView: 2, spaceBetween: 20 },
                     0: { slidesPerView: 1 },
                 },
                 navigation: {
@@ -253,28 +219,33 @@ if (typeof Swiper !== "undefined") {
         }
 
         // Testimonial Slider
-        if (testimonialElement && testimonialElement.querySelector(".swiper-wrapper")) {
-            new Swiper(".testimonial__swiper--activation", {
+        if (document.querySelector(".testimonial__swiper--activation") && document.querySelector(".testimonial__swiper--activation .swiper-wrapper")) {
+            initializeSlider(".testimonial__swiper--activation", {
                 slidesPerView: 3,
-                loop: true,
+                loop: false,
                 clickable: true,
                 spaceBetween: 30,
                 breakpoints: {
                     1200: { slidesPerView: 3 },
-                    768: { spaceBetween: 30, slidesPerView: 2 },
-                    576: { slidesPerView: 2, spaceBetween: 20 },
+                    992: { slidesPerView: 3 },
+                    768: { slidesPerView: 2 },
+                    576: { slidesPerView: 2 },
                     0: { slidesPerView: 1 },
                 },
+                navigation: {
+                    nextEl: ".testimonial__swiper--activation .swiper-button-next",
+                    prevEl: ".testimonial__swiper--activation .swiper-button-prev",
+                },
                 pagination: {
-                    el: ".swiper-pagination",
+                    el: ".testimonial__pagination",
                     clickable: true,
                 },
             });
         }
 
         // Testimonial Column 1 Slider
-        if (testimonialColumn1Element && testimonialColumn1Element.querySelector(".swiper-wrapper")) {
-            new Swiper(".testimonial__activation--column1", {
+        if (document.querySelector(".testimonial__activation--column1") && document.querySelector(".testimonial__activation--column1 .swiper-wrapper")) {
+            initializeSlider(".testimonial__activation--column1", {
                 slidesPerView: 1,
                 loop: true,
                 clickable: true,
@@ -286,8 +257,8 @@ if (typeof Swiper !== "undefined") {
         }
 
         // Blog Slider
-        if (blogElement && blogElement.querySelector(".swiper-wrapper")) {
-            new Swiper(".blog__swiper--activation", {
+        if (document.querySelector(".blog__swiper--activation") && document.querySelector(".blog__swiper--activation .swiper-wrapper")) {
+            initializeSlider(".blog__swiper--activation", {
                 slidesPerView: 4,
                 loop: true,
                 clickable: true,
@@ -300,15 +271,15 @@ if (typeof Swiper !== "undefined") {
                     0: { slidesPerView: 1 },
                 },
                 navigation: {
-                    nextEl: ".swiper-button-next",
-                    prevEl: ".swiper-button-prev",
+                    nextEl: ".blog__swiper--activation .swiper-button-next",
+                    prevEl: ".blog__swiper--activation .swiper-button-prev",
                 },
             });
         }
 
         // Quickview Slider
-        if (quickviewElement && quickviewElement.querySelector(".swiper-wrapper")) {
-            new Swiper(".quickview__swiper--activation", {
+        if (document.querySelector(".quickview__swiper--activation") && document.querySelector(".quickview__swiper--activation .swiper-wrapper")) {
+            initializeSlider(".quickview__swiper--activation", {
                 slidesPerView: 1,
                 loop: true,
                 clickable: true,
@@ -325,7 +296,7 @@ if (typeof Swiper !== "undefined") {
         }
 
         // Product Media Navigation
-        if (navElement && navElement.querySelector(".swiper-wrapper") && !swiperMediaNav) {
+        if (document.querySelector(".product__media--nav") && document.querySelector(".product__media--nav .swiper-wrapper") && !swiperMediaNav) {
             swiperMediaNav = new Swiper(".product__media--nav", {
                 loop: false,
                 spaceBetween: 10,
@@ -348,7 +319,7 @@ if (typeof Swiper !== "undefined") {
         }
 
         // Product Media Preview
-        if (previewElement && previewElement.querySelector(".swiper-wrapper") && !swiperMediaPreview) {
+        if (document.querySelector(".product__media--preview") && document.querySelector(".product__media--preview .swiper-wrapper") && !swiperMediaPreview) {
             try {
                 swiperMediaPreview = new Swiper(".product__media--preview", {
                     loop: false,
@@ -358,12 +329,13 @@ if (typeof Swiper !== "undefined") {
                     swiperMediaPreview = swiperMediaPreview[0];
                 }
             } catch (error) {
+                console.error("Error initializing media preview swiper:", error);
             }
         }
 
         // Add click event to thumbnails to update main preview
-        if (swiperMediaNav && navElement) {
-            const navSlides = navElement.querySelectorAll(".swiper-slide");
+        if (swiperMediaNav && document.querySelector(".product__media--nav")) {
+            const navSlides = document.querySelectorAll(".product__media--nav .swiper-slide");
             navSlides.forEach((slide, index) => {
                 slide.addEventListener("click", () => {
                     if (swiperMediaPreview && typeof swiperMediaPreview.slideTo === "function") {
@@ -383,6 +355,7 @@ if (typeof Swiper !== "undefined") {
                                     swiperMediaPreview.slideTo(index);
                                 }
                             } catch (error) {
+                                console.error("Error initializing media preview on click:", error);
                             }
                         }
                     }
@@ -393,15 +366,24 @@ if (typeof Swiper !== "undefined") {
 
     // MutationObserver to ensure DOM is ready
     const observer = new MutationObserver((mutations, obs) => {
-        if (document.querySelector(".product__media--nav") && document.querySelector(".product__media--preview")) {
+        if (
+            document.querySelector(".hero__slider--activation") ||
+            document.querySelector(".product__swiper--column3") ||
+            document.querySelector(".blog__swiper--activation") ||
+            document.querySelector(".testimonial__swiper--activation")
+        ) {
             initSwiper();
             obs.disconnect();
+            console.log("Swiper initialization triggered via MutationObserver");
         }
     });
     observer.observe(document.body, { childList: true, subtree: true });
 
     // Initial call to try initialization
-    initSwiper();
+    document.addEventListener("DOMContentLoaded", () => {
+        initSwiper();
+        console.log("Initial Swiper initialization on DOMContentLoaded");
+    });
 }
 
 // Tab functionality
@@ -439,12 +421,12 @@ tab(".product__details--tab");
 tab(".product__grid--column__buttons");
 
 // Countdown timer
-document.querySelectorAll("[data-countdown]").forEach(function (elem) {
-    if (elem) {
+document.querySelectorAll("[data-countdown]").forEach(function (evt) {
+    if (evt) {
         const countDownItem = function (value, label) {
             return `<div class="countdown__item" ${label}"><span class="countdown__number">${value}</span><p class="countdown__text">${label}</p></div>`;
         };
-        const date = new Date(elem.getAttribute("data-countdown")).getTime();
+        const date = new Date(evt.getAttribute("data-countdown")).getTime();
         const second = 1000,
             minute = 60000,
             hour = 3600000,
@@ -453,11 +435,11 @@ document.querySelectorAll("[data-countdown]").forEach(function (elem) {
             let currentTime = new Date().getTime();
             let timeDistance = date - currentTime;
             let daysValue = Math.floor(timeDistance / day);
-            let hoursValue = Math.floor(timeDistance % day / hour);
-            let minutesValue = Math.floor(timeDistance % hour / minute);
-            let secondsValue = Math.floor(timeDistance % minute / second);
-            if (elem) {
-                elem.innerHTML = countDownItem(daysValue, "days") + countDownItem(hoursValue, "hrs") + countDownItem(minutesValue, "mins") + countDownItem(secondsValue, "secs");
+            let hoursValue = Math.floor((timeDistance % day) / hour);
+            let minutesValue = Math.floor((timeDistance % hour) / minute);
+            let secondsValue = Math.floor((timeDistance % minute) / second);
+            if (evt) {
+                evt.innerHTML = countDownItem(daysValue, "days") + countDownItem(hoursValue, "hrs") + countDownItem(minutesValue, "mins") + countDownItem(secondsValue, "secs");
                 if (timeDistance < 0) clearInterval(countDownInterval);
             }
         }, 1000);
@@ -712,53 +694,109 @@ document.addEventListener("keyup", e => {
     }
 });
 
-// Footer widget accordion with DOMContentLoaded
+// Enhanced Footer Widget Accordion with Mobile Support
 const footerWidgetAccordion = function () {
-    let footerWidgetContainer = document.querySelector(".main__footer");
+    const footerWidgetContainer = document.querySelector(".main__footer");
     if (footerWidgetContainer) {
-        footerWidgetContainer.addEventListener("click", function (evt) {
-            let singleItemTarget = evt.target;
-            if (singleItemTarget.classList.contains("footer__widget--button")) {
+        // Click event handler
+        const handleAccordionClick = function (evt) {
+            evt.preventDefault();
+            const singleItemTarget = evt.target;
+            if (singleItemTarget.classList.contains("footer__widget--button") || singleItemTarget.closest(".footer__widget--button")) {
                 const footerWidget = singleItemTarget.closest(".footer__widget");
                 const footerWidgetInner = footerWidget.querySelector(".footer__widget--inner");
                 if (footerWidget && footerWidgetInner) {
-                    footerWidget.classList.contains("active") ?
-                        (footerWidget.classList.remove("active"), slideUp(footerWidgetInner)) :
-                        (footerWidget.classList.add("active"), slideDown(footerWidgetInner),
+                    console.log("Footer widget clicked:", footerWidget);
+                    if (footerWidget.classList.contains("active")) {
+                        footerWidget.classList.remove("active");
+                        slideUp(footerWidgetInner);
+                    } else {
+                        footerWidget.classList.add("active");
+                        slideDown(footerWidgetInner);
+                        // Close other open widgets
                         getSiblings(footerWidget).forEach(function (item) {
-                            const footerWidgetInner = item.querySelector(".footer__widget--inner");
-                            item.classList.remove("active");
-                            slideUp(footerWidgetInner);
-                        }));
+                            const siblingInner = item.querySelector(".footer__widget--inner");
+                            if (siblingInner) {
+                                item.classList.remove("active");
+                                slideUp(siblingInner);
+                            }
+                        });
+                    }
                 }
             }
-        });
+        };
+
+        // Touch event handler for mobile
+        const handleAccordionTouch = function (evt) {
+            evt.preventDefault();
+            const singleItemTarget = evt.target;
+            if (singleItemTarget.classList.contains("footer__widget--button") || singleItemTarget.closest(".footer__widget--button")) {
+                const footerWidget = singleItemTarget.closest(".footer__widget");
+                const footerWidgetInner = footerWidget.querySelector(".footer__widget--inner");
+                if (footerWidget && footerWidgetInner) {
+                    console.log("Footer widget touched:", footerWidget);
+                    if (footerWidget.classList.contains("active")) {
+                        footerWidget.classList.remove("active");
+                        slideUp(footerWidgetInner);
+                    } else {
+                        footerWidget.classList.add("active");
+                        slideDown(footerWidgetInner);
+                        // Close other open widgets
+                        getSiblings(footerWidget).forEach(function (item) {
+                            const siblingInner = item.querySelector(".footer__widget--inner");
+                            if (siblingInner) {
+                                item.classList.remove("active");
+                                slideUp(siblingInner);
+                            }
+                        });
+                    }
+                }
+            }
+        };
+
+        // Add both click and touch events
+        footerWidgetContainer.addEventListener("click", handleAccordionClick);
+        footerWidgetContainer.addEventListener("touchstart", handleAccordionTouch);
     }
 };
 
+// Initialize footer accordion on DOM ready
 document.addEventListener("DOMContentLoaded", function () {
     footerWidgetAccordion();
 });
 
+// Enhanced resize handler for footer accordion
 window.addEventListener("resize", function () {
     if (document.querySelectorAll(".footer__widget").length > 0) {
         document.querySelectorAll(".footer__widget").forEach(function (item) {
-            if (window.outerWidth >= 768) {
-                item.classList.remove("active");
-                item.querySelector(".footer__widget--inner").style.display = "";
+            const footerWidgetInner = item.querySelector(".footer__widget--inner");
+            if (footerWidgetInner) {
+                if (window.outerWidth >= 768) {
+                    // Desktop: show all content, remove active class
+                    item.classList.remove("active");
+                    footerWidgetInner.style.display = "";
+                    footerWidgetInner.style.height = "";
+                } else {
+                    // Mobile: hide all content by default
+                    item.classList.remove("active");
+                    slideUp(footerWidgetInner);
+                }
             }
         });
+        // Re-initialize accordion after resize
         footerWidgetAccordion();
     }
 });
 
 // Custom lightbox with GLightbox
 const customLightboxHTML = '<div id="glightbox-body" class="glightbox-container">\n    <div class="gloader visible"></div>\n    <div class="goverlay"></div>\n    <div class="gcontainer">\n    <div id="glightbox-slider" class="gslider"></div>\n    <button class="gnext gbtn" tabindex="0" aria-label="Next" data-customattribute="example">{nextSVG}</button>\n    <button class="gprev gbtn" tabindex="1" aria-label="Previous">{prevSVG}</button>\n    <button class="gclose gbtn" tabindex="2" aria-label="Close">{closeSVG}</button>\n    </div>\n    </div>';
-const lightbox = GLightbox({
-    touchNavigation: true,
-    lightboxHTML: customLightboxHTML,
-    loop: true,
-});
+if (typeof GLightbox !== "undefined") {
+    const lightbox = GLightbox({
+        touchNavigation: true,
+        lightboxHTML: customLightboxHTML,
+        loop: true,
+    });
+}
 
 // Counter animation
 const wrapper = document.getElementById("funfactId");

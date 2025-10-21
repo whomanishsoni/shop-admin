@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Oct 17, 2025 at 10:06 AM
+-- Generation Time: Oct 21, 2025 at 10:59 AM
 -- Server version: 9.1.0
 -- PHP Version: 8.2.26
 
@@ -63,7 +63,7 @@ CREATE TABLE IF NOT EXISTS `addresses` (
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `addresses_customer_id_foreign` (`customer_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=78 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=79 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `addresses`
@@ -74,7 +74,8 @@ INSERT INTO `addresses` (`id`, `customer_id`, `name`, `address`, `city`, `state`
 (77, 1, 'Fitzgerald Bruce', '31 West Fabien Boulevard Lorem ad ex aliquam', 'Iusto rem aliquip do', '', '311001', 'India', 0, '2025-10-16 05:36:08', '2025-10-16 05:36:08'),
 (76, 1, 'Kermit Hoffman', '74 Nobel Lane Tempor incidunt odi', 'Eu pariatur Quaerat', '', '311001', 'India', 0, '2025-10-16 05:34:13', '2025-10-16 05:34:13'),
 (74, 1, 'Alden Walton', '621 White First Court Et in ut accusantium', 'Assumenda rerum anim', '', 'Quia ut ipsam qui se', 'India', 0, '2025-10-16 03:31:04', '2025-10-16 03:31:04'),
-(75, 1, 'Chancellor Perry', '22 North Cowley Avenue Tempora quia ut volu', 'Nulla pariatur Exce', '', 'Exercitationem elit', 'India', 0, '2025-10-16 03:43:38', '2025-10-16 03:43:38');
+(75, 1, 'Chancellor Perry', '22 North Cowley Avenue Tempora quia ut volu', 'Nulla pariatur Exce', '', 'Exercitationem elit', 'India', 0, '2025-10-16 03:43:38', '2025-10-16 03:43:38'),
+(78, 1, 'Lysandra Ratliff', '414 East First Court Corrupti est irure', 'Iure rerum vel labor', '', 'Ipsa esse qui dolor', 'India', 0, '2025-10-18 01:06:47', '2025-10-18 01:06:47');
 
 -- --------------------------------------------------------
 
@@ -300,7 +301,7 @@ CREATE TABLE IF NOT EXISTS `coupons` (
 --
 
 INSERT INTO `coupons` (`id`, `code`, `type`, `value`, `usage_limit`, `used`, `valid_from`, `valid_to`, `min_purchase`, `status`, `created_at`, `updated_at`) VALUES
-(3, 'DIWALI50', 'fixed', 100.00, 100, 1, '2025-10-16', '2025-10-31', 1000.00, 1, '2025-10-16 05:57:10', '2025-10-16 05:58:39');
+(3, 'DIWALI50', 'fixed', 100.00, 100, 2, '2025-10-16', '2025-10-31', 1000.00, 1, '2025-10-16 05:57:10', '2025-10-18 01:07:21');
 
 -- --------------------------------------------------------
 
@@ -380,7 +381,7 @@ CREATE TABLE IF NOT EXISTS `email_templates` (
   `name` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
   `subject` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
   `body` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `variables` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `variables` text COLLATE utf8mb4_unicode_ci,
   `status` tinyint(1) NOT NULL DEFAULT '1',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
@@ -521,7 +522,7 @@ CREATE TABLE IF NOT EXISTS `migrations` (
   `migration` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
   `batch` int NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=41 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=42 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `migrations`
@@ -565,7 +566,8 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (35, '2025_10_06_153300_create_activity_logs_table', 1),
 (36, '2025_10_06_153301_create_notifications_table', 1),
 (37, '2025_10_08_124631_create_addresses_table', 1),
-(39, '2025_10_13_091353_create_brands_table', 2);
+(39, '2025_10_13_091353_create_brands_table', 2),
+(41, '2025_10_17_144046_create_testimonials_table', 3);
 
 -- --------------------------------------------------------
 
@@ -614,13 +616,16 @@ CREATE TABLE IF NOT EXISTS `orders` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `orders_order_number_unique` (`order_number`),
   KEY `orders_customer_id_foreign` (`customer_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=47 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=50 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `orders`
 --
 
 INSERT INTO `orders` (`id`, `order_number`, `customer_id`, `subtotal`, `tax`, `shipping`, `discount`, `total`, `status`, `payment_method`, `payment_status`, `shipping_address`, `billing_address`, `notes`, `created_at`, `updated_at`) VALUES
+(48, 'ORD-AV4TA1YS', 1, 1200.00, 216.00, 0.00, 0.00, 1416.00, 'pending', 'cod', 'pending', '31 West Fabien Boulevard Lorem ad ex aliquam, Iusto rem aliquip do, 311001, India', '762 North Nobel Freeway Aperiam id quidem vo, Aute quia sed volupt, Non nostrud ipsum v, India', NULL, '2025-10-17 22:24:37', '2025-10-17 22:25:34'),
+(49, 'ORD-S1RRTMFU', 1, 5520.00, 993.60, 0.00, 100.00, 6413.60, 'pending', 'cod', 'pending', '414 East First Court Corrupti est irure, Iure rerum vel labor, Ipsa esse qui dolor, India', '762 North Nobel Freeway Aperiam id quidem vo, Aute quia sed volupt, Non nostrud ipsum v, India', NULL, '2025-10-18 01:07:21', '2025-10-18 01:07:45'),
+(47, 'ORD-5DYVUPXA', 1, 1840.00, 331.20, 0.00, 0.00, 2171.20, 'pending', NULL, 'pending', '31 West Fabien Boulevard Lorem ad ex aliquam, Iusto rem aliquip do, 311001, India', '762 North Nobel Freeway Aperiam id quidem vo, Aute quia sed volupt, Non nostrud ipsum v, India', NULL, '2025-10-17 05:53:11', '2025-10-17 05:53:11'),
 (46, 'ORD-GPREGYYU', 1, 3680.00, 662.40, 0.00, 0.00, 4342.40, 'pending', NULL, 'pending', '31 West Fabien Boulevard Lorem ad ex aliquam, Iusto rem aliquip do, 311001, India', '762 North Nobel Freeway Aperiam id quidem vo, Aute quia sed volupt, Non nostrud ipsum v, India', NULL, '2025-10-16 07:10:52', '2025-10-16 07:10:52'),
 (45, 'ORD-2EQC6TTR', 1, 1840.00, 331.20, 0.00, 100.00, 2071.20, 'pending', 'cod', 'pending', '31 West Fabien Boulevard Lorem ad ex aliquam, Iusto rem aliquip do, 311001, India', '762 North Nobel Freeway Aperiam id quidem vo, Aute quia sed volupt, Non nostrud ipsum v, India', NULL, '2025-10-16 05:58:39', '2025-10-16 06:06:05');
 
@@ -638,13 +643,13 @@ CREATE TABLE IF NOT EXISTS `order_items` (
   `name` varchar(255) NOT NULL,
   `price` decimal(10,2) NOT NULL,
   `quantity` int NOT NULL,
-  `attributes` text DEFAULT NULL,
+  `attributes` text,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `order_id` (`order_id`),
   KEY `product_id` (`product_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=44 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=47 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `order_items`
@@ -652,7 +657,10 @@ CREATE TABLE IF NOT EXISTS `order_items` (
 
 INSERT INTO `order_items` (`id`, `order_id`, `product_id`, `name`, `price`, `quantity`, `attributes`, `created_at`, `updated_at`) VALUES
 (42, 45, 1, 'Rhysley Rayon Red Kurti', 1840.00, 1, '{\"size\": \"L\", \"color\": \"Yellow\"}', '2025-10-16 05:58:39', '2025-10-16 05:58:39'),
-(43, 46, 1, 'Rhysley Rayon Red Kurti', 1840.00, 2, '{\"size\": \"XS\", \"color\": \"Red\"}', '2025-10-16 07:10:52', '2025-10-16 07:10:52');
+(43, 46, 1, 'Rhysley Rayon Red Kurti', 1840.00, 2, '{\"size\": \"XS\", \"color\": \"Red\"}', '2025-10-16 07:10:52', '2025-10-16 07:10:52'),
+(44, 47, 1, 'Rhysley Rayon Red Kurti', 1840.00, 1, '{\"size\":\"M\",\"color\":\"White\"}', '2025-10-17 05:53:11', '2025-10-17 05:53:11'),
+(45, 48, 2, 'Women\'s Rayon Viscose Anarkali Printed Kurta', 1200.00, 1, '{\"color\":\"Green\",\"size\":\"S\"}', '2025-10-17 22:24:37', '2025-10-17 22:24:37'),
+(46, 49, 1, 'Rhysley Rayon Red Kurti', 1840.00, 3, '{\"size\":\"XS\",\"color\":\"Red\"}', '2025-10-18 01:07:21', '2025-10-18 01:07:21');
 
 -- --------------------------------------------------------
 
@@ -714,12 +722,12 @@ CREATE TABLE IF NOT EXISTS `payment_gateways` (
   `api_key` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `api_secret` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `status` tinyint(1) NOT NULL DEFAULT '1',
-  `config` text DEFAULT NULL,
+  `config` json DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `payment_gateways_gateway_key_unique` (`gateway_key`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `payment_gateways`
@@ -889,7 +897,7 @@ CREATE TABLE IF NOT EXISTS `product_reviews` (
 --
 
 INSERT INTO `product_reviews` (`id`, `product_id`, `customer_id`, `rating`, `comment`, `approved`, `created_at`, `updated_at`) VALUES
-(1, 1, 1, 5, 'Excellent product! The quality exceeded my expectations. Fast shipping and great customer service.', 0, '2025-10-13 08:59:40', '2025-10-17 04:32:52'),
+(1, 1, 1, 5, 'Excellent product! The quality exceeded my expectations. Fast shipping and great customer service.', 1, '2025-10-13 08:59:40', '2025-10-17 23:25:52'),
 (2, 2, 1, 4, 'Good product overall. Works as described but took longer to arrive than expected.', 1, '2025-10-13 08:59:40', '2025-10-13 08:59:40'),
 (3, 1, 2, 3, 'Average product. Does the job but nothing special. The packaging could be better.', 1, '2025-10-13 08:59:40', '2025-10-13 08:59:40'),
 (7, 1, 1, 5, 'Excellent product! The quality exceeded my expectations. Fast shipping and great customer service.', 1, '2025-10-13 09:00:56', '2025-10-13 09:00:56'),
@@ -912,13 +920,13 @@ CREATE TABLE IF NOT EXISTS `product_variants` (
   `sku` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
   `price` decimal(10,2) NOT NULL,
   `stock` int NOT NULL DEFAULT '0',
-  `attributes` text DEFAULT NULL,
+  `attributes` json DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `product_variants_sku_unique` (`sku`),
   KEY `product_variants_product_id_foreign` (`product_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -944,7 +952,7 @@ CREATE TABLE IF NOT EXISTS `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('Nr55bNo4pu5dnYKlkBkNMIbJGxUh3vOzFM5ajwBh', 1, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36', 'YTo3OntzOjY6Il90b2tlbiI7czo0MDoiZUhmYmhSRThHWHZIOXFKNlV6aHNWZ3o3VmZmY3pQeG11bTVMMzdSayI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czozOiJ1cmwiO2E6MDp7fXM6OToiX3ByZXZpb3VzIjthOjE6e3M6MzoidXJsIjtzOjcwOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYmxvZy9ob3ctdG8tc3R5bGUteW91ci1rdXJ0aXMtZm9yLWV2ZXJ5LW9jY2FzaW9uIjt9czo1NToibG9naW5fY3VzdG9tZXJfNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI7aToxO3M6NTA6ImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjE7czo0OiJjYXJ0IjthOjI6e3M6MzQ6IjEtODcxMjJiZTNkMjZmNjhiODQyYjgwOTRmMjg3ZThmNWUiO2E6Nzp7czoxMDoicHJvZHVjdF9pZCI7aToxO3M6NDoic2x1ZyI7czoyMzoicmh5c2xleS1yYXlvbi1yZWQta3VydGkiO3M6NDoibmFtZSI7czoyMzoiUmh5c2xleSBSYXlvbiBSZWQgS3VydGkiO3M6NToicHJpY2UiO3M6NzoiMTg0MC4wMCI7czo1OiJpbWFnZSI7czo4MzoiaHR0cDovLzEyNy4wLjAuMTo4MDAwL3N0b3JhZ2UvcHJvZHVjdHMvYWZ0eW9UbUlzdzlaZXBqRERocXZCMG5kcFpaRWd0MnlVVHBsV0ZPSi5qcGciO3M6ODoicXVhbnRpdHkiO3M6MToiMSI7czoxMDoiYXR0cmlidXRlcyI7YToyOntzOjQ6InNpemUiO3M6MToiTSI7czo1OiJjb2xvciI7czo0OiJCbHVlIjt9fXM6MzQ6IjEtZDkwYzI0YzhmZjU1MWNmNGMyYTk2MmY0NDBlOTFhMmQiO2E6Nzp7czoxMDoicHJvZHVjdF9pZCI7aToxO3M6NDoic2x1ZyI7czoyMzoicmh5c2xleS1yYXlvbi1yZWQta3VydGkiO3M6NDoibmFtZSI7czoyMzoiUmh5c2xleSBSYXlvbiBSZWQgS3VydGkiO3M6NToicHJpY2UiO3M6NzoiMTg0MC4wMCI7czo1OiJpbWFnZSI7czo4MzoiaHR0cDovLzEyNy4wLjAuMTo4MDAwL3N0b3JhZ2UvcHJvZHVjdHMvYWZ0eW9UbUlzdzlaZXBqRERocXZCMG5kcFpaRWd0MnlVVHBsV0ZPSi5qcGciO3M6ODoicXVhbnRpdHkiO3M6MToiMSI7czoxMDoiYXR0cmlidXRlcyI7YToyOntzOjQ6InNpemUiO3M6MjoiWFMiO3M6NToiY29sb3IiO3M6MzoiUmVkIjt9fX19', 1760695453);
+('UCJgUw3z71kKFUKS2QDZT2wlmmgYGQQ5yfSrEZsP', 1, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoiNXRvbkNESnplZERnZzBjcTRQYUJZMUJsU2l2eVB6dnAwazFRYkN4NCI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MzI6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9zaG9wL3dvbWVuIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo1MDoibG9naW5fd2ViXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6MTtzOjQ6ImNhcnQiO2E6MTp7czozNDoiMS1kOTBjMjRjOGZmNTUxY2Y0YzJhOTYyZjQ0MGU5MWEyZCI7YTo3OntzOjEwOiJwcm9kdWN0X2lkIjtpOjE7czo0OiJzbHVnIjtzOjIzOiJyaHlzbGV5LXJheW9uLXJlZC1rdXJ0aSI7czo0OiJuYW1lIjtzOjIzOiJSaHlzbGV5IFJheW9uIFJlZCBLdXJ0aSI7czo1OiJwcmljZSI7czo3OiIxODQwLjAwIjtzOjU6ImltYWdlIjtzOjgzOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvc3RvcmFnZS9wcm9kdWN0cy9hZnR5b1RtSXN3OVplcGpERGhxdkIwbmRwWlpFZ3QyeVVUcGxXRk9KLmpwZyI7czo4OiJxdWFudGl0eSI7czoxOiIxIjtzOjEwOiJhdHRyaWJ1dGVzIjthOjI6e3M6NDoic2l6ZSI7czoyOiJYUyI7czo1OiJjb2xvciI7czozOiJSZWQiO319fX0=', 1761044142);
 
 -- --------------------------------------------------------
 
@@ -1051,7 +1059,7 @@ DROP TABLE IF EXISTS `shipping_zones`;
 CREATE TABLE IF NOT EXISTS `shipping_zones` (
   `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `states` text DEFAULT NULL,
+  `states` json DEFAULT NULL,
   `shipping_method_id` bigint UNSIGNED NOT NULL,
   `rate` decimal(10,2) NOT NULL DEFAULT '0.00',
   `status` tinyint(1) NOT NULL DEFAULT '1',
@@ -1059,7 +1067,7 @@ CREATE TABLE IF NOT EXISTS `shipping_zones` (
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `shipping_zones_shipping_method_id_foreign` (`shipping_method_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `shipping_zones`
@@ -1182,6 +1190,41 @@ INSERT INTO `taxes` (`id`, `name`, `type`, `rate`, `status`, `created_at`, `upda
 (1, 'GST 5%', 'percentage', 5.00, 1, '2025-10-11 01:01:40', '2025-10-11 01:01:40'),
 (2, 'GST 12%', 'percentage', 12.00, 1, '2025-10-11 01:01:40', '2025-10-11 01:01:40'),
 (3, 'GST 18%', 'percentage', 18.00, 1, '2025-10-14 06:27:20', '2025-10-14 06:27:20');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `testimonials`
+--
+
+DROP TABLE IF EXISTS `testimonials`;
+CREATE TABLE IF NOT EXISTS `testimonials` (
+  `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
+  `name` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `designation` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `image` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `message` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `rating` tinyint UNSIGNED NOT NULL DEFAULT '5',
+  `status` tinyint(1) NOT NULL DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `testimonials`
+--
+
+INSERT INTO `testimonials` (`id`, `name`, `designation`, `image`, `message`, `rating`, `status`, `created_at`, `updated_at`) VALUES
+(1, 'Raj Bansal', 'Customer', 'testimonials/RNyU93zX5TZgAYVB84b73iWdZqrZZSYZY1xcWvim.png', 'I ordered couple of sarees. The color/pattern/quality was exactly the same as shown in pics. Great customer service. Will definitely order more in future. Highly recommended.', 5, 1, '2025-10-18 04:24:01', '2025-10-17 23:25:26'),
+(2, 'Manisha Reddy', 'Fashion Enthusiast', 'testimonials/KElxlJQuCHdDOZk79Z5mxrhLEIU55gcg2estmKh1.png', 'I really loved your collections. They have a very beautiful collection. It was home delivered to me. I really loved the designs and looking forward to see more outfits. Anjali is really decent and professional at her work. Highly recommend Ardha Couture for online shopping and excellent customer service.', 5, 1, '2025-10-18 04:24:01', '2025-10-17 23:21:06'),
+(3, 'S.K.Khanna', 'Regular Customer', 'testimonials/w8ARCJjr0mJeJf0vzDieHqeRbuH6gKsTgrAKAj84.png', 'Thank you for the lovely outfits! The quality of the fabric is great and dresses fit so perfect. They look amazing and classy. As always, I love your designs and looking forward to add more outfits to my wardrobe. Highly recommend Ardha Couture for online shopping and excellent customer service!!!', 5, 1, '2025-10-18 04:24:01', '2025-10-17 23:21:54'),
+(4, 'Priya Sharma', 'Boutique Owner', 'testimonials/0thFeJZpJclUk5NVHbZnoopmVLDei1r9chnZ7gpd.png', 'Absolutely stunning collection! The embroidery work is impeccable and the fabrics are luxurious. My customers loved the new sarees I ordered. Fast shipping and excellent packaging. 5 stars!', 5, 1, '2025-10-18 04:24:01', '2025-10-17 23:21:42'),
+(5, 'Amit Patel', 'Fashion Blogger', 'testimonials/GgxCR64sqYMA0fEU5YGbBC6XKx8D0CUNwD6k0LVB.png', 'As a fashion blogger, I\'ve tried many designers but Ardha Couture stands out! Unique designs, perfect fit, and amazing quality. My followers are obsessed with these outfits. Highly recommend!', 5, 1, '2025-10-18 04:24:01', '2025-10-17 23:22:05'),
+(6, 'Neha Gupta', 'Working Professional', 'testimonials/vh59wPXytvLPDSl6puOYAxz2yiSBNcwinr1R9Hrc.png', 'Perfect for office wear! Got a beautiful Anarkali suit that\'s elegant yet comfortable. Received so many compliments at work. Great for both formal and festive occasions. Love it!', 5, 1, '2025-10-18 04:24:01', '2025-10-17 23:22:14'),
+(7, 'Rohit Singh', 'Groom\'s Brother', 'testimonials/OiGQrXVrmzqT6AAAUniaSCVcbgamvMzlP2gxXj7l.png', 'Ordered sherwanis for my brother\'s wedding. The fabric quality and stitching were outstanding! Everyone at the wedding complimented the outfits. Highly professional service. Will order again!', 5, 1, '2025-10-18 04:24:01', '2025-10-17 23:22:31'),
+(8, 'Sneha Desai', 'New Mom', 'testimonials/Xko9rpNIeuiPHJASQIJnHm6H7z8vo9kCzihL0ciX.png', 'Bought a postpartum lehenga and it\'s gorgeous! Comfortable yet stylish. The team was very helpful in suggesting the right size. Perfect for baby showers and family functions. Thank you!', 5, 1, '2025-10-18 04:24:01', '2025-10-17 23:22:21'),
+(9, 'Vikram Malhotra', 'NRI Customer', 'testimonials/vrP171jMpp7AJTb7WOx5MG2topRGyOINBb1ViUo4.png', 'Living in USA but ordered for my sister\'s wedding in India. Perfect delivery and quality! The lehenga looked exactly like the pictures. Saved me a trip back home. Excellent service!', 5, 1, '2025-10-18 04:24:01', '2025-10-17 23:22:38');
 
 -- --------------------------------------------------------
 

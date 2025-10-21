@@ -4,8 +4,11 @@ namespace App\Http\Controllers\Store;
 
 use App\Http\Controllers\Controller;
 use App\Models\Product;
+use App\Models\Order;
+use App\Models\ProductReview;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
 {
@@ -27,6 +30,34 @@ class ProductController extends Controller
                 'attributeValues.attribute'
             ])
             ->firstOrFail();
+
+        // Check if the authenticated user can review the product
+        $canReview = false;
+        if (Auth::guard('customer')->check()) {
+            $customerId = Auth::guard('customer')->id();
+            $hasPurchased = Order::where('customer_id', $customerId)
+                ->where('status', 'completed')
+                ->where('payment_status', 'paid')
+                ->whereHas('items', function ($query) use ($product) {
+                    $query->where('product_id', $product->id);
+                })
+                ->exists();
+
+            $hasReviewed = ProductReview::where('product_id', $product->id)
+                ->where('customer_id', $customerId)
+                ->exists();
+
+            $canReview = $hasPurchased && !$hasReviewed;
+
+            // Debug logging
+            Log::info('canReview Debug: ', [
+                'product_id' => $product->id,
+                'customer_id' => $customerId,
+                'hasPurchased' => $hasPurchased,
+                'hasReviewed' => $hasReviewed,
+                'canReview' => $canReview
+            ]);
+        }
 
         // Prepare product data for the view
         $productData = [
@@ -68,6 +99,7 @@ class ProductController extends Controller
             })->toArray(),
             'average_rating' => $product->reviews->avg('rating') ?: 0,
             'review_count' => $product->reviews->count(),
+            'can_review' => $canReview,
         ];
 
         // Log product data for debugging

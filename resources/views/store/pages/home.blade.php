@@ -18,10 +18,10 @@
                     </div>
                     <div class="col-lg-12 col-md-12">
                         <div class="new__product--sidebar position__relative">
-                            <div class="product__swiper--column3 swiper">
-                                <div class="swiper-wrapper">
+                            <div class="product__swiper--column3 swiper swiper-initialized swiper-horizontal swiper-pointer-events">
+                                <div class="swiper-wrapper" id="swiper-wrapper-8bd9a33f36314f07" aria-live="off" style="transform: translate3d(-1125px, 0px, 0px); transition-duration: 300ms;">
                                     @foreach ($products as $product)
-                                        <div class="swiper-slide">
+                                        <div class="swiper-slide" style="width: 345px; margin-right: 30px;" role="group" aria-label="{{ $loop->index + 1 }} / {{ $products->count() }}" data-swiper-slide-index="{{ $loop->index }}">
                                             <div class="product__items">
                                                 <div class="product__items--thumbnail">
                                                     <a class="product__items--link" href="{{ $product['product_url'] }}">
@@ -55,15 +55,41 @@
                                     @endforeach
                                 </div>
                             </div>
-                            <div class="swiper__nav--btn style3 swiper-button-next"></div>
-                            <div class="swiper__nav--btn style3 swiper-button-prev"></div>
+                            <div class="swiper__nav--btn style3 swiper-button-next" tabindex="0" role="button" aria-label="Next slide" aria-controls="swiper-wrapper-8bd9a33f36314f07"></div>
+                            <div class="swiper__nav--btn style3 swiper-button-prev" tabindex="0" role="button" aria-label="Previous slide" aria-controls="swiper-wrapper-8bd9a33f36314f07"></div>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Start banner section -->
+        <style>
+        @media (max-width: 767px) {
+            .new__product--section .product__swiper--column3 .product__items--action {
+                display: block !important;
+            }
+            .new__product--section .product__swiper--column3 .product__items--action__btn {
+                width: 100% !important;
+            }
+            .new__product--section .product__swiper--column3 .product__items {
+                height: 450px !important;
+            }
+            .new__product--section .product__swiper--column3 .swiper-slide {
+                height: 450px !important;
+            }
+            .new__product--section .product__swiper--column3 .swiper-wrapper {
+                height: 450px !important;
+            }
+            .new__product--section .product__swiper--column3 .product__items--thumbnail {
+                height: 340px !important;
+            }
+            .new__product--section .product__swiper--column3 .product__items--thumbnail .product__items--link img {
+                height: 100% !important;
+                object-fit: contain !important;
+            }
+        }
+        </style>
+
         <section class="banner__section banner__style2 section--padding" style="background-color: #f7f3f3;">
             <div class="section__heading text-center mb-35">
                 <h2 class="section__heading--maintitle">Women Collections</h2>
@@ -209,6 +235,7 @@
             });
         }
 
+        // Testimonial Slider
         if (document.querySelector(".testimonial__swiper--activation") && document.querySelector(".testimonial__swiper--activation .swiper-wrapper")) {
             new Swiper(".testimonial__swiper--activation", {
                 slidesPerView: 3,
