@@ -14,12 +14,13 @@
     </li>
     <hr class="sidebar-divider">
     <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseCatalog"
+        <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseCatalog"
             aria-expanded="false" aria-controls="collapseCatalog">
             <i class="fas fa-fw fa-folder"></i>
             <span>Catalog</span>
+            <i class="fas fa-angle-right collapse-arrow ms-auto"></i>
         </a>
-        <div id="collapseCatalog" class="collapse" aria-labelledby="headingCatalog" data-parent="#accordionSidebar">
+        <div id="collapseCatalog" class="collapse" aria-labelledby="headingCatalog" data-bs-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Catalog Actions</h6>
                 <a class="collapse-item {{ request()->routeIs('admin.categories.index') ? 'active' : '' }}"
@@ -39,12 +40,13 @@
     </li>
     <hr class="sidebar-divider">
     <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseSales"
+        <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseSales"
             aria-expanded="false" aria-controls="collapseSales">
             <i class="fas fa-fw fa-shopping-cart"></i>
             <span>Sales</span>
+            <i class="fas fa-angle-right collapse-arrow ms-auto"></i>
         </a>
-        <div id="collapseSales" class="collapse" aria-labelledby="headingSales" data-parent="#accordionSidebar">
+        <div id="collapseSales" class="collapse" aria-labelledby="headingSales" data-bs-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Sales Actions</h6>
                 <a class="collapse-item {{ request()->routeIs('admin.orders.index') ? 'active' : '' }}"
@@ -60,13 +62,13 @@
     </li>
     <hr class="sidebar-divider">
     <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseOperations"
+        <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseOperations"
             aria-expanded="false" aria-controls="collapseOperations">
             <i class="fas fa-fw fa-truck"></i>
             <span>Operations</span>
+            <i class="fas fa-angle-right collapse-arrow ms-auto"></i>
         </a>
-        <div id="collapseOperations" class="collapse" aria-labelledby="headingOperations"
-            data-parent="#accordionSidebar">
+        <div id="collapseOperations" class="collapse" aria-labelledby="headingOperations" data-bs-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Operations Actions</h6>
                 <a class="collapse-item {{ request()->routeIs('admin.shipping-methods.index') ? 'active' : '' }}"
@@ -84,12 +86,13 @@
     </li>
     <hr class="sidebar-divider">
     <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseContent"
+        <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseContent"
             aria-expanded="false" aria-controls="collapseContent">
             <i class="fas fa-fw fa-images"></i>
             <span>Content</span>
+            <i class="fas fa-angle-right collapse-arrow ms-auto"></i>
         </a>
-        <div id="collapseContent" class="collapse" aria-labelledby="headingContent" data-parent="#accordionSidebar">
+        <div id="collapseContent" class="collapse" aria-labelledby="headingContent" data-bs-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Content Actions</h6>
                 <a class="collapse-item {{ request()->routeIs('admin.sliders.index') ? 'active' : '' }}"
@@ -111,12 +114,13 @@
     </li>
     <hr class="sidebar-divider">
     <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseSupport"
+        <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseSupport"
             aria-expanded="false" aria-controls="collapseSupport">
             <i class="fas fa-fw fa-ticket-alt"></i>
             <span>Support</span>
+            <i class="fas fa-angle-right collapse-arrow ms-auto"></i>
         </a>
-        <div id="collapseSupport" class="collapse" aria-labelledby="headingSupport" data-parent="#accordionSidebar">
+        <div id="collapseSupport" class="collapse" aria-labelledby="headingSupport" data-bs-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Support Actions</h6>
                 <a class="collapse-item {{ request()->routeIs('admin.tickets.index') ? 'active' : '' }}"
@@ -130,12 +134,13 @@
     </li>
     <hr class="sidebar-divider">
     <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseSystem"
+        <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseSystem"
             aria-expanded="false" aria-controls="collapseSystem">
             <i class="fas fa-fw fa-cog"></i>
             <span>System</span>
+            <i class="fas fa-angle-right collapse-arrow ms-auto"></i>
         </a>
-        <div id="collapseSystem" class="collapse" aria-labelledby="headingSystem" data-parent="#accordionSidebar">
+        <div id="collapseSystem" class="collapse" aria-labelledby="headingSystem" data-bs-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">System Actions</h6>
                 <a class="collapse-item {{ request()->routeIs('admin.settings.index') ? 'active' : '' }}"

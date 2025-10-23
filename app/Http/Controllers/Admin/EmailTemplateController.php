@@ -111,4 +111,27 @@ class EmailTemplateController extends Controller
         EmailTemplate::whereIn('id', $request->ids)->delete();
         return response()->json(['success' => 'Email Templates deleted successfully']);
     }
+
+    public function sendTestEmail(Request $request, EmailTemplate $emailTemplate)
+    {
+        $request->validate([
+            'test_email' => 'required|email'
+        ]);
+
+        try {
+            $data = [
+                'user_name' => 'Test User',
+                'user_email' => 'test@example.com',
+                'site_name' => config('app.name'),
+                'site_url' => config('app.url'),
+                // Add more test data as needed based on your variables
+            ];
+
+            \Mail::to($request->test_email)->send(new \App\Mail\SendEmailTemplate($emailTemplate, $data));
+
+            return redirect()->back()->with('success', 'Test email sent successfully!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Failed to send test email: ' . $e->getMessage());
+        }
+    }
 }

@@ -6,18 +6,6 @@
     <main class="main__content_wrapper">
         <div class="login__section section--padding" style="border-top:1px solid #ccc;border-bottom:1px solid #ccc">
             <div class="container">
-                @if (session('success'))
-                    <div class="alert alert-success">{{ session('success') }}</div>
-                @endif
-                @if ($errors->any())
-                    <div class="alert alert-danger">
-                        <ul>
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif
                 <div class="login__section--inner">
                     <div class="row">
                         <div class="col">
@@ -42,7 +30,7 @@
                                             <a href="{{ route('forgot_password') }}" class="account__login--forgot">Forgot Your Password?</a>
                                         </div>
                                         <button class="account__login--btn primary__btn mb-15" type="submit">Login</button>
-                                        <p class="account__login--signup__text mt-15">Don't Have an Account? <a href="{{ route('register') }}">Sign up now</a></p>
+                                        <p class="account__login--signup__text">Don't Have an Account? <a href="{{ route('register') }}">Sign up now</a></p>
                                     </div>
                                 </form>
                             </div>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Setting;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Yajra\DataTables\Facades\DataTables;
 
 class SettingController extends Controller
@@ -83,42 +84,57 @@ class SettingController extends Controller
     public function bulkUpdate(Request $request)
     {
         $fileFields = ['site_logo', 'site_favicon', 'footer_logo'];
-        $mailFields = ['mail_mailer', 'mail_host', 'mail_port', 'mail_username', 'mail_password', 'mail_encryption', 'mail_from_address', 'mail_from_name'];
+        $mailFields = ['mail_host', 'mail_port', 'mail_username', 'mail_password', 'mail_encryption', 'mail_from_address', 'mail_from_name'];
 
-        foreach ($request->except(['_token']) as $key => $value) {
-            if ($request->hasFile($key)) {
-                $value = $request->file($key)->store('settings', 'public');
-            }
+        try {
+            foreach ($request->except(['_token']) as $key => $value) {
+                if ($request->hasFile($key)) {
+                    $value = $request->file($key)->store('settings', 'public');
+                }
 
-            // Handle mail settings separately - save to both DB and .env
-            if (in_array($key, $mailFields)) {
-                $this->updateEnvVariable(strtoupper($key), $value);
-
-                Setting::updateOrCreate(
-                    ['key' => $key],
-                    [
-                        'value' => $value,
-                        'type' => 'text'
-                    ]
-                );
-            } else {
-                // Regular settings - save to DB only
-                Setting::updateOrCreate(
-                    ['key' => $key],
-                    [
+                if (in_array($key, $mailFields)) {
+                    $this->updateEnvVariable(strtoupper($key), $value);
+                    Setting::updateOrCreate(['key' => $key], ['value' => $value, 'type' => 'text']);
+                } else {
+                    Setting::updateOrCreate(['key' => $key], [
                         'value' => $value,
                         'type' => in_array($key, $fileFields) ? 'image' : 'text'
-                    ]
-                );
+                    ]);
+                }
             }
-        }
 
-        // Clear config cache to apply new mail settings
-        if ($request->hasAny($mailFields)) {
-            \Artisan::call('config:clear');
-        }
+            // Always set MAIL_MAILER to smtp when updating mail settings
+            if ($request->hasAny($mailFields)) {
+                $this->updateEnvVariable('MAIL_MAILER', 'smtp');
+                \Artisan::call('config:clear');
+                \Artisan::call('config:cache');
+            }
 
-        return redirect()->route('admin.settings.index')->with('success', 'Settings updated successfully');
+            return redirect()->route('admin.settings.index')->with('success', 'Settings updated successfully');
+        } catch (\Exception $e) {
+            \Log::error('Bulk update failed: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Failed to update settings: ' . $e->getMessage());
+        }
+    }
+
+    public function testMail(Request $request)
+    {
+        $validated = $request->validate([
+            'test_email' => 'required|email'
+        ]);
+
+        try {
+            Mail::raw('This is a test email to verify your mail settings.', function ($message) use ($validated) {
+                $message->to($validated['test_email'])
+                        ->subject('Test Email from ' . config('app.name'))
+                        ->from(config('mail.from.address'), config('mail.from.name'));
+            });
+            \Log::info('Test email sent successfully to ' . $validated['test_email']);
+            return response()->json(['success' => true, 'message' => 'Test email sent successfully!']);
+        } catch (\Exception $e) {
+            \Log::error('Failed to send test email: ' . $e->getMessage());
+            return response()->json(['success' => false, 'message' => 'Failed to send test email: ' . $e->getMessage()], 500);
+        }
     }
 
     /**

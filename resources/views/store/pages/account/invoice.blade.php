@@ -23,7 +23,7 @@
         <section class="my__account--section section--padding">
             <div class="container">
                 <div class="cart__summary border-radius-10 p-3" style="max-width: 800px; margin: 0 auto;">
-                    <span class="success-icon" style="font-size: 48px; display: block; margin-bottom: 20px;">🎉</span>
+                    {{-- <span class="success-icon" style="font-size: 48px; display: block; margin-bottom: 20px;">🎉</span> --}}
                     <h2 class="cart__content--title mb-20">Invoice for Order #{{ $order->order_number }}</h2>
                     <div class="mb-30">
                         <h4 class="cart__content--title mb-15">Order Details</h4>

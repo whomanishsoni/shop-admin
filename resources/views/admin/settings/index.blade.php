@@ -7,7 +7,7 @@
     <h1 class="h3 mb-0 text-gray-800">Website Settings</h1>
 </div>
 
-<form action="{{ route('admin.settings.bulk-update') }}" method="POST" enctype="multipart/form-data">
+<form action="{{ route('admin.settings.bulk-update') }}" method="POST" enctype="multipart/form-data" id="settings-form">
     @csrf
 
     <div class="card shadow mb-4">
@@ -168,27 +168,6 @@
 
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label class="form-label">Mail Driver <span class="text-danger">*</span></label>
-                            <select name="mail_mailer" class="form-control" required>
-                                <option value="smtp" {{ ($settings['mail_mailer'] ?? env('MAIL_MAILER')) == 'smtp' ? 'selected' : '' }}>SMTP</option>
-                                <option value="sendmail" {{ ($settings['mail_mailer'] ?? env('MAIL_MAILER')) == 'sendmail' ? 'selected' : '' }}>Sendmail</option>
-                                <option value="mailgun" {{ ($settings['mail_mailer'] ?? env('MAIL_MAILER')) == 'mailgun' ? 'selected' : '' }}>Mailgun</option>
-                                <option value="ses" {{ ($settings['mail_mailer'] ?? env('MAIL_MAILER')) == 'ses' ? 'selected' : '' }}>Amazon SES</option>
-                                <option value="log" {{ ($settings['mail_mailer'] ?? env('MAIL_MAILER')) == 'log' ? 'selected' : '' }}>Log (Testing)</option>
-                            </select>
-                            <small class="text-muted">Choose your email service provider</small>
-                        </div>
-
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Mail Encryption</label>
-                            <select name="mail_encryption" class="form-control">
-                                <option value="tls" {{ ($settings['mail_encryption'] ?? env('MAIL_ENCRYPTION')) == 'tls' ? 'selected' : '' }}>TLS</option>
-                                <option value="ssl" {{ ($settings['mail_encryption'] ?? env('MAIL_ENCRYPTION')) == 'ssl' ? 'selected' : '' }}>SSL</option>
-                                <option value="" {{ empty($settings['mail_encryption'] ?? env('MAIL_ENCRYPTION')) ? 'selected' : '' }}>None</option>
-                            </select>
-                        </div>
-
-                        <div class="col-md-6 mb-3">
                             <label class="form-label">SMTP Host <span class="text-danger">*</span></label>
                             <input type="text" name="mail_host" class="form-control" value="{{ $settings['mail_host'] ?? env('MAIL_HOST') }}" placeholder="smtp.gmail.com" required>
                             <small class="text-muted">e.g., smtp.gmail.com, smtp.sendgrid.net</small>
@@ -212,6 +191,15 @@
                         </div>
 
                         <div class="col-md-6 mb-3">
+                            <label class="form-label">Mail Encryption</label>
+                            <select name="mail_encryption" class="form-control">
+                                <option value="tls" {{ ($settings['mail_encryption'] ?? env('MAIL_ENCRYPTION')) == 'tls' ? 'selected' : '' }}>TLS</option>
+                                <option value="ssl" {{ ($settings['mail_encryption'] ?? env('MAIL_ENCRYPTION')) == 'ssl' ? 'selected' : '' }}>SSL</option>
+                                <option value="" {{ empty($settings['mail_encryption'] ?? env('MAIL_ENCRYPTION')) ? 'selected' : '' }}>None</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
                             <label class="form-label">Mail From Address <span class="text-danger">*</span></label>
                             <input type="email" name="mail_from_address" class="form-control" value="{{ $settings['mail_from_address'] ?? env('MAIL_FROM_ADDRESS') }}" placeholder="noreply@yoursite.com" required>
                             <small class="text-muted">Default sender email address</small>
@@ -222,31 +210,11 @@
                             <input type="text" name="mail_from_name" class="form-control" value="{{ $settings['mail_from_name'] ?? env('MAIL_FROM_NAME') }}" placeholder="Your Store Name" required>
                             <small class="text-muted">Default sender name</small>
                         </div>
-                    </div>
 
-                    <div class="card bg-light mt-3">
-                        <div class="card-body">
-                            <h6 class="mb-3"><i class="fas fa-book"></i> Popular Email Service Settings:</h6>
-                            <div class="row small">
-                                <div class="col-md-6">
-                                    <strong>Gmail:</strong>
-                                    <ul>
-                                        <li>Host: smtp.gmail.com</li>
-                                        <li>Port: 587 (TLS) or 465 (SSL)</li>
-                                        <li>Username: your-email@gmail.com</li>
-                                        <li>Password: App Password (not Gmail password)</li>
-                                    </ul>
-                                </div>
-                                <div class="col-md-6">
-                                    <strong>SendGrid:</strong>
-                                    <ul>
-                                        <li>Host: smtp.sendgrid.net</li>
-                                        <li>Port: 587</li>
-                                        <li>Username: apikey</li>
-                                        <li>Password: Your SendGrid API Key</li>
-                                    </ul>
-                                </div>
-                            </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Test Email Address</label>
+                            <input type="email" id="test_email" class="form-control" placeholder="test@example.com">
+                            <small class="text-muted">Enter an email to test the mail settings</small>
                         </div>
                     </div>
                 </div>
@@ -256,6 +224,9 @@
         <div class="card-footer">
             <button type="submit" class="btn btn-primary">
                 <i class="fas fa-save"></i> Save Settings
+            </button>
+            <button type="button" class="btn btn-info" id="test-mail-btn">
+                <i class="fas fa-envelope"></i> Send Test Email
             </button>
         </div>
     </div>
@@ -273,5 +244,33 @@ function previewImage(input, previewId) {
         reader.readAsDataURL(input.files[0]);
     }
 }
+
+document.getElementById('test-mail-btn').addEventListener('click', function() {
+    const testEmail = document.getElementById('test_email').value;
+    if (!testEmail) {
+        alert('Please enter a test email address.');
+        return;
+    }
+
+    fetch('{{ route('admin.settings.test-mail') }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        },
+        body: JSON.stringify({ test_email: testEmail })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert(data.message);
+        } else {
+            alert(data.message);
+        }
+    })
+    .catch(error => {
+        alert('Error sending test email: ' + error.message);
+    });
+});
 </script>
 @endpush

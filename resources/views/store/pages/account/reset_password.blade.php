@@ -1,6 +1,6 @@
 @extends('store.layouts.app')
 
-@section('title', 'Forgot Password - Vyuga')
+@section('title', 'Reset Password - Vyuga')
 
 @section('content')
 <main class="main__content_wrapper">
@@ -9,13 +9,16 @@
             <div class="login__section--inner">
                 <div class="account__login enhanced-form">
                     <div class="account__login--header mb-20">
-                        <h2 class="account__login--header__title h3 mb-10">Forgot Password</h2>
-                        <p class="account__login--header__desc">Enter your email to reset your password.</p>
+                        <h2 class="account__login--header__title h3 mb-10">Reset Password</h2>
+                        <p class="account__login--header__desc">Enter a new password for your account.</p>
                     </div>
-                    <form action="{{ route('forgot_password') }}" method="POST">
+                    <form action="{{ route('password.reset') }}" method="POST">
                         @csrf
+                        <input type="hidden" name="token" value="{{ $token }}">
+                        <input type="hidden" name="email" value="{{ $email }}">
                         <div class="account__login--inner">
-                            <input class="account__login--input" name="email" placeholder="Email Address" type="email" value="{{ old('email') }}" required>
+                            <input class="account__login--input" name="password" placeholder="New Password" type="password" required>
+                            <input class="account__login--input" name="password_confirmation" placeholder="Confirm Password" type="password" required>
                             <button class="account__login--btn primary__btn mb-15" type="submit">Reset Password</button>
                             <p class="account__login--signup__text mt-15"><a href="{{ route('login') }}">Back to Login</a></p>
                         </div>

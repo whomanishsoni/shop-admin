@@ -18,7 +18,7 @@ use App\Http\Controllers\Store\{
     HomeController, AccountController, AboutController, CartController,
     ContactController, LegalController, OrderController, ProductController,
     ShopController, WishlistController, CheckoutController, ProductReviewController,
-    BlogController // Added for blog routes
+    BlogController
 };
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -54,24 +54,31 @@ Route::post('/wishlist/move-to-cart', [WishlistController::class, 'moveToCart'])
 Route::get('/wishlist/count', [WishlistController::class, 'getCount'])->name('wishlist.count');
 
 // Product reviews route
-Route::middleware(['auth:customer'])->group(function () {
+Route::middleware(['auth:customer', 'verified.customer'])->group(function () {
     Route::post('/product-reviews', [ProductReviewController::class, 'store'])->name('product-reviews.store');
 });
 
-// Moved login and register routes outside the 'account' prefix
+// Guest routes
 Route::middleware(['guest:customer'])->group(function () {
     Route::get('/login', [AccountController::class, 'login'])->name('login');
     Route::post('/login', [AccountController::class, 'loginAttempt'])->name('login.attempt');
     Route::get('/register', [AccountController::class, 'register'])->name('register');
     Route::post('/register', [AccountController::class, 'registerAttempt'])->name('register.attempt');
     Route::match(['get', 'post'], '/forgot-password', [AccountController::class, 'forgotPassword'])->name('forgot_password');
+    Route::get('/reset-password', [AccountController::class, 'showResetForm'])->name('password.reset.form');
+    Route::post('/reset-password', [AccountController::class, 'resetPassword'])->name('password.reset');
 });
 
-// Account routes (remaining routes under 'account' prefix)
-Route::prefix('account')->middleware('auth:customer')->group(function () {
+// Email verification route
+Route::get('/verify-email', [AccountController::class, 'verifyEmail'])->name('verify.email');
+
+// Account routes
+Route::prefix('account')->middleware(['auth:customer', 'verified.customer'])->group(function () {
     Route::get('/profile', [AccountController::class, 'profile'])->name('profile');
     Route::get('/edit-profile', [AccountController::class, 'editProfile'])->name('editProfile');
     Route::post('/edit-profile', [AccountController::class, 'updateProfile'])->name('update_profile');
+    Route::get('/change-password', [AccountController::class, 'changePassword'])->name('changePassword');
+    Route::post('/change-password', [AccountController::class, 'updatePassword'])->name('update_password');
     Route::get('/orders', [OrderController::class, 'index'])->name('orders');
     Route::get('/orders/{id}/invoice', [OrderController::class, 'invoice'])->name('order.invoice');
     Route::get('/addresses', [AccountController::class, 'addresses'])->name('addresses');
@@ -187,6 +194,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         // Email & Communications
         Route::resource('email-templates', EmailTemplateController::class);
         Route::post('email-templates/bulk-delete', [EmailTemplateController::class, 'bulkDelete'])->name('email-templates.bulk-delete');
+        Route::post('email-templates/{emailTemplate}/send-test', [EmailTemplateController::class, 'sendTestEmail'])->name('email-templates.send-test');
 
         Route::resource('subscribers', SubscriberController::class)->only(['index', 'destroy']);
         Route::get('subscribers/export', [SubscriberController::class, 'export'])->name('subscribers.export');
@@ -196,6 +204,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('settings', [SettingController::class, 'index'])->name('settings.index');
         Route::post('settings/bulk-update', [SettingController::class, 'bulkUpdate'])->name('settings.bulk-update');
         Route::post('settings/bulk-delete', [SettingController::class, 'bulkDelete'])->name('settings.bulk-delete');
+        Route::post('settings/test-mail', [SettingController::class, 'testMail'])->name('settings.test-mail');
 
         Route::resource('languages', LanguageController::class);
         Route::post('languages/bulk-delete', [LanguageController::class, 'bulkDelete'])->name('languages.bulk-delete');

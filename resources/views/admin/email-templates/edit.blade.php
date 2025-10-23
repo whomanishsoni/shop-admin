@@ -30,11 +30,11 @@
                     <div class="mb-3">
                         <label for="subject" class="form-label">Email Subject <span class="text-danger">*</span></label>
                         <input type="text" class="form-control @error('subject') is-invalid @enderror"
-                               id="subject" name="subject" value="{{ old('subject', $emailTemplate->subject) }}" required placeholder="Welcome to {{ '{{site_name}}' }}!">
+                               id="subject" name="subject" value="{{ old('subject', $emailTemplate->subject) }}" required placeholder="Welcome to {{{ '{{site_name}}' }}}!">
                         @error('subject')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
-                        <small class="text-muted">You can use variables like {{ '{{site_name}}' }}, {{ '{{user_name}}' }}, etc.</small>
+                        <small class="text-muted">You can use variables like @{{ 'site_name' }}, @{{ 'user_name' }}, etc.</small>
                     </div>
 
                     <div class="mb-3">
@@ -44,7 +44,7 @@
                         @error('body')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
-                        <small class="text-muted">Use HTML and variables like {{ '{{user_name}}' }}, {{ '{{order_number}}' }}, etc.</small>
+                        <small class="text-muted">Use HTML and variables like @{{ 'user_name' }}, @{{ 'order_number' }}, etc.</small>
                     </div>
                 </div>
 
@@ -57,10 +57,7 @@
                             <div class="mb-3">
                                 <label for="variables" class="form-label">Variables (one per line)</label>
                                 <textarea class="form-control @error('variables') is-invalid @enderror"
-                                          id="variables" name="variables" rows="8" placeholder="{{user_name}}
-{{user_email}}
-{{site_name}}
-{{site_url}}">{{ old('variables', is_array($emailTemplate->variables) ? implode("\n", $emailTemplate->variables) : $emailTemplate->variables) }}</textarea>
+                                          id="variables" name="variables" rows="8" placeholder="{{{ '{{user_name}}' }}}&#10;{{{ '{{user_email}}' }}}&#10;{{{ '{{site_name}}' }}}&#10;{{{ '{{order_number}}' }}}">{{ old('variables', is_array(json_decode($emailTemplate->variables, true)) ? implode("\n", json_decode($emailTemplate->variables, true)) : $emailTemplate->variables) }}</textarea>
                                 @error('variables')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -84,15 +81,15 @@
                         <div class="card-body">
                             <h6 class="text-white">💡 Common Variables:</h6>
                             <ul class="mb-0 small">
-                                <li>{{ '{{user_name}}' }}</li>
-                                <li>{{ '{{user_email}}' }}</li>
-                                <li>{{ '{{site_name}}' }}</li>
-                                <li>{{ '{{site_url}}' }}</li>
-                                <li>{{ '{{order_number}}' }}</li>
-                                <li>{{ '{{order_total}}' }}</li>
-                                <li>{{ '{{customer_name}}' }}</li>
-                                <li>{{ '{{order_id}}' }}</li>
-                                <li>{{ '{{product_name}}' }}</li>
+                                <li>@{{ 'user_name' }}</li>
+                                <li>@{{ 'user_email' }}</li>
+                                <li>@{{ 'site_name' }}</li>
+                                <li>@{{ 'site_url' }}</li>
+                                <li>@{{ 'order_number' }}</li>
+                                <li>@{{ 'order_total' }}</li>
+                                <li>@{{ 'customer_name' }}</li>
+                                <li>@{{ 'order_id' }}</li>
+                                <li>@{{ 'product_name' }}</li>
                             </ul>
                         </div>
                     </div>
@@ -104,8 +101,73 @@
                 <button type="submit" class="btn btn-primary">
                     <i class="fas fa-save"></i> Update Template
                 </button>
+                <form action="{{ route('admin.email-templates.send-test', $emailTemplate->id) }}" method="POST" style="display:inline;" class="d-inline ms-2">
+                    @csrf
+                    <div class="input-group input-group-sm" style="width: 250px;">
+                        <input type="email" name="test_email" placeholder="test@example.com" required
+                               class="form-control" value="{{ old('test_email') }}">
+                        <button type="submit" class="btn btn-info">
+                            <i class="fas fa-paper-plane"></i> Test Email
+                        </button>
+                    </div>
+                </form>
             </div>
         </form>
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+$(function() {
+    CKEDITOR.replace('body', {
+        height: 300,
+        toolbar: [{
+                name: 'document',
+                items: ['Source']
+            },
+            {
+                name: 'clipboard',
+                items: ['Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo',
+                    'Redo'
+                ]
+            },
+            {
+                name: 'editing',
+                items: ['Find', 'Replace', '-', 'SelectAll']
+            },
+            {
+                name: 'basicstyles',
+                items: ['Bold', 'Italic', 'Underline', 'Strike', '-', 'RemoveFormat']
+            },
+            {
+                name: 'paragraph',
+                items: ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-',
+                    'Blockquote'
+                ]
+            },
+            {
+                name: 'links',
+                items: ['Link', 'Unlink']
+            },
+            {
+                name: 'insert',
+                items: ['Image', 'Table', 'HorizontalRule']
+            },
+            {
+                name: 'styles',
+                items: ['Styles', 'Format', 'Font', 'FontSize']
+            },
+            {
+                name: 'colors',
+                items: ['TextColor', 'BGColor']
+            },
+            {
+                name: 'tools',
+                items: ['Maximize']
+            }
+        ]
+    });
+});
+</script>
+@endpush

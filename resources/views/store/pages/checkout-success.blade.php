@@ -22,7 +22,7 @@
         <section class="section--padding text-center">
             <div class="container">
                 <div class="cart__summary border-radius-10 p-3" style="max-width: 600px; margin: 0 auto;">
-                    <span class="success-icon" style="font-size: 48px; display: block; margin-bottom: 20px;">🎉</span>
+                    {{-- <span class="success-icon" style="font-size: 48px; display: block; margin-bottom: 20px;">🎉</span> --}}
                     <h2 class="cart__content--title mb-20">Thank You for Your Order!</h2>
                     <p class="cart__content--desc mb-15">Your order <strong>#{{ $order->order_number }}</strong> has been placed successfully.</p>
                     <p class="cart__content--desc mb-15">Total Amount: <strong>Rs. {{ number_format($order->total, 2) }}</strong></p>

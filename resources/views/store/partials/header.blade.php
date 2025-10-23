@@ -1,4 +1,3 @@
-<!-- Header Blade File: resources/views/store/partials/header.blade.php -->
 <header class="header__section">
     <div class="header__topbar--style3">
         <div class="container-fluid-2">
@@ -59,7 +58,7 @@
                                     <a class="header__menu--link" href="{{ route('shop') }}">New In </a>
                                 </li>
                                 <li class="header__menu--items style3">
-                                    <a class="header__menu--link" href="{{ route('about') }}">Our Story </a>
+                                    <a class="header__menu--link" href="{{ route('blog.index') }}">Our Story </a>
                                 </li>
                                 <li class="header__menu--items style3">
                                     <a class="header__menu--link" href="{{ route('contact') }}">Contact Us </a>
@@ -240,10 +239,6 @@
                 <span><b>Rs. <span id="minicart-total">0.00</span></b></span>
             </div>
         </div>
-        <div class="minicart__conditions text-center" id="minicart-conditions" style="display: none;">
-            <input class="minicart__conditions--input" id="accept" type="checkbox">
-            <label class="minicart__conditions--label" for="accept">I agree with the <a class="minicart__conditions--link" href="{{ route('privacy-policy') }}">Privacy and Policy</a></label>
-        </div>
         <div class="minicart__button d-flex justify-content-center" id="minicart-buttons" style="display: none;">
             <a class="primary__btn minicart__button--link" href="{{ route('cart') }}">View cart</a>
             <a class="primary__btn minicart__button--link" href="{{ route('checkout') }}">Checkout</a>
@@ -290,11 +285,9 @@
                         document.getElementById('minicart-tax').textContent = data.tax;
                         document.getElementById('minicart-total').textContent = data.total;
                         document.getElementById('minicart-totals').style.display = 'block';
-                        document.getElementById('minicart-conditions').style.display = 'block';
                         document.getElementById('minicart-buttons').style.display = 'flex';
                     } else {
                         document.getElementById('minicart-totals').style.display = 'none';
-                        document.getElementById('minicart-conditions').style.display = 'none';
                         document.getElementById('minicart-buttons').style.display = 'none';
                     }
                     attachMinicartEventListeners();

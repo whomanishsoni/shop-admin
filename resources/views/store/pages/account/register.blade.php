@@ -6,42 +6,30 @@
     <main class="main__content_wrapper">
         <div class="login__section section--padding" style="border-top:1px solid #ccc;border-bottom:1px solid #ccc">
             <div class="container">
-                @if (session('success'))
-                    <div class="alert alert-success">{{ session('success') }}</div>
-                @endif
-                @if ($errors->any())
-                    <div class="alert alert-danger">
-                        <ul>
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif
                 <div class="login__section--inner">
                     <div class="row">
                         <div class="col">
-                            <div class="account__login register enhanced-form">
+                            <div class="account__login enhanced-form">
                                 <div class="account__login--header mb-20">
                                     <h2 class="account__login--header__title h3 mb-10">Create an Account</h2>
-                                    <p class="account__login--header__desc">Register here if you are a new customer</p>
+                                    <p class="account__login--header__desc">Register to start shopping with us.</p>
                                 </div>
                                 <form action="{{ route('register.attempt') }}" method="POST">
                                     @csrf
                                     <div class="account__login--inner">
-                                        <input class="account__login--input" name="name" placeholder="Name" type="text" value="{{ old('name') }}" required>
+                                        <input class="account__login--input" name="name" placeholder="Full Name" type="text" value="{{ old('name') }}" required>
                                         <input class="account__login--input" name="email" placeholder="Email Address" type="email" value="{{ old('email') }}" required>
                                         <input class="account__login--input" name="password" placeholder="Password" type="password" required>
                                         <input class="account__login--input" name="password_confirmation" placeholder="Confirm Password" type="password" required>
                                         <div class="account__login--remember position__relative mb-15">
-                                            <input class="checkout__checkbox--input" id="check2" name="terms" type="checkbox" required>
+                                            <input class="checkout__checkbox--input" id="terms" name="terms" type="checkbox" required>
                                             <span class="checkout__checkbox--checkmark"></span>
-                                            <label class="checkout__checkbox--label login__remember--label" for="check2">
-                                                I have read and agree to the terms &amp; conditions
+                                            <label class="checkout__checkbox--label login__remember--label" for="terms">
+                                                I agree to the <a href="{{ route('terms-conditions') }}">Terms and Conditions</a>
                                             </label>
                                         </div>
-                                        <button class="account__login--btn primary__btn mb-15" type="submit">Submit & Register</button>
-                                        <p class="account__login--signup__text mt-15">Already have an account? <a href="{{ route('login') }}">Login now</a></p>
+                                        <button class="account__login--btn primary__btn mb-15" type="submit">Register</button>
+                                        <p class="account__login--signup__text">Already have an account? <a href="{{ route('login') }}">Login now</a></p>
                                     </div>
                                 </form>
                             </div>

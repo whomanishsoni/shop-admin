@@ -29,11 +29,11 @@
                     <div class="mb-3">
                         <label for="subject" class="form-label">Email Subject <span class="text-danger">*</span></label>
                         <input type="text" class="form-control @error('subject') is-invalid @enderror"
-                               id="subject" name="subject" value="{{ old('subject') }}" required placeholder="Welcome to {{ '{{site_name}}' }}!">
+                               id="subject" name="subject" value="{{ old('subject') }}" required placeholder="Welcome to {{{ '{{site_name}}' }}}!">
                         @error('subject')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
-                        <small class="text-muted">You can use variables like {{ '{{site_name}}' }}, {{ '{{user_name}}' }}, etc.</small>
+                        <small class="text-muted">You can use variables like @{{ 'site_name' }}, @{{ 'user_name' }}, etc.</small>
                     </div>
 
                     <div class="mb-3">
@@ -43,7 +43,7 @@
                         @error('body')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
-                        <small class="text-muted">Use HTML and variables like {{ '{{user_name}}' }}, {{ '{{order_number}}' }}, etc.</small>
+                        <small class="text-muted">Use HTML and variables like @{{ 'user_name' }}, @{{ 'order_number' }}, etc.</small>
                     </div>
                 </div>
 
@@ -56,7 +56,7 @@
                             <div class="mb-3">
                                 <label for="variables" class="form-label">Variables (one per line)</label>
                                 <textarea class="form-control @error('variables') is-invalid @enderror"
-                                          id="variables" name="variables" rows="8" placeholder="{{ '{{user_name}}' }}&#10;{{ '{{user_email}}' }}&#10;{{ '{{site_name}}' }}&#10;{{ '{{order_number}}' }}">{{ old('variables') }}</textarea>
+                                          id="variables" name="variables" rows="8" placeholder="{{{ '{{user_name}}' }}}&#10;{{{ '{{user_email}}' }}}&#10;{{{ '{{site_name}}' }}}&#10;{{{ '{{order_number}}' }}}">{{ old('variables') }}</textarea>
                                 @error('variables')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -69,7 +69,7 @@
                         <div class="card-body">
                             <div class="mb-3">
                                 <label for="status" class="form-label">Status <span class="text-danger">*</span></label>
-                                <select class="form-control select2 @error('status') is-invalid @enderror" id="status" name="status" required>
+                                <select class="form-select @error('status') is-invalid @enderror" id="status" name="status" required>
                                     <option value="" disabled {{ old('status') ? '' : 'selected' }}>Select status</option>
                                     <option value="1" {{ old('status', 1) == 1 ? 'selected' : '' }}>Active</option>
                                     <option value="0" {{ old('status') == 0 ? 'selected' : '' }}>Inactive</option>
@@ -85,15 +85,15 @@
                         <div class="card-body">
                             <h6 class="text-white">💡 Common Variables:</h6>
                             <ul class="mb-0 small">
-                                <li>{{ '{{user_name}}' }}</li>
-                                <li>{{ '{{user_email}}' }}</li>
-                                <li>{{ '{{site_name}}' }}</li>
-                                <li>{{ '{{site_url}}' }}</li>
-                                <li>{{ '{{order_number}}' }}</li>
-                                <li>{{ '{{order_total}}' }}</li>
-                                <li>{{ '{{customer_name}}' }}</li>
-                                <li>{{ '{{order_id}}' }}</li>
-                                <li>{{ '{{product_name}}' }}</li>
+                                <li>@{{ 'user_name' }}</li>
+                                <li>@{{ 'user_email' }}</li>
+                                <li>@{{ 'site_name' }}</li>
+                                <li>@{{ 'site_url' }}</li>
+                                <li>@{{ 'order_number' }}</li>
+                                <li>@{{ 'order_total' }}</li>
+                                <li>@{{ 'customer_name' }}</li>
+                                <li>@{{ 'order_id' }}</li>
+                                <li>@{{ 'product_name' }}</li>
                             </ul>
                         </div>
                     </div>
@@ -111,30 +111,56 @@
 </div>
 @endsection
 
-@push('styles')
-<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-<style>
-    .select2-container .select2-selection--single {
-        height: calc(1.5em + 0.75rem + 2px);
-        padding: 0.375rem 0.75rem;
-    }
-    .select2-container--default .select2-selection--single .select2-selection__rendered {
-        line-height: calc(1.5em + 0.75rem);
-    }
-    .select2-container--default .select2-selection--single .select2-selection__arrow {
-        height: calc(1.5em + 0.75rem);
-    }
-</style>
-@endpush
-
 @push('scripts')
-<script src="https://cdn.jsdelivr.net/npm/ckeditor4/ckeditor.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
-$(document).ready(function() {
-    $('#status').select2({
-        placeholder: "Select status",
-        allowClear: true
+$(function() {
+    CKEDITOR.replace('body', {
+        height: 300,
+        toolbar: [{
+                name: 'document',
+                items: ['Source']
+            },
+            {
+                name: 'clipboard',
+                items: ['Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo',
+                    'Redo'
+                ]
+            },
+            {
+                name: 'editing',
+                items: ['Find', 'Replace', '-', 'SelectAll']
+            },
+            {
+                name: 'basicstyles',
+                items: ['Bold', 'Italic', 'Underline', 'Strike', '-', 'RemoveFormat']
+            },
+            {
+                name: 'paragraph',
+                items: ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-',
+                    'Blockquote'
+                ]
+            },
+            {
+                name: 'links',
+                items: ['Link', 'Unlink']
+            },
+            {
+                name: 'insert',
+                items: ['Image', 'Table', 'HorizontalRule']
+            },
+            {
+                name: 'styles',
+                items: ['Styles', 'Format', 'Font', 'FontSize']
+            },
+            {
+                name: 'colors',
+                items: ['TextColor', 'BGColor']
+            },
+            {
+                name: 'tools',
+                items: ['Maximize']
+            }
+        ]
     });
 });
 </script>
