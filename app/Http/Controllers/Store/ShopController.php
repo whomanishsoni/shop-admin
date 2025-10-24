@@ -54,10 +54,11 @@ class ShopController extends Controller
             });
         }
 
-        // Price filtering with debugging
-        $gtePrice = $request->input('filter.v.price.gte');
-        $ltePrice = $request->input('filter.v.price.lte');
-        if ($gtePrice && is_numeric($gtePrice)) {
+        // Price filtering - FIXED: Correct input keys
+        $gtePrice = $request->input('filter.price.gte');
+        $ltePrice = $request->input('filter.price.lte');
+
+        if ($gtePrice !== null && is_numeric($gtePrice)) {
             \Log::info("Applying price filter gte: {$gtePrice}");
             $query->where(function ($q) use ($gtePrice) {
                 $q->where('price', '>=', floatval($gtePrice))
@@ -67,7 +68,8 @@ class ShopController extends Controller
                   });
             });
         }
-        if ($ltePrice && is_numeric($ltePrice)) {
+
+        if ($ltePrice !== null && is_numeric($ltePrice)) {
             \Log::info("Applying price filter lte: {$ltePrice}");
             $query->where(function ($q) use ($ltePrice) {
                 $q->where('price', '<=', floatval($ltePrice))
@@ -163,5 +165,4 @@ class ShopController extends Controller
             return response()->json(['error' => 'Internal server error'], 500);
         }
     }
-
 }
