@@ -191,6 +191,8 @@ class AccountController extends Controller
                 ->where('email', $customer->email)
                 ->delete();
 
+            Log::info('Verification token deleted for email: ' . $customer->email);
+
             // Send welcome email
             $template = EmailTemplate::where('name', 'Welcome Email')
                 ->where('status', 1)

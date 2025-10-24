@@ -3,6 +3,7 @@
     <div class="container-fluid-2">
         <div class="main__footer">
             <div class="row">
+                <!-- About Us -->
                 <div class="col-lg-3 col-md-5">
                     <div class="footer__widget">
                         <h2 class="footer__widget--title h3">About Us
@@ -18,10 +19,14 @@
                             @else
                                 <img src="{{ asset('assets/images/logo.png') }}" alt="{{ $settings['site_name'] ?? 'Vyuga' }} Logo" class="footer__logo mb-20">
                             @endif
-                            <p class="footer__widget--desc style3 mb-20">{{ $settings['site_description'] ?? 'We are an online clothing destination dedicated to bringing you stylish, high-quality women’s wear with a special focus on kurtis and tops that blend comfort with trend-setting designs.' }}</p>
+                            <p class="footer__widget--desc style3 mb-20">
+                                {{ $settings['site_description'] ?? 'We are an online clothing destination dedicated to bringing you stylish, high-quality women’s wear with a special focus on kurtis and tops that blend comfort with trend-setting designs.' }}
+                            </p>
                         </div>
                     </div>
                 </div>
+
+                <!-- Our Collections -->
                 <div class="col-lg-2 col-md-4">
                     <div class="footer__widget">
                         <h2 class="footer__widget--title h3">Our Collections
@@ -49,6 +54,8 @@
                         </ul>
                     </div>
                 </div>
+
+                <!-- Categories -->
                 <div class="col-lg-2 col-md-3">
                     <div class="footer__widget">
                         <h2 class="footer__widget--title h3">Categories
@@ -68,6 +75,8 @@
                         </ul>
                     </div>
                 </div>
+
+                <!-- Social Media -->
                 <div class="col-lg-2 col-md-5">
                     <div class="footer__widget">
                         <h2 class="footer__widget--title h3">Social Media
@@ -155,7 +164,9 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-3 col-md-7">
+
+                <!-- Newsletter (FIXED) -->
+                <div class="col-lg-3 col-md-5">
                     <div class="footer__widget">
                         <h2 class="footer__widget--title h3">Newsletter
                             <button class="footer__widget--button style3" aria-label="footer widget button">
@@ -184,10 +195,16 @@
                 </div>
             </div>
         </div>
+
         <div class="footer__bottom">
             <div class="row align-items-center">
                 <div class="col-xl-8">
-                    <p class="copyright__content style3 text-left text-black">Copyright © 2025 <a class="copyright__content--link" href="{{ route('home') }}">Vyuga</a>, All Rights Reserved | Design and Developed By <a href="https://www.jhweb.in/" target="_blank" class="text-black">J H Web Solutions</a></p>
+                    <p class="copyright__content style3 text-left text-black">
+                        Copyright © {{ date('Y') }}
+                        <a class="copyright__content--link" href="{{ route('home') }}">{{ $settings['site_name'] ?? 'Vyuga' }}</a>, All Rights Reserved |
+                        Design and Developed By
+                        <a href="https://www.jhweb.in/" target="_blank" class="text-black">J H Web Solutions</a>
+                    </p>
                 </div>
                 <div class="col-xl-4">
                     <div class="footer__payment style3 d-flex justify-content-end">
@@ -198,7 +215,78 @@
         </div>
     </div>
 </footer>
-<!-- End footer section -->
-<button id="scroll__top"><svg xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 0 512 512">
+
+<!-- Scroll to top -->
+<button id="scroll__top">
+    <svg xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 0 512 512">
         <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="48" d="M112 244l144-144 144 144M256 120v292" />
-    </svg></button>
+    </svg>
+</button>
+
+{{-- FOOTER ACCORDION SCRIPT (unchanged from previous fix) --}}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const wait = setInterval(() => {
+            if (typeof slideUp !== 'undefined' && typeof slideDown !== 'undefined' && typeof getSiblings !== 'undefined') {
+                clearInterval(wait);
+                initFooterAccordion();
+            }
+        }, 50);
+    });
+
+    function initFooterAccordion() {
+        const buttons = document.querySelectorAll('.footer__widget--button.style3');
+        buttons.forEach(btn => {
+            const widget = btn.closest('.footer__widget');
+            const inner  = widget.querySelector('.footer__widget--inner');
+            if (window.innerWidth >= 992) {
+                inner.style.display = 'block';
+                widget.classList.remove('active');
+                btn.setAttribute('aria-expanded', 'true');
+            } else {
+                inner.style.display = 'none';
+                widget.classList.remove('active');
+                btn.setAttribute('aria-expanded', 'false');
+            }
+        });
+
+        const container = document.querySelector('.main__footer');
+        if (container) {
+            const fresh = container.cloneNode(true);
+            container.parentNode.replaceChild(fresh, container);
+        }
+
+        document.querySelectorAll('.footer__widget--button.style3').forEach(btn => {
+            btn.addEventListener('click', function () {
+                if (window.innerWidth >= 992) return;
+                const widget   = this.closest('.footer__widget');
+                const inner    = widget.querySelector('.footer__widget--inner');
+                const expanded = this.getAttribute('aria-expanded') === 'true';
+                if (expanded) {
+                    widget.classList.remove('active');
+                    slideUp(inner);
+                    this.setAttribute('aria-expanded', 'false');
+                } else {
+                    widget.classList.add('active');
+                    slideDown(inner);
+                    this.setAttribute('aria-expanded', 'true');
+                    getSiblings(widget).forEach(sib => {
+                        const sibInner = sib.querySelector('.footer__widget--inner');
+                        if (sibInner) {
+                            sib.classList.remove('active');
+                            slideUp(sibInner);
+                            sib.querySelector('.footer__widget--button.style3')
+                               ?.setAttribute('aria-expanded', 'false');
+                        }
+                    });
+                }
+            });
+        });
+    }
+
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(initFooterAccordion, 120);
+    });
+</script>
