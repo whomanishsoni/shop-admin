@@ -215,4 +215,15 @@ function buyNow() {
         alert('An error occurred. Please try again.');
     });
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('[data-open="modal1"]').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const slug = this.getAttribute('data-slug');
+            if (slug) {
+                loadQuickview(slug);
+            }
+        });
+    });
+});
 </script>

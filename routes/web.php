@@ -1,6 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Auth;
+
 use App\Http\Controllers\Admin\{
     AuthController, DashboardController, CategoryController, SubcategoryController,
     ProductController as AdminProductController, ProductAttributeController,
@@ -12,7 +15,7 @@ use App\Http\Controllers\Admin\{
     FaqController, BlogCategoryController, BlogPostController, PageController,
     SubscriberController, BannerController, ActivityLogController, NotificationController,
     UserController, AnalyticsController, BackupController, ProductImportExportController,
-    TestimonialController
+    TestimonialController, CollectionController
 };
 use App\Http\Controllers\Store\{
     HomeController, AccountController, AboutController, CartController,
@@ -20,6 +23,21 @@ use App\Http\Controllers\Store\{
     ShopController, WishlistController, CheckoutController, ProductReviewController,
     BlogController
 };
+
+Route::get('/create-storage-link', function () {
+// Check if link already exists to avoid errors
+$target = storage_path('app/public');
+$link = public_path('storage');
+
+if (file_exists($link)) {
+return 'Storage link already exists.';
+}
+
+// Create the symbolic link
+Artisan::call('storage:link');
+
+return 'Storage link has been created successfully!';
+});
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
@@ -120,6 +138,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         Route::resource('subcategories', SubcategoryController::class);
         Route::post('subcategories/bulk-delete', [SubcategoryController::class, 'bulkDelete'])->name('subcategories.bulk-delete');
+
+        Route::resource('collections', CollectionController::class);
+        Route::post('collections/bulk-delete', [CollectionController::class, 'bulkDelete'])->name('collections.bulk-delete');
 
         Route::resource('brands', BrandController::class);
         Route::post('brands/bulk-delete', [BrandController::class, 'bulkDelete'])->name('brands.bulk-delete');

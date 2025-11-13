@@ -12,7 +12,7 @@
 
 <div class="card shadow mb-4">
     <div class="card-body">
-        <form action="{{ route('admin.subcategories.update', $subcategory->id) }}" method="POST">
+        <form action="{{ route('admin.subcategories.update', $subcategory->id) }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('PUT')
 
@@ -50,9 +50,26 @@
             </div>
 
             <div class="mb-3">
-                <label class="form-label">Order</label>
-                <input type="number" name="order" class="form-control @error('order') is-invalid @enderror" value="{{ old('order', $subcategory->order) }}">
-                @error('order')
+                <label class="form-label">Image</label>
+                @if($subcategory->image)
+                    <div class="mb-2">
+                        <img src="/storage/{{ $subcategory->image }}" width="150" class="img-thumbnail">
+                    </div>
+                    <div class="form-check mb-2">
+                        <input type="checkbox" name="remove_image" class="form-check-input" value="1">
+                        <label class="form-check-label">Remove current image</label>
+                    </div>
+                @endif
+                <input type="file" name="image" class="form-control @error('image') is-invalid @enderror" accept="image/*">
+                @error('image')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Sort Order</label>
+                <input type="number" name="sort_order" class="form-control @error('sort_order') is-invalid @enderror" value="{{ old('sort_order', $subcategory->sort_order) }}">
+                @error('sort_order')
                     <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
             </div>
@@ -61,6 +78,13 @@
                 <div class="form-check">
                     <input type="checkbox" name="status" class="form-check-input" value="1" {{ old('status', $subcategory->status) ? 'checked' : '' }}>
                     <label class="form-check-label">Active</label>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <div class="form-check">
+                    <input type="checkbox" name="is_featured" class="form-check-input" value="1" {{ old('is_featured', $subcategory->is_featured) ? 'checked' : '' }}>
+                    <label class="form-check-label">Featured</label>
                 </div>
             </div>
 

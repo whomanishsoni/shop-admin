@@ -45,7 +45,7 @@
 
                 <div class="mb-3">
                     <strong>Order:</strong>
-                    <p class="mb-0">{{ $slider->order }}</p>
+                    <p class="mb-0">{{ $slider->sort_order }}</p>
                 </div>
 
                 <div class="mb-3">

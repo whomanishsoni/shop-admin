@@ -1,6 +1,6 @@
 @extends('store.layouts.app')
 
-@section('title', 'Vyuga - ' . $blogPost->title)
+@section('title', 'Waseem Fashion Studio - ' . $blogPost->title)
 
 @section('content')
     <div class="container">

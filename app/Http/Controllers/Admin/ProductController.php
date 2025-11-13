@@ -7,6 +7,7 @@ use App\Models\Product;
 use App\Models\Category;
 use App\Models\Subcategory;
 use App\Models\Brand;
+use App\Models\Collection;
 use App\Models\ProductAttribute;
 use App\Models\ProductAttributeValue;
 use Illuminate\Http\Request;
@@ -18,29 +19,37 @@ class ProductController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $products = Product::with(['category', 'subcategory', 'brand'])->select('*');
+            $products = Product::with(['category', 'subcategories', 'brand', 'collections'])->select('*');
             return DataTables::of($products)
                 ->addColumn('checkbox', function($row) {
                     return '<input type="checkbox" class="select-item" value="'.$row->id.'">';
                 })
                 ->addColumn('image', function($row) {
                     $primary = $row->images()->where('is_primary', 1)->first();
-                    return $primary ? '<img src="'.asset('storage/'.$primary->image).'" width="50" height="50" class="img-thumbnail">' : 'No Image';
+                    return $primary ? '<img src="/storage/'.$primary->image.'" style="width: 60px; height: 60px; object-fit: cover; border: 2px solid #e9ecef; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">' : '<div style="width: 60px; height: 60px; border: 2px dashed #dee2e6; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #6c757d; font-size: 10px; font-weight: 500;">No Image</div>';
                 })
                 ->addColumn('category', function($row) {
                     return $row->category ? $row->category->name : 'N/A';
                 })
                 ->addColumn('subcategory', function($row) {
-                    return $row->subcategory ? $row->subcategory->name : 'N/A';
+                    $subcategories = $row->subcategories->pluck('name')->toArray();
+                    return !empty($subcategories) ? implode(', ', $subcategories) : 'N/A';
                 })
                 ->addColumn('brand', function($row) {
                     return $row->brand ? $row->brand->name : 'N/A';
+                })
+                ->addColumn('collections', function($row) {
+                    $collections = $row->collections->pluck('name')->toArray();
+                    return !empty($collections) ? implode(', ', $collections) : 'N/A';
                 })
                 ->addColumn('price', function($row) {
                     return '$'.number_format($row->price, 2);
                 })
                 ->addColumn('status', function($row) {
                     return $row->status == 'active' ? '<span class="badge bg-success">Active</span>' : '<span class="badge bg-danger">Inactive</span>';
+                })
+                ->addColumn('featured', function($row) {
+                    return $row->is_featured ? '<span class="badge bg-warning">Featured</span>' : '<span class="badge bg-secondary">Not Featured</span>';
                 })
                 ->addColumn('action', function($row) {
                     return '
@@ -53,7 +62,7 @@ class ProductController extends Controller
                         </form>
                     ';
                 })
-                ->rawColumns(['checkbox', 'image', 'status', 'action'])
+                ->rawColumns(['checkbox', 'image', 'status', 'featured', 'action'])
                 ->make(true);
         }
         return view('admin.products.index');
@@ -63,8 +72,9 @@ class ProductController extends Controller
     {
         $categories = Category::where('status', 1)->get();
         $brands = Brand::where('status', 1)->get();
+        $collections = Collection::where('status', 1)->get();
         $attributes = ProductAttribute::where('status', 1)->get();
-        return view('admin.products.create', compact('categories', 'brands', 'attributes'));
+        return view('admin.products.create', compact('categories', 'brands', 'collections', 'attributes'));
     }
 
     public function store(Request $request)
@@ -80,14 +90,18 @@ class ProductController extends Controller
             'stock' => 'nullable|integer|min:0',
             'sku' => 'nullable|string|unique:products,sku',
             'category_id' => 'nullable|exists:categories,id',
-            'subcategory_id' => 'nullable|exists:subcategories,id',
+            'subcategories' => 'nullable|array',
+            'subcategories.*' => 'exists:subcategories,id',
+            'collections' => 'nullable|array',
+            'collections.*' => 'exists:collections,id',
             'brand_id' => 'nullable|exists:brands,id',
             'status' => 'required|in:active,inactive',
+            'is_featured' => 'nullable|boolean',
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string',
             'meta_keywords' => 'nullable|string|max:255',
             'images' => 'nullable|array',
-            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:20048',
             'attributes' => 'nullable|array',
             'attributes.*' => 'nullable', // Allow array or string
             'attributes.*.*' => 'nullable|string', // Validate individual values in arrays
@@ -106,8 +120,17 @@ class ProductController extends Controller
         // Set default stock to 1 if not provided
         $validated['stock'] = $validated['stock'] ?? 1;
 
+        // Handle is_featured checkbox - if not present, set to false
+        $validated['is_featured'] = $request->has('is_featured') ? 1 : 0;
+
         // Create the product
         $product = Product::create($validated);
+
+        // Sync subcategories
+        $product->subcategories()->sync($request->input('subcategories', []));
+
+        // Sync collections
+        $product->collections()->sync($request->input('collections', []));
 
         // Handle image uploads
         if ($request->hasFile('images')) {
@@ -172,14 +195,17 @@ class ProductController extends Controller
     {
         $categories = Category::where('status', 1)->get();
         $brands = Brand::where('status', 1)->get();
+        $collections = Collection::where('status', 1)->get();
         $subcategories = Subcategory::where('category_id', $product->category_id)->where('status', 1)->get();
+        $selectedSubcategories = $product->subcategories->pluck('id')->toArray();
+        $selectedCollections = $product->collections->pluck('id')->toArray();
         $attributes = ProductAttribute::where('status', 1)->get();
         $attributeValues = $product->attributeValues()->get()->keyBy('attribute_id')->map(function ($item) {
             // Return value as-is since it's already cast to array by the model
             return $item->value;
         })->toArray();
 
-        return view('admin.products.edit', compact('product', 'categories', 'brands', 'subcategories', 'attributes', 'attributeValues'));
+        return view('admin.products.edit', compact('product', 'categories', 'brands', 'collections', 'subcategories', 'selectedSubcategories', 'selectedCollections', 'attributes', 'attributeValues'));
     }
 
     public function update(Request $request, Product $product)
@@ -194,14 +220,18 @@ class ProductController extends Controller
             'stock' => 'nullable|integer|min:0',
             'sku' => 'nullable|string|unique:products,sku,' . $product->id,
             'category_id' => 'nullable|exists:categories,id',
-            'subcategory_id' => 'nullable|exists:subcategories,id',
+            'subcategories' => 'nullable|array',
+            'subcategories.*' => 'exists:subcategories,id',
+            'collections' => 'nullable|array',
+            'collections.*' => 'exists:collections,id',
             'brand_id' => 'nullable|exists:brands,id',
             'status' => 'required|in:active,inactive',
+            'is_featured' => 'nullable|boolean',
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string',
             'meta_keywords' => 'nullable|string|max:255',
             'images' => 'nullable|array',
-            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:20048',
             'delete_images' => 'nullable|array',
             'delete_images.*' => 'nullable|exists:product_images,id',
             'attributes' => 'nullable|array',
@@ -222,8 +252,17 @@ class ProductController extends Controller
         // Set default stock to 1 if not provided
         $validated['stock'] = $validated['stock'] ?? 1;
 
+        // Handle is_featured checkbox - if not present, set to false
+        $validated['is_featured'] = $request->has('is_featured') ? 1 : 0;
+
         // Update the product
         $product->update($validated);
+
+        // Sync subcategories
+        $product->subcategories()->sync($request->input('subcategories', []));
+
+        // Sync collections
+        $product->collections()->sync($request->input('collections', []));
 
         // Handle image deletions
         if ($request->has('delete_images')) {
@@ -297,8 +336,11 @@ class ProductController extends Controller
 
     public function destroy(Product $product)
     {
+        // Delete related data
         $product->images()->delete();
         $product->attributeValues()->delete();
+        $product->subcategories()->detach(); // Remove pivot relationships
+        $product->collections()->detach(); // Remove pivot relationships
         $product->delete();
         return redirect()->route('admin.products.index')->with('success', 'Product deleted successfully');
     }
@@ -309,6 +351,8 @@ class ProductController extends Controller
         foreach ($products->get() as $product) {
             $product->images()->delete();
             $product->attributeValues()->delete();
+            $product->subcategories()->detach(); // Remove pivot relationships
+            $product->collections()->detach(); // Remove pivot relationships
         }
         $products->delete();
         return response()->json(['success' => 'Products deleted successfully']);

@@ -1,6 +1,6 @@
 @extends('store.layouts.app')
 
-@section('title', 'Shopping Cart - Vyuga')
+@section('title', 'Shopping Cart - Waseem Fashion Studio')
 
 @section('content')
     <section class="breadcrumb__section breadcrumb__bg" style="background: url({{ asset('assets/images/cart-banner.jpg') }});">

@@ -1,10 +1,10 @@
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-<link rel="canonical" href="https://www.vyuga.in/" />
+<link rel="canonical" href="https://www.Waseem Fashion Studio.in/" />
 <link rel="shortcut icon" href="{{ asset('assets/img/favicon.png') }}" type="image/png">
-<title>@yield('title', 'Shop Online Fashion – Vyuga')</title>
-<meta name="description" content="Discover stylish women's fashion at Vyuga. Affordable prices, fast delivery & fresh arrivals. Shop online now!">
+<title>@yield('title', 'Shop Online Fashion – Waseem Fashion Studio')</title>
+<meta name="description" content="Discover stylish women's fashion at Waseem Fashion Studio. Affordable prices, fast delivery & fresh arrivals. Shop online now!">
 <meta name="keywords" content="fashion store online, buy clothes online India, women's fashion, women's wear online, stylish clothing, affordable fashion, online boutique, latest fashion trends India, ethnic wear online, casual wear, western wear, online shopping India">
 
 <!-- CSRF Token -->

@@ -25,6 +25,7 @@
                 <thead>
                     <tr>
                         <th width="30"><input type="checkbox" id="select-all"></th>
+                        <th width="80">Image</th>
                         <th>Title</th>
                         <th>Category</th>
                         <th>Author</th>
@@ -37,6 +38,13 @@
                     @foreach($blogPosts as $post)
                     <tr>
                         <td><input type="checkbox" class="select-item" value="{{ $post->id }}"></td>
+                        <td>
+                            @if($post->featured_image)
+                                <img src="/storage/{{ $post->featured_image }}" style="width: 60px; height: 60px; object-fit: cover; border: 2px solid #e9ecef; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                            @else
+                                <div style="width: 60px; height: 60px; border: 2px dashed #dee2e6; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #6c757d; font-size: 10px; font-weight: 500;">No Image</div>
+                            @endif
+                        </td>
                         <td>{{ $post->title }}</td>
                         <td>{{ $post->blogCategory->name ?? 'N/A' }}</td>
                         <td>{{ $post->author->name ?? 'N/A' }}</td>

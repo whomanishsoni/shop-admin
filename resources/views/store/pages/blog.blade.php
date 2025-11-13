@@ -11,7 +11,7 @@
                                     <div class="blog__thumbnail">
                                         <a class="blog__thumbnail--link" href="{{ $post['url'] }}">
                                             <img class="blog__thumbnail--img" src="{{ asset($post['featured_image']) }}"
-                                                style="height:235px" alt="blog-img">
+                                                style="height:350px; width:100%; object-fit:cover; object-position:top" alt="blog-img">
                                         </a>
                                     </div>
                                     <div class="blog__content">

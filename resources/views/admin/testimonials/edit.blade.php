@@ -65,6 +65,10 @@
                             <div class="mb-2 text-center">
                                 <img src="{{ asset('storage/' . $testimonial->image) }}" class="img-fluid rounded-circle" style="width: 100px; height: 100px; object-fit: cover;">
                             </div>
+                            <div class="form-check mb-2">
+                                <input type="checkbox" name="remove_image" class="form-check-input" value="1">
+                                <label class="form-check-label">Remove current image</label>
+                            </div>
                         @endif
                         <div class="border rounded p-4 text-center" style="background-color: #f8f9fc;">
                             <div id="image-preview" class="mb-3" style="display: none;">

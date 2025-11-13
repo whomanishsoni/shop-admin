@@ -65,12 +65,21 @@ class BlogPostController extends Controller
             'content' => 'required|string',
             'blog_category_id' => 'required|exists:blog_categories,id',
             'featured_image' => 'nullable|image|max:2048',
+            'remove_image' => 'nullable|boolean',
             'status' => 'required|in:draft,published',
         ]);
 
         $validated['slug'] = $validated['slug'] ?? Str::slug($validated['title']);
 
-        if ($request->hasFile('featured_image')) {
+        if ($request->has('remove_image') && $request->remove_image) {
+            if ($blogPost->featured_image) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($blogPost->featured_image);
+            }
+            $validated['featured_image'] = null;
+        } elseif ($request->hasFile('featured_image')) {
+            if ($blogPost->featured_image) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($blogPost->featured_image);
+            }
             $validated['featured_image'] = $request->file('featured_image')->store('blog-posts', 'public');
         }
 

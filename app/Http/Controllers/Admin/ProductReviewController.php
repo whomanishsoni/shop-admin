@@ -23,6 +23,13 @@ class ProductReviewController extends Controller
                     ->addColumn('checkbox', function($row) {
                         return '<input type="checkbox" class="select-item" value="'.$row->id.'">';
                     })
+                    ->addColumn('image', function($row) {
+                        if ($row->product && $row->product->images) {
+                            $primary = $row->product->images()->where('is_primary', 1)->first();
+                            return $primary ? '<img src="/storage/'.$primary->image.'" style="width: 60px; height: 60px; object-fit: cover; border: 2px solid #e9ecef; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">' : '<div style="width: 60px; height: 60px; border: 2px dashed #dee2e6; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #6c757d; font-size: 10px; font-weight: 500;">No Image</div>';
+                        }
+                        return '<div style="width: 60px; height: 60px; border: 2px dashed #dee2e6; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #6c757d; font-size: 10px; font-weight: 500;">No Image</div>';
+                    })
                     ->addColumn('product', function($row) {
                         return $row->product ? $row->product->name : 'N/A';
                     })
@@ -49,7 +56,7 @@ class ProductReviewController extends Controller
                             </form>
                         ';
                     })
-                    ->rawColumns(['checkbox', 'rating', 'action'])
+                    ->rawColumns(['checkbox', 'image', 'rating', 'action'])
                     ->make(true);
             } catch (\Exception $e) {
                 \Log::error('DataTable Error: ' . $e->getMessage());

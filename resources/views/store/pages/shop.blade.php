@@ -1,6 +1,6 @@
 @extends('store.layouts.app')
 
-@section('title', 'Products - Vyuga')
+@section('title', (is_string($category) ? $category : (isset($category->name) ? $category->name : 'Products')) . ' - Waseem Fashion Studio')
 
 @section('content')
 <main class="main__content_wrapper">
@@ -14,7 +14,7 @@
                         <h1 class="breadcrumb__content--title text-white mb-25">Products</h1>
                         <ul class="breadcrumb__content--menu d-flex justify-content-center">
                             <li class="breadcrumb__content--menu__items"><a class="text-white" href="{{ route('home') }}">Home</a></li>
-                            <li class="breadcrumb__content--menu__items"><span class="text-white">{{ is_string($category) ? $category : $category->name }}</span></li>
+                            <li class="breadcrumb__content--menu__items"><span class="text-white">{{ is_string($category) ? $category : (isset($category->name) ? $category->name : 'Products') }}</span></li>
                         </ul>
                     </div>
                 </div>
@@ -197,16 +197,7 @@
                 });
             }
 
-            // Category accordion
-            document.querySelectorAll('.widget__categories--menu__label').forEach(label => {
-                label.addEventListener('click', function (e) {
-                    if (e.target.tagName === 'A') return;
-                    const submenu = this.nextElementSibling;
-                    if (submenu && submenu.classList.contains('widget__categories--sub__menu')) {
-                        submenu.style.display = submenu.style.display === 'block' ? 'none' : 'block';
-                    }
-                });
-            });
+
 
             // Auto-submit on Enter key
             document.querySelectorAll('.price__filter--input__field').forEach(input => {
@@ -219,4 +210,23 @@
             });
         });
     </script>
+    <style>
+        .product__items--thumbnail {
+            aspect-ratio: 3 / 4;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #fff;
+        }
+
+        .product__items--img.product__primary--img,
+        .product__items--img.product__secondary--img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            display: block;
+        }
+    </style>
 @endpush

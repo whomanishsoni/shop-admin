@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\Facades\DataTables;
 
 class CategoryController extends Controller
@@ -19,7 +20,7 @@ class CategoryController extends Controller
                     return '<input type="checkbox" class="select-item" value="'.$row->id.'">';
                 })
                 ->addColumn('image', function($row) {
-                    return $row->image ? '<img src="/storage/'.$row->image.'" width="50">' : 'No Image';
+                    return $row->image ? '<img src="/storage/'.$row->image.'" style="width: 60px; height: 60px; object-fit: cover; border: 2px solid #e9ecef; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">' : '<div style="width: 60px; height: 60px; border: 2px dashed #dee2e6; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #6c757d; font-size: 10px; font-weight: 500;">No Image</div>';
                 })
                 ->addColumn('status', function($row) {
                     return $row->status ? '<span class="badge bg-success">Active</span>' : '<span class="badge bg-danger">Inactive</span>';
@@ -51,7 +52,7 @@ class CategoryController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'order' => 'nullable|integer',
+            'sort_order' => 'nullable|integer',
             'status' => 'boolean'
         ]);
 
@@ -77,7 +78,8 @@ class CategoryController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'order' => 'nullable|integer',
+            'remove_image' => 'nullable|boolean',
+            'sort_order' => 'nullable|integer',
             'status' => 'boolean'
         ]);
 
@@ -85,7 +87,15 @@ class CategoryController extends Controller
 
         $validated['slug'] = Str::slug($request->name);
 
-        if ($request->hasFile('image')) {
+        if ($request->has('remove_image') && $request->remove_image) {
+            if ($category->image) {
+                Storage::disk('public')->delete($category->image);
+            }
+            $validated['image'] = null;
+        } elseif ($request->hasFile('image')) {
+            if ($category->image) {
+                Storage::disk('public')->delete($category->image);
+            }
             $validated['image'] = $request->file('image')->store('categories', 'public');
         }
 

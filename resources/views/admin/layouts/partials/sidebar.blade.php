@@ -3,7 +3,7 @@
         <div class="sidebar-brand-icon rotate-n-15">
             <i class="fas fa-laugh-wink"></i>
         </div>
-        <div class="sidebar-brand-text mx-3">Vyuga</div>
+        <div class="sidebar-brand-text mx-3">Waseem Fashion Studio</div>
     </a>
     <hr class="sidebar-divider my-0">
     <li class="nav-item {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
@@ -27,6 +27,8 @@
                     href="{{ route('admin.categories.index') }}">Categories</a>
                 <a class="collapse-item {{ request()->routeIs('admin.subcategories.index') ? 'active' : '' }}"
                     href="{{ route('admin.subcategories.index') }}">Subcategories</a>
+                <a class="collapse-item {{ request()->routeIs('admin.collections.index') ? 'active' : '' }}"
+                    href="{{ route('admin.collections.index') }}">Collections</a>
                 <a class="collapse-item {{ request()->routeIs('admin.brands.index') ? 'active' : '' }}"
                     href="{{ route('admin.brands.index') }}">Brands</a>
                 <a class="collapse-item {{ request()->routeIs('admin.products.index') ? 'active' : '' }}"

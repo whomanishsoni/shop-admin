@@ -1,6 +1,6 @@
 @extends('store.layouts.app')
 
-@section('title', 'Logout - Vyuga')
+@section('title', 'Logout - Waseem Fashion Studio')
 
 @section('content')
     <main class="main__content_wrapper">
@@ -47,7 +47,7 @@
                     <div class="account__wrapper">
                         <div class="account__content">
                             <h2 class="account__content--title h3 mb-20">Logout Confirmation</h2>
-                            <p>You have successfully logged out of your account. Thank you for shopping with Vyuga!</p>
+                            <p>You have successfully logged out of your account. Thank you for shopping with Waseem Fashion Studio!</p>
                             <p><a href="{{ route('home') }}" class="primary__btn">Return to Home</a></p>
                         </div>
                     </div>

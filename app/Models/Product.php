@@ -4,13 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Product extends Model
 {
     protected $fillable = [
         'name', 'slug', 'description', 'short_description', 'price', 'sale_price',
-        'stock', 'sku', 'category_id', 'subcategory_id', 'brand_id', 'status',
+        'stock', 'sku', 'category_id', 'brand_id', 'status', 'is_featured',
         'meta_title', 'meta_description', 'meta_keywords'
     ];
 
@@ -22,6 +23,11 @@ class Product extends Model
     public function subcategory(): BelongsTo
     {
         return $this->belongsTo(Subcategory::class);
+    }
+
+    public function subcategories(): BelongsToMany
+    {
+        return $this->belongsToMany(Subcategory::class, 'product_subcategory')->withTimestamps();
     }
 
     public function brand(): BelongsTo
@@ -47,5 +53,10 @@ class Product extends Model
     public function orderItems()
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    public function collections(): BelongsToMany
+    {
+        return $this->belongsToMany(Collection::class, 'product_collections');
     }
 }

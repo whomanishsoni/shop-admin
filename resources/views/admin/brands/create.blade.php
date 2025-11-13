@@ -37,7 +37,10 @@
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Image</label>
-                    <input type="file" name="image" class="form-control @error('image') is-invalid @enderror" accept="image/*">
+                    <input type="file" name="image" class="form-control @error('image') is-invalid @enderror" accept="image/*" id="brand-image-input">
+                    <div id="brand-image-preview" class="mt-2" style="display: none;">
+                        <img id="brand-preview-img" src="" alt="Image Preview" style="max-width: 200px; max-height: 200px; border: 1px solid #ddd; border-radius: 4px; padding: 4px; background: #f8f9fa;">
+                    </div>
                     @error('image')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
@@ -74,6 +77,20 @@
             .replace(/[^a-z0-9]+/g, '-')
             .replace(/^-+|-+$/g, '');
         document.getElementById('slug').value = slug;
+    });
+
+    $('#brand-image-input').on('change', function() {
+        const file = this.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                $('#brand-preview-img').attr('src', e.target.result);
+                $('#brand-image-preview').show();
+            };
+            reader.readAsDataURL(file);
+        } else {
+            $('#brand-image-preview').hide();
+        }
     });
 </script>
 @endpush

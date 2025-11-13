@@ -15,7 +15,7 @@
         <form action="{{ route('admin.categories.update', $category->id) }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('PUT')
-            
+
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Name <span class="text-danger">*</span></label>
@@ -26,9 +26,9 @@
                 </div>
 
                 <div class="col-md-6 mb-3">
-                    <label class="form-label">Order</label>
-                    <input type="number" name="order" class="form-control @error('order') is-invalid @enderror" value="{{ old('order', $category->order) }}">
-                    @error('order')
+                    <label class="form-label">Sort Order</label>
+                    <input type="number" name="sort_order" class="form-control @error('sort_order') is-invalid @enderror" value="{{ old('sort_order', $category->sort_order) }}">
+                    @error('sort_order')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                 </div>
@@ -47,6 +47,10 @@
                 @if($category->image)
                     <div class="mb-2">
                         <img src="/storage/{{ $category->image }}" width="150" class="img-thumbnail">
+                    </div>
+                    <div class="form-check mb-2">
+                        <input type="checkbox" name="remove_image" class="form-check-input" value="1">
+                        <label class="form-check-label">Remove current image</label>
                     </div>
                 @endif
                 <input type="file" name="image" class="form-control @error('image') is-invalid @enderror" accept="image/*">

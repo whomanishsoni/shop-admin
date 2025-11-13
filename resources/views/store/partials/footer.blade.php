@@ -15,9 +15,9 @@
                         </h2>
                         <div class="footer__widget--inner">
                             @if (!empty($settings['footer_logo']))
-                                <img src="{{ asset('storage/' . $settings['footer_logo']) }}" alt="{{ $settings['site_name'] ?? 'Vyuga' }} Logo" class="footer__logo mb-20">
+                                <img src="{{ asset('storage/' . $settings['footer_logo']) }}" alt="{{ $settings['site_name'] ?? 'Waseem Fashion Studio' }} Logo" class="footer__logo mb-20" style="height: 100px;">
                             @else
-                                <img src="{{ asset('assets/images/logo.png') }}" alt="{{ $settings['site_name'] ?? 'Vyuga' }} Logo" class="footer__logo mb-20">
+                                <img src="{{ asset('assets/images/logo.png') }}" alt="{{ $settings['site_name'] ?? 'Waseem Fashion Studio' }} Logo" class="footer__logo mb-20" style="height: 50px;">
                             @endif
                             <p class="footer__widget--desc style3 mb-20">
                                 {{ $settings['site_description'] ?? 'We are an online clothing destination dedicated to bringing you stylish, high-quality women’s wear with a special focus on kurtis and tops that blend comfort with trend-setting designs.' }}
@@ -201,7 +201,7 @@
                 <div class="col-xl-8">
                     <p class="copyright__content style3 text-left text-black">
                         Copyright © {{ date('Y') }}
-                        <a class="copyright__content--link" href="{{ route('home') }}">{{ $settings['site_name'] ?? 'Vyuga' }}</a>, All Rights Reserved |
+                        <a class="copyright__content--link" href="{{ route('home') }}">{{ $settings['site_name'] ?? 'Waseem Fashion Studio' }}</a>, All Rights Reserved |
                         Design and Developed By
                         <a href="https://www.jhweb.in/" target="_blank" class="text-black">J H Web Solutions</a>
                     </p>

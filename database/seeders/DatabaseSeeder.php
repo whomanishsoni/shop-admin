@@ -23,6 +23,9 @@ class DatabaseSeeder extends Seeder
             SettingSeeder::class,
             TaxSeeder::class,
             TestimonialSeeder::class,
+            CategorySeeder::class,
+            SubcategorySeeder::class,
+            CollectionSeeder::class,
         ]);
     }
 }

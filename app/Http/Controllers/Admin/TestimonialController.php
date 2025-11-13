@@ -21,9 +21,7 @@ class TestimonialController extends Controller
                         return '<input type="checkbox" class="select-item" value="'.$row->id.'">';
                     })
                     ->addColumn('image', function($row) {
-                        return $row->image ?
-                            '<img src="/storage/' . $row->image . '" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover;">' :
-                            '<span class="text-muted">No Image</span>';
+                        return $row->image ? '<img src="/storage/'.$row->image.'" style="width: 60px; height: 60px; object-fit: cover; border: 2px solid #e9ecef; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">' : '<div style="width: 60px; height: 60px; border: 2px dashed #dee2e6; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #6c757d; font-size: 10px; font-weight: 500;">No Image</div>';
                     })
                     ->addColumn('name', function($row) {
                         return $row->name . '<br><small class="text-muted">' . ($row->designation ?? 'N/A') . '</small>';
@@ -103,12 +101,18 @@ class TestimonialController extends Controller
             'message' => 'required|string',
             'rating' => 'required|integer|min:1|max:5',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'remove_image' => 'nullable|boolean',
             'status' => 'required|in:0,1'
         ]);
 
         $validated['status'] = $request->status == '1';
 
-        if ($request->hasFile('image')) {
+        if ($request->has('remove_image') && $request->remove_image) {
+            if ($testimonial->image) {
+                Storage::disk('public')->delete($testimonial->image);
+            }
+            $validated['image'] = null;
+        } elseif ($request->hasFile('image')) {
             if ($testimonial->image) {
                 Storage::disk('public')->delete($testimonial->image);
             }

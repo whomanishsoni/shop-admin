@@ -25,7 +25,7 @@
                 <thead>
                     <tr>
                         <th width="30"><input type="checkbox" id="select-all"></th>
-                        <th>Image</th>
+                        <th width="80">Image</th>
                         <th>Name</th>
                         <th>Rating</th>
                         <th>Status</th>

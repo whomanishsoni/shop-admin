@@ -25,10 +25,11 @@
                 <thead>
                     <tr>
                         <th width="30"><input type="checkbox" id="select-all"></th>
+                        <th width="80">Image</th>
                         <th>Name</th>
                         <th>Category</th>
                         <th>Slug</th>
-                        <th>Order</th>
+                        <th>Sort Order</th>
                         <th>Status</th>
                         <th width="100">Actions</th>
                     </tr>
@@ -48,26 +49,27 @@ $(function() {
         ajax: "{{ route('admin.subcategories.index') }}",
         columns: [
             {data: 'checkbox', name: 'checkbox', orderable: false, searchable: false},
+            {data: 'image', name: 'image', orderable: false, searchable: false},
             {data: 'name', name: 'name'},
             {data: 'category', name: 'category.name'},
             {data: 'slug', name: 'slug'},
-            {data: 'order', name: 'order'},
+            {data: 'sort_order', name: 'sort_order'},
             {data: 'status', name: 'status'},
             {data: 'action', name: 'action', orderable: false, searchable: false}
         ]
     });
 
     $('#select-all').on('click', function() {
-        $('.select-item').prop('checked', this.checked);
+        $('.select-checkbox').prop('checked', this.checked);
         toggleBulkDelete();
     });
 
-    $(document).on('change', '.select-item', function() {
+    $(document).on('change', '.select-checkbox', function() {
         toggleBulkDelete();
     });
 
     function toggleBulkDelete() {
-        if ($('.select-item:checked').length > 0) {
+        if ($('.select-checkbox:checked').length > 0) {
             $('#bulk-delete').show();
         } else {
             $('#bulk-delete').hide();
@@ -75,7 +77,7 @@ $(function() {
     }
 
     $('#bulk-delete').on('click', function() {
-        var ids = $('.select-item:checked').map(function() {
+        var ids = $('.select-checkbox:checked').map(function() {
             return $(this).val();
         }).get();
 

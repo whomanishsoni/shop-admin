@@ -40,7 +40,11 @@
                     <label class="form-label">Image</label>
                     @if($brand->image)
                         <div class="mb-2">
-                            <img src="{{ asset('storage/' . $brand->image) }}" width="150" class="img-thumbnail">
+                            <img src="/storage/{{ $brand->image }}" width="150" class="img-thumbnail">
+                        </div>
+                        <div class="form-check mb-2">
+                            <input type="checkbox" name="remove_image" class="form-check-input" value="1">
+                            <label class="form-check-label">Remove current image</label>
                         </div>
                     @endif
                     <input type="file" name="image" class="form-control @error('image') is-invalid @enderror" accept="image/*">

@@ -1,6 +1,6 @@
 @extends('store.layouts.app')
 
-@section('title', 'Blog - Vyuga')
+@section('title', 'Blog - Waseem Fashion Studio')
 
 @section('content')
     <div class="container-fluid">

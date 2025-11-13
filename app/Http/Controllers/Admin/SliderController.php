@@ -53,7 +53,7 @@ class SliderController extends Controller
             'title' => 'required|string|max:255',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
             'link' => 'nullable|url',
-            'order' => 'nullable|integer',
+            'sort_order' => 'nullable|integer',
             'status' => 'required|in:0,1',
         ]);
 
@@ -82,7 +82,7 @@ class SliderController extends Controller
             'title' => 'required|string|max:255',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'link' => 'nullable|url',
-            'order' => 'nullable|integer',
+            'sort_order' => 'nullable|integer',
             'status' => 'required|in:0,1',
         ]);
 

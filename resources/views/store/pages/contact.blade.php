@@ -1,6 +1,6 @@
 @extends('store.layouts.app')
 
-@section('title', 'Contact Us - Vyuga')
+@section('title', 'Contact Us - Waseem Fashion Studio')
 
 @section('content')
     <main class="main__content_wrapper">
@@ -34,7 +34,7 @@
                   </svg>
                 </div>
                 <h4 class="title">address line</h4>
-                <p class="text">{{ $settings['business_address'] ?? '#101, Hyderabad, Telangana - 500001' }}</p>
+                <p class="text">{{ $settings['site_address'] ?? '#101, Hyderabad, Telangana - 500001' }}</p>
               </div>
             </div>
           </div>
@@ -63,7 +63,7 @@
                   </svg>
                 </div>
                 <h4 class="title">Mail Adress</h4>
-                    <p class="text"><a href="mailto:{{ $settings['site_email'] ?? 'info@vyuga.in' }}" class="__cf_email__">{{ $settings['site_email'] ?? 'info@vyuga.in' }}</a></p>              </div>
+                    <p class="text"><a href="mailto:{{ $settings['site_email'] ?? 'info@Waseem Fashion Studio.in' }}" class="__cf_email__">{{ $settings['site_email'] ?? 'info@Waseem Fashion Studio.in' }}</a></p>              </div>
             </div>
           </div>
         </div>

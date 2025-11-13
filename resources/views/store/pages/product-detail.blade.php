@@ -1,19 +1,24 @@
 @extends('store.layouts.app')
 
-@section('title', $productData['name'] . ' - Vyuga')
+@section('title', $productData['name'] . ' - Waseem Fashion Studio')
 
 @section('content')
     <main class="main__content_wrapper">
-        <section class="breadcrumb__section breadcrumb__bg" style="background: url({{ asset('assets/images/product-detail-banner.jpg') }});">
+        <section class="breadcrumb__section breadcrumb__bg"
+            style="background: url({{ asset('assets/images/product-detail-banner.jpg') }});">
             <div class="container">
                 <div class="row row-cols-1">
                     <div class="col">
                         <div class="breadcrumb__content text-center">
                             <h1 class="breadcrumb__content--title text-white mb-25">{{ $productData['category_name'] }}</h1>
                             <ul class="breadcrumb__content--menu d-flex justify-content-center">
-                                <li class="breadcrumb__content--menu__items"><a class="text-white" href="{{ route('home') }}">Home</a></li>
-                                <li class="breadcrumb__content--menu__items"><a class="text-white" href="{{ route('shop', $productData['category_slug']) }}">{{ $productData['category_name'] }}</a></li>
-                                <li class="breadcrumb__content--menu__items"><span class="text-white">{{ $productData['name'] }}</span></li>
+                                <li class="breadcrumb__content--menu__items"><a class="text-white"
+                                        href="{{ route('home') }}">Home</a></li>
+                                <li class="breadcrumb__content--menu__items"><a class="text-white"
+                                        href="{{ route('shop', $productData['category_slug']) }}">{{ $productData['category_name'] }}</a>
+                                </li>
+                                <li class="breadcrumb__content--menu__items"><span
+                                        class="text-white">{{ $productData['name'] }}</span></li>
                             </ul>
                         </div>
                     </div>
@@ -30,14 +35,24 @@
                                     @foreach ($productData['images'] as $index => $image)
                                         <div class="swiper-slide">
                                             <div class="product__media--preview__items">
-                                                <a class="product__media--preview__items--link glightbox" data-gallery="product-media-preview" href="{{ $image }}">
-                                                    <img class="product__media--preview__items--img" src="{{ $image }}" alt="product-media-img">
+                                                <a class="product__media--preview__items--link glightbox"
+                                                    data-gallery="product-media-preview" href="{{ $image }}">
+                                                    <img class="product__media--preview__items--img"
+                                                        src="{{ $image }}" alt="product-media-img">
                                                 </a>
                                                 <div class="product__media--view__icon">
-                                                    <a class="product__media--view__icon--link glightbox" href="{{ $image }}" data-gallery="product-media-preview">
-                                                        <svg class="product__media--view__icon--svg" xmlns="http://www.w3.org/2000/svg" width="22.51" height="22.443" viewBox="0 0 512 512">
-                                                            <path d="M221.09 64a157.09 157.09 0 10157.09 157.09A157.1 157.1 0 00221.09 64z" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32"></path>
-                                                            <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M338.29 338.29L448 448"></path>
+                                                    <a class="product__media--view__icon--link glightbox"
+                                                        href="{{ $image }}" data-gallery="product-media-preview">
+                                                        <svg class="product__media--view__icon--svg"
+                                                            xmlns="http://www.w3.org/2000/svg" width="22.51"
+                                                            height="22.443" viewBox="0 0 512 512">
+                                                            <path
+                                                                d="M221.09 64a157.09 157.09 0 10157.09 157.09A157.1 157.1 0 00221.09 64z"
+                                                                fill="none" stroke="currentColor" stroke-miterlimit="10"
+                                                                stroke-width="32"></path>
+                                                            <path fill="none" stroke="currentColor"
+                                                                stroke-linecap="round" stroke-miterlimit="10"
+                                                                stroke-width="32" d="M338.29 338.29L448 448"></path>
                                                         </svg>
                                                     </a>
                                                 </div>
@@ -51,7 +66,8 @@
                                     @foreach ($productData['images'] as $index => $image)
                                         <div class="swiper-slide">
                                             <div class="product__media--nav__items">
-                                                <img class="product__media--nav__items--img" src="{{ $image }}" alt="product-nav-img">
+                                                <img class="product__media--nav__items--img" src="{{ $image }}"
+                                                    alt="product-nav-img">
                                             </div>
                                         </div>
                                     @endforeach
@@ -71,7 +87,8 @@
                                     <span class="current__price">Rs.{{ number_format($productData['price'], 2) }}</span>
                                     @if ($productData['old_price'])
                                         <span class="price__divided"></span>
-                                        <span class="old__price">Rs.{{ number_format($productData['old_price'], 2) }}</span>
+                                        <span
+                                            class="old__price">Rs.{{ number_format($productData['old_price'], 2) }}</span>
                                     @endif
                                 </div>
                                 <div class="product__details--info__rating d-flex align-items-center mb-15">
@@ -79,37 +96,57 @@
                                         @for ($i = 1; $i <= 5; $i++)
                                             <li class="rating__list">
                                                 <span class="rating__list--icon">
-                                                    <svg class="rating__list--icon__svg" xmlns="http://www.w3.org/2000/svg" width="14.105" height="14.732" viewBox="0 0 10.105 9.732">
-                                                        <path data-name="star - Copy" d="M9.837,3.5,6.73,3.039,5.338.179a.335.335,0,0,0-.571,0L3.375,3.039.268,3.5a.3.3,0,0,0-.178.514L2.347,6.242,1.813,9.4a.314.314,0,0,0,.464.316L5.052,8.232,7.827,9.712A.314.314,0,0,0,8.292,9.4L7.758,6.242l2.257-2.231A.3.3,0,0,0,9.837,3.5Z" transform="translate(0 -0.018)" fill="{{ $i <= round($productData['average_rating']) ? 'currentColor' : 'none' }}" stroke="{{ $i <= round($productData['average_rating']) ? 'none' : 'currentColor' }}"></path>
+                                                    <svg class="rating__list--icon__svg" xmlns="http://www.w3.org/2000/svg"
+                                                        width="14.105" height="14.732" viewBox="0 0 10.105 9.732">
+                                                        <path data-name="star - Copy"
+                                                            d="M9.837,3.5,6.73,3.039,5.338.179a.335.335,0,0,0-.571,0L3.375,3.039.268,3.5a.3.3,0,0,0-.178.514L2.347,6.242,1.813,9.4a.314.314,0,0,0,.464.316L5.052,8.232,7.827,9.712A.314.314,0,0,0,8.292,9.4L7.758,6.242l2.257-2.231A.3.3,0,0,0,9.837,3.5Z"
+                                                            transform="translate(0 -0.018)"
+                                                            fill="{{ $i <= round($productData['average_rating']) ? 'currentColor' : 'none' }}"
+                                                            stroke="{{ $i <= round($productData['average_rating']) ? 'none' : 'currentColor' }}">
+                                                        </path>
                                                     </svg>
                                                 </span>
                                             </li>
                                         @endfor
                                     </ul>
-                                    <span class="product__items--rating__count--number">({{ $productData['review_count'] }})</span>
+                                    <span
+                                        class="product__items--rating__count--number">({{ $productData['review_count'] }})</span>
                                 </div>
                                 <p class="product__details--info__desc mb-15">{!! $productData['short_description'] !!}</p>
                                 <div class="product__variant">
                                     @foreach ($productData['attributes'] as $attribute)
                                         <div class="product__variant--list mb-10">
                                             <fieldset class="variant__input--fieldset">
-                                                <legend class="product__variant--title mb-8">{{ $attribute['name'] }} :</legend>
+                                                <legend class="product__variant--title mb-8">{{ $attribute['name'] }} :
+                                                </legend>
                                                 @foreach ($attribute['values'] as $index => $value)
                                                     @php
                                                         $rawValues = $value['value'] ?? [];
-                                                        $displayValues = is_array($rawValues) ? array_map('strval', $rawValues) : [strval($rawValues)];
+                                                        $displayValues = is_array($rawValues)
+                                                            ? array_map('strval', $rawValues)
+                                                            : [strval($rawValues)];
                                                     @endphp
                                                     @foreach ($displayValues as $displayValue)
                                                         @if (is_array($displayValue) || is_object($displayValue))
                                                             @continue
                                                         @endif
-                                                        <input id="{{ strtolower($attribute['name']) }}-{{ $index }}-{{ $loop->index }}" name="{{ strtolower($attribute['name']) }}" type="radio" {{ $loop->first && $index === 0 ? 'checked' : '' }} value="{{ $displayValue }}">
+                                                        <input
+                                                            id="{{ strtolower($attribute['name']) }}-{{ $index }}-{{ $loop->index }}"
+                                                            name="{{ strtolower($attribute['name']) }}" type="radio"
+                                                            {{ $loop->first && $index === 0 ? 'checked' : '' }}
+                                                            value="{{ $displayValue }}">
                                                         @if (strtolower($attribute['name']) === 'color' && $value['image'])
-                                                            <label class="variant__color--value {{ strtolower($displayValue) }}" for="{{ strtolower($attribute['name']) }}-{{ $index }}-{{ $loop->index }}" title="{{ $displayValue }}">
-                                                                <img class="variant__color--value__img" src="{{ $value['image'] }}" alt="{{ $displayValue }}">
+                                                            <label
+                                                                class="variant__color--value {{ strtolower($displayValue) }}"
+                                                                for="{{ strtolower($attribute['name']) }}-{{ $index }}-{{ $loop->index }}"
+                                                                title="{{ $displayValue }}">
+                                                                <img class="variant__color--value__img"
+                                                                    src="{{ $value['image'] }}" alt="{{ $displayValue }}">
                                                             </label>
                                                         @else
-                                                            <label class="variant__size--value {{ strtolower($displayValue) }}" for="{{ strtolower($attribute['name']) }}-{{ $index }}-{{ $loop->index }}">{{ $displayValue }}</label>
+                                                            <label
+                                                                class="variant__size--value {{ strtolower($displayValue) }}"
+                                                                for="{{ strtolower($attribute['name']) }}-{{ $index }}-{{ $loop->index }}">{{ $displayValue }}</label>
                                                         @endif
                                                     @endforeach
                                                 @endforeach
@@ -118,32 +155,49 @@
                                     @endforeach
                                     <div class="product__variant--list quantity d-flex align-items-center mb-20">
                                         <div class="quantity__box">
-                                            <button type="button" class="quantity__value quickview__value--quantity decrease" aria-label="quantity value" value="Decrease Value">-</button>
+                                            <button type="button"
+                                                class="quantity__value quickview__value--quantity decrease"
+                                                aria-label="quantity value" value="Decrease Value">-</button>
                                             <label>
-                                                <input type="number" class="quantity__number quickview__value--number" name="quantity" value="1" min="1" />
+                                                <input type="number" class="quantity__number quickview__value--number"
+                                                    name="quantity" value="1" min="1" />
                                             </label>
-                                            <button type="button" class="quantity__value quickview__value--quantity increase" aria-label="quantity value" value="Increase Value">+</button>
+                                            <button type="button"
+                                                class="quantity__value quickview__value--quantity increase"
+                                                aria-label="quantity value" value="Increase Value">+</button>
                                         </div>
-                                        <button class="quickview__cart--btn primary__btn" type="submit">Add To Cart</button>
+                                        <button class="quickview__cart--btn primary__btn" type="submit">Add To
+                                            Cart</button>
                                     </div>
                                     <div class="product__variant--list mb-15">
-                                        <a class="variant__wishlist--icon mb-15" data-product-id="{{ $productData['slug'] }}" title="Add to wishlist">
-                                            <svg class="quickview__variant--wishlist__svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                                                <path d="M352.92 80C288 80 256 144 256 144s-32-64-96.92-64c-52.76 0-94.54 44.14-95.08 96.81-1.1 109.33 86.73 187.08 183 252.42a16 16 0 0018 0c96.26-65.34 184.09-143.09 183-252.42-.54-52.67-42.32-96.81-95.08-96.81z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" />
+                                        <a class="variant__wishlist--icon mb-15"
+                                            data-product-id="{{ $productData['slug'] }}" title="Add to wishlist">
+                                            <svg class="quickview__variant--wishlist__svg"
+                                                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                                                <path
+                                                    d="M352.92 80C288 80 256 144 256 144s-32-64-96.92-64c-52.76 0-94.54 44.14-95.08 96.81-1.1 109.33 86.73 187.08 183 252.42a16 16 0 0018 0c96.26-65.34 184.09-143.09 183-252.42-.54-52.67-42.32-96.81-95.08-96.81z"
+                                                    fill="none" stroke="currentColor" stroke-linecap="round"
+                                                    stroke-linejoin="round" stroke-width="32" />
                                             </svg>
                                             Add to Wishlist
                                         </a>
-                                        <button class="variant__buy--now__btn primary__btn" type="submit" formaction="{{ route('cart.add', ['product_id' => $productData['slug'], 'buy_now' => true]) }}">Buy it now</button>
+                                        <button class="variant__buy--now__btn primary__btn" type="submit"
+                                            formaction="{{ route('cart.add', ['product_id' => $productData['slug'], 'buy_now' => true]) }}">Buy
+                                            it now</button>
                                     </div>
                                     <div class="product__details--info__meta">
-                                        <p class="product__details--info__meta--list"><strong>Product Code:</strong> <span>{{ $productData['sku'] }}</span></p>
-                                        <p class="product__details--info__meta--list"><strong>Brand:</strong> <span>{{ $productData['brand_name'] ?? 'N/A' }}</span></p>
-                                        <p class="product__details--info__meta--list"><strong>Type:</strong> <span>Women Kurti</span></p>
+                                        <p class="product__details--info__meta--list"><strong>Product Code:</strong>
+                                            <span>{{ $productData['sku'] }}</span></p>
+                                        <p class="product__details--info__meta--list"><strong>Brand:</strong>
+                                            <span>{{ $productData['brand_name'] ?? 'N/A' }}</span></p>
+                                        <p class="product__details--info__meta--list"><strong>Type:</strong> <span>Women
+                                                Kurti</span></p>
                                     </div>
                                 </div>
                                 <div class="guarantee__safe--checkout">
                                     <h5 class="guarantee__safe--checkout__title">Guaranteed Safe Checkout</h5>
-                                    <img class="guarantee__safe--checkout__img" src="{{ asset('assets/images/payment-visa-card.png') }}" alt="Payment Image">
+                                    <img class="guarantee__safe--checkout__img"
+                                        src="{{ asset('assets/images/payment-visa-card.png') }}" alt="Payment Image">
                                 </div>
                             </form>
                         </div>
@@ -156,9 +210,12 @@
                 <div class="row row-cols-1">
                     <div class="col">
                         <ul class="product__details--tab d-flex mb-30">
-                            <li class="product__details--tab__list active" data-toggle="tab" data-target="#description">Description</li>
-                            <li class="product__details--tab__list" data-toggle="tab" data-target="#reviews">Product Reviews</li>
-                            <li class="product__details--tab__list" data-toggle="tab" data-target="#information">Additional Info</li>
+                            <li class="product__details--tab__list active" data-toggle="tab" data-target="#description">
+                                Description</li>
+                            <li class="product__details--tab__list" data-toggle="tab" data-target="#reviews">Product
+                                Reviews</li>
+                            <li class="product__details--tab__list" data-toggle="tab" data-target="#information">
+                                Additional Info</li>
                         </ul>
                         <div class="product__details--tab__inner border-radius-10">
                             <div class="tab_content">
@@ -174,92 +231,132 @@
                                     <div class="product__reviews">
                                         <div class="product__reviews--header">
                                             <h2 class="product__reviews--header__title h3 mb-20">Customer Reviews</h2>
+
                                             <div class="reviews__ratting d-flex align-items-center">
                                                 <ul class="rating d-flex">
                                                     @for ($i = 1; $i <= 5; $i++)
                                                         <li class="rating__list">
                                                             <span class="rating__list--icon">
-                                                                <svg class="rating__list--icon__svg" xmlns="http://www.w3.org/2000/svg" width="14.105" height="14.732" viewBox="0 0 10.105 9.732">
-                                                                    <path data-name="star - Copy" d="M9.837,3.5,6.73,3.039,5.338.179a.335.335,0,0,0-.571,0L3.375,3.039.268,3.5a.3.3,0,0,0-.178.514L2.347,6.242,1.813,9.4a.314.314,0,0,0,.464.316L5.052,8.232,7.827,9.712A.314.314,0,0,0,8.292,9.4L7.758,6.242l2.257-2.231A.3.3,0,0,0,9.837,3.5Z" transform="translate(0 -0.018)" fill="{{ $i <= round($productData['average_rating']) ? 'currentColor' : 'none' }}" stroke="{{ $i <= round($productData['average_rating']) ? 'none' : 'currentColor' }}"></path>
+                                                                <svg class="rating__list--icon__svg"
+                                                                    xmlns="http://www.w3.org/2000/svg" width="14.105"
+                                                                    height="14.732" viewBox="0 0 10.105 9.732">
+                                                                    <path data-name="star - Copy"
+                                                                        d="M9.837,3.5,6.73,3.039,5.338.179a.335.335,0,0,0-.571,0L3.375,3.039.268,3.5a.3.3,0,0,0-.178.514L2.347,6.242,1.813,9.4a.314.314,0,0,0,.464.316L5.052,8.232,7.827,9.712A.314.314,0,0,0,8.292,9.4L7.758,6.242l2.257-2.231A.3.3,0,0,0,9.837,3.5Z"
+                                                                        transform="translate(0 -0.018)"
+                                                                        fill="{{ $i <= round($productData['average_rating'] ?? 0) ? 'currentColor' : 'none' }}"
+                                                                        stroke="{{ $i <= round($productData['average_rating'] ?? 0) ? 'none' : 'currentColor' }}">
+                                                                    </path>
                                                                 </svg>
                                                             </span>
                                                         </li>
                                                     @endfor
                                                 </ul>
-                                                <span class="reviews__summary--caption">Based on {{ $productData['review_count'] }} reviews</span>
+                                                <span class="reviews__summary--caption">
+                                                    Based on {{ $productData['review_count'] ?? 0 }} reviews
+                                                </span>
                                             </div>
+
                                             @auth('customer')
-                                                @if ($productData['can_review'])
-                                                    <a class="actions__newreviews--btn primary__btn" href="#writereview">Write A Review</a>
+                                                @if (!empty($productData['can_review']))
+                                                    <a class="actions__newreviews--btn primary__btn" href="#writereview">Write
+                                                        A Review</a>
                                                 @endif
                                             @endauth
                                         </div>
+
                                         <div class="reviews__comment--area">
-                                            @if (empty($productData['reviews']))
-                                                <p>No reviews yet.</p>
-                                            @else
-                                                @foreach ($productData['reviews'] as $review)
-                                                    <div class="reviews__comment--list d-flex">
-                                                        <div class="reviews__comment--thumb">
-                                                            <img src="{{ asset('assets/images/testimonial.png') }}" alt="comment-thumb">
-                                                        </div>
-                                                        <div class="reviews__comment--content">
-                                                            <div class="reviews__comment--top d-flex justify-content-between">
-                                                                <div class="reviews__comment--top__left">
-                                                                    <h3 class="reviews__comment--content__title h4">{{ $review['customer_name'] }}</h3>
-                                                                    <ul class="rating reviews__comment--rating d-flex">
-                                                                        @for ($i = 1; $i <= 5; $i++)
-                                                                            <li class="rating__list">
-                                                                                <span class="rating__list--icon">
-                                                                                    <svg class="rating__list--icon__svg" xmlns="http://www.w3.org/2000/svg" width="14.105" height="14.732" viewBox="0 0 10.105 9.732">
-                                                                                        <path data-name="star - Copy" d="M9.837,3.5,6.73,3.039,5.338.179a.335.335,0,0,0-.571,0L3.375,3.039.268,3.5a.3.3,0,0,0-.178.514L2.347,6.242,1.813,9.4a.314.314,0,0,0,.464.316L5.052,8.232,7.827,9.712A.314.314,0,0,0,8.292,9.4L7.758,6.242l2.257-2.231A.3.3,0,0,0,9.837,3.5Z" transform="translate(0 -0.018)" fill="{{ $i <= $review['rating'] ? 'currentColor' : 'none' }}" stroke="{{ $i <= $review['rating'] ? 'none' : 'currentColor' }}"></path>
-                                                                                    </svg>
-                                                                                </span>
-                                                                            </li>
-                                                                        @endfor
-                                                                    </ul>
-                                                                </div>
-                                                                <span class="reviews__comment--content__date">{{ $review['date'] }}</span>
-                                                            </div>
-                                                            <p class="reviews__comment--content__desc">{{ $review['comment'] }}</p>
-                                                        </div>
+                                            @forelse (($productData['reviews'] ?? []) as $rev)
+                                                <div class="reviews__comment--list d-flex">
+                                                    <div class="reviews__comment--thumb">
+                                                        <img src="{{ asset('assets/images/testimonial.png') }}"
+                                                            alt="comment-thumb">
                                                     </div>
-                                                @endforeach
-                                            @endif
+                                                    <div class="reviews__comment--content">
+                                                        <div class="reviews__comment--top d-flex justify-content-between">
+                                                            <div class="reviews__comment--top__left">
+                                                                <h3 class="reviews__comment--content__title h4">
+                                                                    {{ $rev['customer_name'] ?? 'Customer' }}</h3>
+                                                                <ul class="rating reviews__comment--rating d-flex">
+                                                                    @for ($i = 1; $i <= 5; $i++)
+                                                                        <li class="rating__list">
+                                                                            <span class="rating__list--icon">
+                                                                                <svg class="rating__list--icon__svg"
+                                                                                    xmlns="http://www.w3.org/2000/svg"
+                                                                                    width="14.105" height="14.732"
+                                                                                    viewBox="0 0 10.105 9.732">
+                                                                                    <path data-name="star - Copy"
+                                                                                        d="M9.837,3.5,6.73,3.039,5.338.179a.335.335,0,0,0-.571,0L3.375,3.039.268,3.5a.3.3,0,0,0-.178.514L2.347,6.242,1.813,9.4a.314.314,0,0,0,.464.316L5.052,8.232,7.827,9.712A.314.314,0,0,0,8.292,9.4L7.758,6.242l2.257-2.231A.3.3,0,0,0,9.837,3.5Z"
+                                                                                        transform="translate(0 -0.018)"
+                                                                                        fill="{{ $i <= (int) ($rev['rating'] ?? 0) ? 'currentColor' : 'none' }}"
+                                                                                        stroke="{{ $i <= (int) ($rev['rating'] ?? 0) ? 'none' : 'currentColor' }}">
+                                                                                    </path>
+                                                                                </svg>
+                                                                            </span>
+                                                                        </li>
+                                                                    @endfor
+                                                                </ul>
+                                                            </div>
+                                                            <span
+                                                                class="reviews__comment--content__date">{{ $rev['date'] ?? '' }}</span>
+                                                        </div>
+                                                        <p class="reviews__comment--content__desc">
+                                                            {{ $rev['comment'] ?? '' }}</p>
+                                                    </div>
+                                                </div>
+                                            @empty
+                                                <p>No reviews yet.</p>
+                                            @endforelse
                                         </div>
+
                                         @auth('customer')
-                                            @if ($productData['can_review'])
+                                            @if (!empty($productData['can_review']))
                                                 <div id="writereview" class="reviews__comment--reply__area">
                                                     <form action="{{ route('product-reviews.store') }}" method="POST">
                                                         @csrf
-                                                        <input type="hidden" name="product_id" value="{{ $productData['slug'] }}">
-                                                        <input type="hidden" name="rating" id="rating-input" value="{{ old('rating', 0) }}">
+                                                        <input type="hidden" name="product_id"
+                                                            value="{{ $productData['slug'] }}">
+                                                        <input type="hidden" name="rating" id="rating-input"
+                                                            value="{{ old('rating', 0) }}">
+
                                                         <h3 class="reviews__comment--reply__title mb-15">Add a review</h3>
                                                         <div class="reviews__ratting d-flex align-items-center mb-20">
                                                             <ul class="rating d-flex">
                                                                 @for ($i = 1; $i <= 5; $i++)
                                                                     <li class="rating__list">
-                                                                        <span class="rating__list--icon rating-star" data-rating="{{ $i }}">
-                                                                            <svg class="rating__list--icon__svg" xmlns="http://www.w3.org/2000/svg" width="14.105" height="14.732" viewBox="0 0 10.105 9.732">
-                                                                                <path data-name="star - Copy" d="M9.837,3.5,6.73,3.039,5.338.179a.335.335,0,0,0-.571,0L3.375,3.039.268,3.5a.3.3,0,0,0-.178.514L2.347,6.242,1.813,9.4a.314.314,0,0,0,.464.316L5.052,8.232,7.827,9.712A.314.314,0,0,0,8.292,9.4L7.758,6.242l2.257-2.231A.3.3,0,0,0,9.837,3.5Z" transform="translate(0 -0.018)" fill="{{ old('rating', 0) >= $i ? 'gold' : 'none' }}" stroke="currentColor"></path>
+                                                                        <span class="rating__list--icon rating-star"
+                                                                            data-rating="{{ $i }}">
+                                                                            <svg class="rating__list--icon__svg"
+                                                                                xmlns="http://www.w3.org/2000/svg"
+                                                                                width="14.105" height="14.732"
+                                                                                viewBox="0 0 10.105 9.732">
+                                                                                <path data-name="star - Copy"
+                                                                                    d="M9.837,3.5,6.73,3.039,5.338.179a.335.335,0,0,0-.571,0L3.375,3.039.268,3.5a.3.3,0,0,0-.178.514L2.347,6.242,1.813,9.4a.314.314,0,0,0,.464.316L5.052,8.232,7.827,9.712A.314.314,0,0,0,8.292,9.4L7.758,6.242l2.257-2.231A.3.3,0,0,0,9.837,3.5Z"
+                                                                                    transform="translate(0 -0.018)"
+                                                                                    fill="{{ old('rating', 0) >= $i ? 'gold' : 'none' }}"
+                                                                                    stroke="currentColor">
+                                                                                </path>
                                                                             </svg>
                                                                         </span>
                                                                     </li>
                                                                 @endfor
                                                             </ul>
                                                         </div>
+
                                                         <div class="row">
                                                             <div class="col-12 mb-10">
                                                                 <textarea class="reviews__comment--reply__textarea" name="comment" placeholder="Your Comments....">{{ old('comment') ?: '' }}</textarea>
                                                             </div>
                                                         </div>
-                                                        <button class="reviews__comment--btn text-white primary__btn" type="submit">SUBMIT</button>
+
+                                                        <button class="reviews__comment--btn text-white primary__btn"
+                                                            type="submit">SUBMIT</button>
                                                     </form>
                                                 </div>
                                             @endif
                                         @endauth
                                     </div>
                                 </div>
+
                                 <div id="information" class="tab_pane">
                                     <div class="product__tab--content">
                                         <div class="product__tab--content__step mb-30 table-responsive">
@@ -274,7 +371,8 @@
                                                         <tr>
                                                             <th>{{ $attribute['name'] }}</th>
                                                             <th>:</th>
-                                                            <td>{{ implode(', ', array_merge(...array_map(function ($val) { return $val['value']; }, $attribute['values']))) }}</td>
+                                                            <td>{{ implode(', ',array_merge(...array_map(function ($val) {return $val['value'];}, $attribute['values']))) }}
+                                                            </td>
                                                         </tr>
                                                     @endforeach
                                                 </tbody>
@@ -299,9 +397,12 @@
                             <div class="swiper-slide">
                                 <div class="product__items">
                                     <div class="product__items--thumbnail">
-                                        <a class="product__items--link" href="{{ route('product.detail', $related['slug']) }}">
-                                            <img class="product__items--img product__primary--img" src="{{ $related['image_primary'] }}" alt="{{ $related['name'] }}">
-                                            <img class="product__items--img product__secondary--img" src="{{ $related['image_secondary'] }}" alt="{{ $related['name'] }}">
+                                        <a class="product__items--link"
+                                            href="{{ route('product.detail', $related['slug']) }}">
+                                            <img class="product__items--img product__primary--img"
+                                                src="{{ $related['image_primary'] }}" alt="{{ $related['name'] }}">
+                                            <img class="product__items--img product__secondary--img"
+                                                src="{{ $related['image_secondary'] }}" alt="{{ $related['name'] }}">
                                         </a>
                                         @if ($related['on_sale'])
                                             <div class="product__badge">
@@ -310,12 +411,16 @@
                                         @endif
                                     </div>
                                     <div class="product__items--content text-center">
-                                        <h4 class="product__items--content__title"><a href="{{ route('product.detail', $related['slug']) }}">{{ $related['name'] }}</a></h4>
+                                        <h4 class="product__items--content__title"><a
+                                                href="{{ route('product.detail', $related['slug']) }}">{{ $related['name'] }}</a>
+                                        </h4>
                                         <div class="product__items--price">
                                             @if ($related['old_price'])
-                                                <span class="old__price">Rs.{{ number_format($related['old_price'], 2) }}</span>
+                                                <span
+                                                    class="old__price">Rs.{{ number_format($related['old_price'], 2) }}</span>
                                             @endif
-                                            <span class="current__price">Rs.{{ number_format($related['price'], 2) }}</span>
+                                            <span
+                                                class="current__price">Rs.{{ number_format($related['price'], 2) }}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -331,7 +436,7 @@
 @push('scripts')
     @include('store.partials.js')
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             const csrfToken = '{{ csrf_token() }}';
 
             // Add to Wishlist link
@@ -348,7 +453,7 @@
                     };
 
                     try {
-                        const response = await fetch('{{ route("wishlist.add") }}', {
+                        const response = await fetch('{{ route('wishlist.add') }}', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
@@ -362,7 +467,8 @@
 
                         showMessage(result.message, result.success ? 'success' : 'error');
                     } catch (error) {
-                        showMessage('An error occurred while adding the item to the wishlist.', 'error');
+                        showMessage('An error occurred while adding the item to the wishlist.',
+                            'error');
                     }
                 });
             });
@@ -412,7 +518,7 @@
             const ratingInput = document.getElementById('rating-input');
 
             stars.forEach(star => {
-                star.addEventListener('click', function () {
+                star.addEventListener('click', function() {
                     const rating = this.getAttribute('data-rating');
                     ratingInput.value = rating;
 
@@ -430,14 +536,14 @@
                 });
 
                 // Hover effect
-                star.addEventListener('mouseover', function () {
+                star.addEventListener('mouseover', function() {
                     const rating = this.getAttribute('data-rating');
                     for (let i = 0; i < rating; i++) {
                         stars[i].querySelector('svg path').setAttribute('fill', 'gold');
                     }
                 });
 
-                star.addEventListener('mouseout', function () {
+                star.addEventListener('mouseout', function() {
                     const currentRating = ratingInput.value || 0;
                     stars.forEach(s => {
                         s.classList.remove('filled');
@@ -452,9 +558,173 @@
         });
     </script>
     <style>
+        /* ============================================================
+       PRODUCT PAGE – FULL MEDIA GALLERY (NO CROPPING)
+       ============================================================ */
+
+        /* Wrapper */
+        .product__details--media {
+            position: relative;
+            width: 100%;
+            max-width: 100%;
+        }
+
+        /* ============================================================
+       MAIN PREVIEW (TALLER + NO CROP)
+       ============================================================ */
+        .product__media--preview {
+            width: 100%;
+            aspect-ratio: 3 / 4;
+            /* taller frame than 4/5 */
+            max-height: 85vh;
+            /* fill more of the viewport (but not all) */
+            overflow: hidden;
+        }
+
+        @media (min-width: 992px) {
+            .product__media--preview {
+                min-height: 640px;
+            }
+        }
+
+        @media (min-width: 1200px) {
+            .product__media--preview {
+                min-height: 720px;
+            }
+        }
+
+        .product__media--preview .swiper-wrapper,
+        .product__media--preview .swiper-slide,
+        .product__media--preview__items {
+            height: 100%;
+        }
+
+        .product__media--preview__items {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #fff;
+            position: relative;
+            padding: 0 !important;
+            box-sizing: border-box;
+        }
+
+        .product__media--preview__items--img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            /* show full image — no crop */
+            object-position: center;
+            display: block;
+        }
+
+        /* Zoom/Search icon */
+        .product__media--view__icon {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            z-index: 2;
+        }
+
+        /* ============================================================
+       THUMBNAILS (TALLER + CONSISTENT BOXES + NO CROP)
+       ============================================================ */
+        .product__media--nav {
+            width: 100%;
+            --thumb-h: 110px;
+            /* base thumb height */
+            margin-top: 14px;
+            overflow: hidden;
+        }
+
+        @media (min-width: 576px) {
+            .product__media--nav {
+                --thumb-h: 120px;
+            }
+        }
+
+        @media (min-width: 992px) {
+            .product__media--nav {
+                --thumb-h: 135px;
+            }
+        }
+
+        @media (min-width: 1200px) {
+            .product__media--nav {
+                --thumb-h: 145px;
+            }
+        }
+
+        /* Make each slide auto-width so aspect-ratio can control size */
+        .product__media--nav .swiper-slide {
+            width: auto !important;
+        }
+
+        /* smaller box with clean 3:4 ratio */
+        .product__media--nav__items {
+            height: var(--thumb-h);
+            aspect-ratio: 3 / 4;
+            /* keeps consistent smaller rectangle */
+            width: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #fff;
+            padding: 0 !important;
+            overflow: hidden;
+            border-radius: 6px;
+        }
+
+        /* image fits entire smaller box */
+        .product__media--nav__items--img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            /* no crop, fits inside */
+            object-position: center;
+            display: block;
+        }
+
+        /* Mobile safety */
+        @media (max-width: 480px) {
+
+            .product__details--media,
+            .product__media--preview,
+            .product__media--nav {
+                width: 100%;
+                max-width: 100%;
+            }
+        }
+
+        /* ============================================================
+       “YOU MAY ALSO LIKE” – PRODUCT GRID CARDS
+       ============================================================ */
+        .product__items--thumbnail {
+            aspect-ratio: 4 / 5;
+            /* uniform card height */
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #fff;
+        }
+
+        .product__items--img.product__primary--img,
+        .product__items--img.product__secondary--img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            /* keep grid tidy; use 'contain' if you want zero crop */
+            object-position: center;
+            display: block;
+        }
+
+        /* ============================================================
+       RATING ICON INTERACTION
+       ============================================================ */
         .rating__list--icon {
             cursor: pointer;
-            transition: transform 0.2s;
+            transition: transform .2s;
         }
 
         .rating__list--icon:hover {

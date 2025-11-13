@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Subcategory;
+use App\Models\Collection;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
@@ -21,6 +22,9 @@ class ShopController extends Controller
         // Fetch all active brands (for the sidebar)
         $brands = Brand::where('status', true)->get();
 
+        // Fetch all active collections (for the sidebar)
+        $collections = Collection::where('status', true)->orderBy('sort_order')->get();
+
         // Initialize the product query
         $query = Product::where('status', 'active')
             ->with(['category', 'subcategory', 'brand', 'images' => function ($query) {
@@ -28,20 +32,41 @@ class ShopController extends Controller
             }]);
 
         $category = null;
+        $collection = null;
 
-        // Filter products based on slug (category or subcategory)
+        // Filter products based on slug (category)
         if ($slug) {
             $category = Category::where('slug', $slug)->first();
             if ($category) {
                 $query->where('category_id', $category->id);
-            } else {
-                $subcategory = Subcategory::where('slug', $slug)->first();
-                if ($subcategory) {
-                    $query->where('subcategory_id', $subcategory->id);
-                    $category = $subcategory->category;
-                }
             }
-        } else {
+        }
+
+        // Filter products based on subcategory parameter
+        if ($request->has('subcategory') && $request->input('subcategory')) {
+            $subcategorySlug = $request->input('subcategory');
+            $subcategory = Subcategory::where('slug', $subcategorySlug)->first();
+            if ($subcategory) {
+                $query->whereHas('subcategories', function ($q) use ($subcategory) {
+                    $q->where('subcategories.id', $subcategory->id);
+                });
+                $category = $subcategory->category;
+            }
+        }
+
+        // Filter products based on collection parameter
+        if ($request->has('collection') && $request->input('collection')) {
+            $collectionSlug = $request->input('collection');
+            $collection = Collection::where('slug', $collectionSlug)->first();
+            if ($collection) {
+                $query->whereHas('collections', function ($q) use ($collection) {
+                    $q->where('collections.id', $collection->id);
+                });
+                $category = $collection;
+            }
+        }
+
+        if (!$category && !$collection) {
             $category = 'All Products';
         }
 
@@ -120,7 +145,7 @@ class ShopController extends Controller
             ];
         });
 
-        return view('store.pages.shop', compact('products', 'category', 'categories', 'brands'));
+        return view('store.pages.shop', compact('products', 'category', 'categories', 'brands', 'collections'));
     }
 
     public function searchSuggestions(Request $request)

@@ -25,10 +25,10 @@
                 <thead>
                     <tr>
                         <th width="30"><input type="checkbox" id="select-all"></th>
-                        <th>Image</th>
+                        <th width="80">Image</th>
                         <th>Name</th>
                         <th>Slug</th>
-                        <th>Order</th>
+                        <th>Sort Order</th>
                         <th>Status</th>
                         <th width="100">Actions</th>
                     </tr>
@@ -51,7 +51,7 @@ $(function() {
             {data: 'image', name: 'image', orderable: false},
             {data: 'name', name: 'name'},
             {data: 'slug', name: 'slug'},
-            {data: 'order', name: 'order'},
+            {data: 'sort_order', name: 'sort_order'},
             {data: 'status', name: 'status'},
             {data: 'action', name: 'action', orderable: false, searchable: false}
         ]

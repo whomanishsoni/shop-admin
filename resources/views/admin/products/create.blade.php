@@ -206,12 +206,29 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="subcategory_id" class="form-label">Subcategory</label>
-                            <select class="form-select @error('subcategory_id') is-invalid @enderror" id="subcategory_id"
-                                name="subcategory_id">
-                                <option value="">Select Subcategory</option>
+                            <label for="subcategories" class="form-label">Subcategories</label>
+                            <select class="form-select select2 @error('subcategories') is-invalid @enderror" id="subcategories"
+                                name="subcategories[]" multiple>
+                                <option value="">Select Subcategories</option>
                             </select>
-                            @error('subcategory_id')
+                            @error('subcategories')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="collections" class="form-label">Collections</label>
+                            <select class="form-select select2 @error('collections') is-invalid @enderror" id="collections"
+                                name="collections[]" multiple>
+                                <option value="">Select Collections</option>
+                                @foreach ($collections as $collection)
+                                    <option value="{{ $collection->id }}"
+                                        {{ in_array($collection->id, old('collections', [])) ? 'selected' : '' }}>
+                                        {{ $collection->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('collections')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
@@ -243,6 +260,18 @@
                             @error('status')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input @error('is_featured') is-invalid @enderror" type="checkbox" id="is_featured" name="is_featured" value="1" {{ old('is_featured') ? 'checked' : '' }}>
+                                <label class="form-check-label" for="is_featured">
+                                    Featured Product
+                                </label>
+                                @error('is_featured')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -415,32 +444,34 @@
 
             // Load subcategories on page load if a category is selected
             var categoryId = $('#category_id').val();
-            var selectedSub = '{{ old("subcategory_id") }}';
+            var selectedSubs = @json(old('subcategories', []));
             if (categoryId) {
-                loadSubcategories(categoryId, selectedSub);
+                loadSubcategories(categoryId, selectedSubs);
             }
 
-            function loadSubcategories(categoryId, selectedSub = '') {
+            function loadSubcategories(categoryId, selectedSubs = []) {
                 if (categoryId) {
                     $.ajax({
                         url: '{{ route("admin.subcategories.get", ":categoryId") }}'.replace(':categoryId', categoryId),
                         type: 'GET',
                         success: function(data) {
-                            var options = '<option value="">Select Subcategory</option>';
+                            var options = '<option value="">Select Subcategories</option>';
                             $.each(data, function(key, value) {
-                                var sel = (value.id == selectedSub) ? 'selected' : '';
+                                var sel = ($.inArray(value.id.toString(), selectedSubs) !== -1) ? 'selected' : '';
                                 options += '<option value="' + value.id + '" ' + sel + '>' + value.name + '</option>';
                             });
-                            $('#subcategory_id').html(options);
+                            $('#subcategories').html(options);
+                            // Reinitialize select2 after loading options
+                            $('#subcategories').trigger('change.select2');
                         },
                         error: function(xhr, status, error) {
                             console.error('Error fetching subcategories:', xhr.responseText);
                             alert('Failed to load subcategories. Please try again.');
-                            $('#subcategory_id').html('<option value="">Select Subcategory</option>');
+                            $('#subcategories').html('<option value="">Select Subcategories</option>');
                         }
                     });
                 } else {
-                    $('#subcategory_id').html('<option value="">Select Subcategory</option>');
+                    $('#subcategories').html('<option value="">Select Subcategories</option>');
                 }
             }
         });

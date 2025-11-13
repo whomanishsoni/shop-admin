@@ -20,10 +20,7 @@ class BrandController extends Controller
                     return '<input type="checkbox" class="select-item" value="'.$row->id.'">';
                 })
                 ->addColumn('image', function($row) {
-                    if ($row->image) {
-                        return '<img src="'.asset('storage/'.$row->image).'" width="50" class="img-thumbnail">';
-                    }
-                    return 'No Image';
+                    return $row->image ? '<img src="/storage/'.$row->image.'" style="width: 60px; height: 60px; object-fit: cover; border: 2px solid #e9ecef; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">' : '<div style="width: 60px; height: 60px; border: 2px dashed #dee2e6; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #6c757d; font-size: 10px; font-weight: 500;">No Image</div>';
                 })
                 ->addColumn('status', function($row) {
                     return $row->status ? '<span class="badge bg-success">Active</span>' : '<span class="badge bg-danger">Inactive</span>';
@@ -78,11 +75,16 @@ class BrandController extends Controller
             'name' => 'required|string|max:255|unique:brands,name,'.$brand->id,
             'slug' => 'required|string|max:255|unique:brands,slug,'.$brand->id,
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'remove_image' => 'nullable|boolean',
             'status' => 'required|boolean'
         ]);
 
-        if ($request->hasFile('image')) {
-            // Delete old image
+        if ($request->has('remove_image') && $request->remove_image) {
+            if ($brand->image) {
+                Storage::disk('public')->delete($brand->image);
+            }
+            $validated['image'] = null;
+        } elseif ($request->hasFile('image')) {
             if ($brand->image) {
                 Storage::disk('public')->delete($brand->image);
             }

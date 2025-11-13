@@ -24,7 +24,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Schema::defaultStringLength(191);
+        // Schema::defaultStringLength(191);
 
         // View composer for header and footer partials
         View::composer(['store.partials.header', 'store.partials.footer'], function ($view) {

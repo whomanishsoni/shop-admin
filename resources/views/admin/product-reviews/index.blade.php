@@ -18,6 +18,7 @@
                 <thead>
                     <tr>
                         <th width="30"><input type="checkbox" id="select-all"></th>
+                        <th width="80">Image</th>
                         <th>Product</th>
                         <th>Customer</th>
                         <th>Rating</th>
@@ -47,6 +48,7 @@ $(function() {
         },
         columns: [
             {data: 'checkbox', name: 'checkbox', orderable: false, searchable: false},
+            {data: 'image', name: 'image', orderable: false, searchable: false},
             {data: 'product', name: 'product'},
             {data: 'customer', name: 'customer'},
             {data: 'rating', name: 'rating'},

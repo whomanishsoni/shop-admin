@@ -1,6 +1,6 @@
 @extends('store.layouts.app')
 
-@section('title', 'My Wishlist - Vyuga')
+@section('title', 'My Wishlist - Waseem Fashion Studio')
 
 @section('content')
     <section class="breadcrumb__section breadcrumb__bg">

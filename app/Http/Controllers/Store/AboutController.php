@@ -19,8 +19,8 @@ class AboutController extends Controller
             $aboutData = new Page([
                 'title' => 'About Us',
                 'content' => '<p>Content not found. Please configure the About Us page in the admin panel.</p>',
-                'meta_title' => 'About Us - Vyuga',
-                'meta_description' => 'Discover Vyuga, your go-to online store for stylish and high-quality women’s clothing.'
+                'meta_title' => 'About Us - Waseem Fashion Studio',
+                'meta_description' => 'Discover Waseem Fashion Studio, your go-to online store for stylish and high-quality women’s clothing.'
             ]);
         }
 

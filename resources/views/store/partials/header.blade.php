@@ -18,7 +18,7 @@
             <div class="row align-items-center position__relative">
                 <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-4 col-6">
                     <a class="main__logo--link" href="{{ route('home') }}">
-                        <img class="main__logo--img" src="{{ !empty($settings['footer_logo']) ? asset('storage/' . $settings['site_logo']) : asset('assets/images/logo.png') }}" alt="{{ $settings['site_name'] ?? 'Vyuga' }} Logo">
+                        <img class="main__logo--img" src="{{ !empty($settings['footer_logo']) ? asset('storage/' . $settings['site_logo']) : asset('assets/images/logo.png') }}" alt="{{ $settings['site_name'] ?? 'Waseem Fashion Studio' }} Logo">
                     </a>
                 </div>
                 <div class="col-xxl-5 col-xl-6 col-lg-6 col-md-4 col-3">
@@ -32,42 +32,65 @@
                     </div>
                     <div class="header__menu d-none d-lg-block">
                         <nav class="header__menu--navigation">
-                            <ul class="d-flex">
+                            <ul class="d-flex justify-content-center">
                                 <li class="header__menu--items style3">
-                                    <a class="header__menu--link" href="{{ route('home') }}">Home</a>
+                                    <a class="header__menu--link text-truncate" href="{{ route('home') }}">Home</a>
                                 </li>
-                                @foreach ($categories as $category)
+                                @php
+                                    $allSubcategories = collect();
+                                    foreach ($categories as $category) {
+                                        $allSubcategories = $allSubcategories->merge($category->subcategories);
+                                    }
+                                @endphp
+                                @if($allSubcategories->count() > 0)
                                     <li class="header__menu--items style3">
-                                        <a class="header__menu--link" href="{{ route('shop', $category->slug) }}">{{ $category->name }}
+                                        <a class="header__menu--link text-truncate" href="javascript:void(0)">Shop by Category
                                             <svg class="menu__arrowdown--icon" xmlns="http://www.w3.org/2000/svg" width="12" height="7.41" viewBox="0 0 12 7.41">
                                                 <path d="M16.59,8.59,12,13.17,7.41,8.59,6,10l6,6,6-6Z" transform="translate(-6 -8.59)" fill="currentColor" opacity="0.7" />
                                             </svg>
                                         </a>
-                                        @if ($category->subcategories->count() > 0)
-                                            <ul class="header__sub--menu">
-                                                @foreach ($category->subcategories as $subcategory)
+                                        <ul class="header__sub--menu">
+                                                @foreach ($allSubcategories->sortBy('sort_order') as $subcategory)
                                                     <li class="header__sub--menu__items">
-                                                        <a href="{{ route('shop', $subcategory->slug) }}" class="header__sub--menu__link">{{ $subcategory->name }}</a>
+                                                        <a href="{{ route('shop') }}?subcategory={{ $subcategory->slug }}" class="header__sub--menu__link">{{ $subcategory->name }}</a>
                                                     </li>
                                                 @endforeach
-                                            </ul>
-                                        @endif
+                                        </ul>
                                     </li>
-                                @endforeach
+                                @endif
+                                @php
+                                    $activeCollections = \App\Models\Collection::where('status', 1)->orderBy('sort_order')->get();
+                                @endphp
+                                @if($activeCollections->count() > 0)
+                                    <li class="header__menu--items style3">
+                                        <a class="header__menu--link text-truncate" href="javascript:void(0)">Shop by Collection
+                                            <svg class="menu__arrowdown--icon" xmlns="http://www.w3.org/2000/svg" width="12" height="7.41" viewBox="0 0 12 7.41">
+                                                <path d="M16.59,8.59,12,13.17,7.41,8.59,6,10l6,6,6-6Z" transform="translate(-6 -8.59)" fill="currentColor" opacity="0.7" />
+                                            </svg>
+                                        </a>
+                                        <ul class="header__sub--menu">
+                                            @foreach ($activeCollections as $collection)
+                                                <li class="header__sub--menu__items">
+                                                    <a href="{{ route('shop', ['collection' => $collection->slug]) }}" class="header__sub--menu__link">{{ $collection->name }}</a>
+                                                </li>
+                                            @endforeach
+                                        </ul>
+                                    </li>
+                                @endif
                                 <li class="header__menu--items style3">
-                                    <a class="header__menu--link" href="{{ route('shop') }}">New In </a>
+                                    <a class="header__menu--link text-truncate" href="{{ route('shop') }}">New In </a>
                                 </li>
                                 <li class="header__menu--items style3">
-                                    <a class="header__menu--link" href="{{ route('blog.index') }}">Our Story </a>
+                                    <a class="header__menu--link text-truncate" href="{{ route('about') }}">Our Story </a>
                                 </li>
                                 <li class="header__menu--items style3">
-                                    <a class="header__menu--link" href="{{ route('contact') }}">Contact Us </a>
+                                    <a class="header__menu--link text-truncate" href="{{ route('contact') }}">Contact Us </a>
                                 </li>
                             </ul>
                         </nav>
                     </div>
                 </div>
-                <div class="col-xxl-4 col-xl-4 col-lg-3 col-md-4 col-3">
+                <div class="col-xxl-4 col-xl-3 col-lg-3 col-md-4 col-3">
                     <div class="header__account header__account2">
                         <ul class="d-flex justify-content-end">
                             <li class="header__account--items header__account2--items header__account--search__items d-sm-none">
@@ -130,20 +153,39 @@
                     <li class="offcanvas__menu_li">
                         <a class="offcanvas__menu_item" href="{{ route('home') }}">Home</a>
                     </li>
-                    @foreach ($categories as $category)
+                    @php
+                        $allSubcategories = collect();
+                        foreach ($categories as $category) {
+                            $allSubcategories = $allSubcategories->merge($category->subcategories);
+                        }
+                    @endphp
+                    @if($allSubcategories->count() > 0)
                         <li class="offcanvas__menu_li">
-                            <a class="offcanvas__menu_item" href="{{ route('shop', $category->slug) }}">{{ $category->name }}</a>
-                            @if ($category->subcategories->count() > 0)
-                                <ul class="offcanvas__sub_menu">
-                                    @foreach ($category->subcategories as $subcategory)
-                                        <li class="offcanvas__sub_menu_li">
-                                            <a href="{{ route('shop', $subcategory->slug) }}" class="offcanvas__sub_menu_item">{{ $subcategory->name }}</a>
-                                        </li>
-                                    @endforeach
-                                </ul>
-                            @endif
+                            <a class="offcanvas__menu_item" href="javascript:void(0)">Shop by Category</a>
+                            <ul class="offcanvas__sub_menu">
+                                @foreach ($allSubcategories->sortBy('sort_order') as $subcategory)
+                                    <li class="offcanvas__sub_menu_li">
+                                        <a href="{{ route('shop') }}?subcategory={{ $subcategory->slug }}" class="offcanvas__sub_menu_item">{{ $subcategory->name }}</a>
+                                    </li>
+                                @endforeach
+                            </ul>
                         </li>
-                    @endforeach
+                    @endif
+                    @php
+                        $activeCollections = \App\Models\Collection::where('status', 1)->orderBy('sort_order')->get();
+                    @endphp
+                    @if($activeCollections->count() > 0)
+                        <li class="offcanvas__menu_li">
+                            <a class="offcanvas__menu_item" href="javascript:void(0)">Shop by Collection</a>
+                            <ul class="offcanvas__sub_menu">
+                                @foreach ($activeCollections as $collection)
+                                    <li class="offcanvas__sub_menu_li">
+                                        <a href="{{ route('shop', ['collection' => $collection->slug]) }}" class="offcanvas__sub_menu_item">{{ $collection->name }}</a>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </li>
+                    @endif
                     <li class="offcanvas__menu_li"><a class="offcanvas__menu_item" href="{{ route('shop') }}">New In</a></li>
                     <li class="offcanvas__menu_li"><a class="offcanvas__menu_item" href="{{ route('about') }}">Our Story</a></li>
                     <li class="offcanvas__menu_li"><a class="offcanvas__menu_item" href="{{ route('contact') }}">Contact Us</a></li>

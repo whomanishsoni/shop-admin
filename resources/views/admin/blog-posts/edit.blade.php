@@ -79,6 +79,17 @@
 
                     <div class="mb-3">
                         <label for="featured_image" class="form-label">Featured Image</label>
+                        @if($blogPost->featured_image)
+                            <div class="mb-2">
+                                <img src="{{ asset('storage/' . $blogPost->featured_image) }}"
+                                     alt="Current featured image"
+                                     style="max-width: 100%; border-radius: 4px;">
+                            </div>
+                            <div class="form-check mb-2">
+                                <input type="checkbox" name="remove_image" class="form-check-input" value="1">
+                                <label class="form-check-label">Remove current image</label>
+                            </div>
+                        @endif
                         <input type="file" class="form-control @error('featured_image') is-invalid @enderror"
                                id="featured_image" name="featured_image" accept="image/*">
                         @error('featured_image')
@@ -86,15 +97,6 @@
                         @enderror
                         <small class="text-muted">Max size: 2MB</small>
                     </div>
-
-                    @if($blogPost->featured_image)
-                    <div class="mb-3">
-                        <label class="form-label">Current Image</label>
-                        <img src="{{ asset('storage/' . $blogPost->featured_image) }}"
-                             alt="Current featured image"
-                             style="max-width: 100%; border-radius: 4px;">
-                    </div>
-                    @endif
 
                     <div class="mb-3">
                         <img id="image-preview" src="" alt="New Image Preview"

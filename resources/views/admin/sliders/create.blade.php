@@ -53,11 +53,11 @@
 
                 <div class="col-md-4">
                     <div class="mb-3">
-                        <label for="order" class="form-label">Display Order</label>
-                        <input type="number" name="order" id="order" class="form-control @error('order') is-invalid @enderror"
-                               value="{{ old('order', 0) }}">
+                        <label for="sort_order" class="form-label">Display Order</label>
+                        <input type="number" name="sort_order" id="sort_order" class="form-control @error('sort_order') is-invalid @enderror"
+                               value="{{ old('sort_order', 0) }}">
                         <small class="text-muted">Lower numbers appear first</small>
-                        @error('order')
+                        @error('sort_order')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>

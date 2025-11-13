@@ -11,24 +11,7 @@
                                 <div class="row">
                                     <div class="col-12 col-lg-6 offset-lg-6">
                                         <div class="hero__slider--items__inner">
-                                            <div class="slider__content style3 text-center">
-                                                <h2 class="hero__slider--maintitle h1 text-white">{{ $slider->title }}
-                                                </h2>
-                                                <p class="slider__content--desc desc2 d-sm-2-none mb-40 text-white">
-                                                    Discover the latest in fashion!
-                                                </p>
-                                                <a class="primary__btn slider__btn"
-                                                    href="{{ $slider->link ?? route('shop') }}">
-                                                    Show Collection
-                                                    <svg class="slider__btn--arrow__icon"
-                                                        xmlns="http://www.w3.org/2000/svg" width="16" height="10"
-                                                        viewBox="0 0 6.2 6.2">
-                                                        <path
-                                                            d="M7.1,4l-.546.546L8.716,6.713H4v.775H8.716L6.554,9.654,7.1,10.2,9.233,8.067,10.2,7.1Z"
-                                                            transform="translate(-4 -4)" fill="currentColor"></path>
-                                                    </svg>
-                                                </a>
-                                            </div>
+
                                         </div>
                                     </div>
                                 </div>

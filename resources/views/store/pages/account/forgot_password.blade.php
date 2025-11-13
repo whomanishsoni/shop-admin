@@ -1,6 +1,6 @@
 @extends('store.layouts.app')
 
-@section('title', 'Forgot Password - Vyuga')
+@section('title', 'Forgot Password - Waseem Fashion Studio')
 
 @section('content')
 <main class="main__content_wrapper">

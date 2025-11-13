@@ -25,15 +25,17 @@
                 <thead>
                     <tr>
                         <th width="30"><input type="checkbox" id="select-all"></th>
-                        <th>Image</th>
+                        <th width="80">Image</th>
                         <th>Name</th>
                         <th>SKU</th>
                         <th>Category</th>
                         <th>Subcategory</th>
+                        <th>Collections</th>
                         <th>Brand</th>
                         <th>Price</th>
                         <th>Stock</th>
                         <th>Status</th>
+                        <th>Featured</th>
                         <th width="150">Actions</th>
                     </tr>
                 </thead>
@@ -57,10 +59,12 @@ $(function() {
             {data: 'sku', name: 'sku'},
             {data: 'category', name: 'category'},
             {data: 'subcategory', name: 'subcategory'},
+            {data: 'collections', name: 'collections'},
             {data: 'brand', name: 'brand'},
             {data: 'price', name: 'price'},
             {data: 'stock', name: 'stock'},
             {data: 'status', name: 'status'},
+            {data: 'featured', name: 'featured'},
             {data: 'action', name: 'action', orderable: false, searchable: false}
         ]
     });

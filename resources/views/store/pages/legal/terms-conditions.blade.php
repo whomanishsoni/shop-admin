@@ -1,12 +1,12 @@
 @extends('store.layouts.app')
 
-@section('title', $pageData->meta_title ?? 'Terms & Conditions - Vyuga')
+@section('title', $pageData->meta_title ?? 'Terms & Conditions - Waseem Fashion Studio')
 
 @section('meta')
     @if(isset($pageData->meta_description))
         <meta name="description" content="{{ $pageData->meta_description }}">
     @else
-        <meta name="description" content="Learn more about Vyuga’s policies and procedures.">
+        <meta name="description" content="Learn more about Waseem Fashion Studio’s policies and procedures.">
     @endif
 @endsection
 

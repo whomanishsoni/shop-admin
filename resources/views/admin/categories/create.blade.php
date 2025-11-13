@@ -14,7 +14,7 @@
     <div class="card-body">
         <form action="{{ route('admin.categories.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
-            
+
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Name <span class="text-danger">*</span></label>
@@ -25,9 +25,9 @@
                 </div>
 
                 <div class="col-md-6 mb-3">
-                    <label class="form-label">Order</label>
-                    <input type="number" name="order" class="form-control @error('order') is-invalid @enderror" value="{{ old('order', 0) }}">
-                    @error('order')
+                    <label class="form-label">Sort Order</label>
+                    <input type="number" name="sort_order" class="form-control @error('sort_order') is-invalid @enderror" value="{{ old('sort_order', 0) }}">
+                    @error('sort_order')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                 </div>
@@ -43,7 +43,10 @@
 
             <div class="mb-3">
                 <label class="form-label">Image</label>
-                <input type="file" name="image" class="form-control @error('image') is-invalid @enderror" accept="image/*">
+                <input type="file" name="image" class="form-control @error('image') is-invalid @enderror" accept="image/*" id="category-image-input">
+                <div id="category-image-preview" class="mt-2" style="display: none;">
+                    <img id="category-preview-img" src="" alt="Image Preview" style="max-width: 200px; max-height: 200px; border: 1px solid #ddd; border-radius: 4px; padding: 4px; background: #f8f9fa;">
+                </div>
                 @error('image')
                     <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
@@ -66,3 +69,23 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+$(document).ready(function() {
+    $('#category-image-input').on('change', function() {
+        const file = this.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                $('#category-preview-img').attr('src', e.target.result);
+                $('#category-image-preview').show();
+            };
+            reader.readAsDataURL(file);
+        } else {
+            $('#category-image-preview').hide();
+        }
+    });
+});
+</script>
+@endpush

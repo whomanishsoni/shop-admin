@@ -1,6 +1,6 @@
 @extends('store.layouts.app')
 
-@section('title', 'Order Invoice - Vyuga')
+@section('title', 'Order Invoice - Waseem Fashion Studio')
 
 @section('content')
     <main class="main__content_wrapper">
