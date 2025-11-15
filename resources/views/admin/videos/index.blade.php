@@ -1,19 +1,19 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Email Templates')
+@section('title', 'Videos')
 
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h1 class="h3 mb-0 text-gray-800">Email Templates</h1>
-    <a href="{{ route('admin.email-templates.create') }}" class="btn btn-primary">
-        <i class="fas fa-plus"></i> Add Email Templates
+    <h1 class="h3 mb-0 text-gray-800">Videos</h1>
+    <a href="{{ route('admin.videos.create') }}" class="btn btn-primary">
+        <i class="fas fa-plus"></i> Add Video
     </a>
 </div>
 
 <div class="card shadow mb-4">
     <div class="card-header py-3">
         <div class="d-flex justify-content-between align-items-center">
-            <h6 class="m-0 font-weight-bold text-primary">Email Templates List</h6>
+            <h6 class="m-0 font-weight-bold text-primary">Videos List</h6>
             <button id="bulk-delete" class="btn btn-danger btn-sm" style="display:none;">
                 <i class="fas fa-trash"></i> Delete Selected
             </button>
@@ -21,12 +21,13 @@
     </div>
     <div class="card-body">
         <div class="table-responsive">
-            <table class="table table-bordered" id="email-templates-table" width="100%">
+            <table class="table table-bordered" id="videos-table" width="100%">
                 <thead>
                     <tr>
                         <th width="30"><input type="checkbox" id="select-all"></th>
-                        <th>Name</th>
+                        <th>Title</th>
                         <th>Status</th>
+                        <th>Sort Order</th>
                         <th width="150">Actions</th>
                     </tr>
                 </thead>
@@ -39,14 +40,15 @@
 @push('scripts')
 <script>
 $(function() {
-    var table = $('#email-templates-table').DataTable({
+    var table = $('#videos-table').DataTable({
         processing: true,
         serverSide: true,
-        ajax: "{{ route('admin.email-templates.index') }}",
+        ajax: "{{ route('admin.videos.index') }}",
         columns: [
             {data: 'checkbox', name: 'checkbox', orderable: false, searchable: false},
-            {data: 'name', name: 'name'},
+            {data: 'title', name: 'title'},
             {data: 'status', name: 'status'},
+            {data: 'sort_order', name: 'sort_order'},
             {data: 'action', name: 'action', orderable: false, searchable: false}
         ]
     });
@@ -73,9 +75,9 @@ $(function() {
             return $(this).val();
         }).get();
 
-        if (confirm('Are you sure you want to delete selected items?')) {
+        if (confirm('Are you sure you want to delete selected videos?')) {
             $.ajax({
-                url: "{{ route('admin.email-templates.bulk-delete') }}",
+                url: "{{ route('admin.videos.bulk-delete') }}",
                 type: 'POST',
                 data: {
                     _token: '{{ csrf_token() }}',
@@ -91,7 +93,7 @@ $(function() {
     });
 
     $(document).on('submit', '.delete-form', function(e) {
-        if (!confirm('Are you sure you want to delete this item?')) {
+        if (!confirm('Are you sure you want to delete this video?')) {
             e.preventDefault();
         }
     });

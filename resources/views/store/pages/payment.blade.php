@@ -133,7 +133,7 @@
                                             @endforeach
                                         </div>
                                         <div class="cart__summary--footer mt-20 text-center">
-                                            <button type="submit" class="primary__btn checkout border-radius-5 w-100" id="payNowButton" style="width: 100% !important;">Complete Payment</button>
+                                            <button type="submit" class="primary__btn checkout border-radius-5 w-100" id="payNowButton" style="width: 100% !important;">Complete Order</button>
                                         </div>
                                     </form>
                                 </div>
@@ -148,6 +148,9 @@
 
 @push('scripts')
     @include('store.partials.js')
+
+    <!-- Razorpay Checkout Script -->
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
     <style>
         /* Reduce product image size */
@@ -198,11 +201,73 @@
                         const data = await response.json();
 
                         if (data.success) {
-                            showGlobalMessage(data.message || 'Payment initiated successfully! Redirecting...', 'success');
-                            // Delay redirect to allow message to be seen
-                            setTimeout(() => {
-                                window.location.href = '{{ route("checkout.success", $order->id) }}';
-                            }, 1500);
+                            if (data.gateway === 'razorpay') {
+                                // Initialize Razorpay checkout
+                                const options = {
+                                    key: data.key,
+                                    amount: data.amount,
+                                    currency: data.currency,
+                                    name: data.name,
+                                    description: data.description,
+                                    order_id: data.razorpay_order_id,
+                                    prefill: {
+                                        name: data.customer.name,
+                                        email: data.customer.email,
+                                        contact: data.customer.contact
+                                    },
+                                    handler: function (response) {
+                                        // Handle successful payment - call the callback to process transaction
+                                        fetch('{{ route("checkout.razorpay.callback") }}', {
+                                            method: 'POST',
+                                            headers: {
+                                                'Content-Type': 'application/x-www-form-urlencoded',
+                                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                            },
+                                            body: new URLSearchParams({
+                                                razorpay_order_id: response.razorpay_order_id,
+                                                razorpay_payment_id: response.razorpay_payment_id,
+                                                razorpay_signature: response.razorpay_signature
+                                            })
+                                        })
+                                        .then(response => response.text())
+                                        .then(data => {
+                                            showGlobalMessage('Payment completed successfully! Transaction recorded.', 'success');
+                                            setTimeout(() => {
+                                                window.location.href = '{{ route("checkout.success", $order->id) }}';
+                                            }, 1500);
+                                        })
+                                        .catch(error => {
+                                            console.error('Callback error:', error);
+                                            showGlobalMessage('Payment completed but transaction recording failed. Please contact support.', 'warning');
+                                            setTimeout(() => {
+                                                window.location.href = '{{ route("checkout.success", $order->id) }}';
+                                            }, 2000);
+                                        });
+                                    },
+                                    modal: {
+                                        ondismiss: function() {
+                                            showGlobalMessage('Payment cancelled. You can try again.', 'warning');
+                                            isSubmitting = false;
+                                            payNowButton.textContent = 'Complete Payment';
+                                            payNowButton.disabled = false;
+                                        }
+                                    }
+                                };
+
+                                const rzp = new Razorpay(options);
+                                rzp.open();
+                            } else {
+                                // For other payment methods (COD, etc.)
+                                showGlobalMessage(data.message || 'Payment initiated successfully! Redirecting...', 'success');
+                                // Delay redirect to allow message to be seen
+                                setTimeout(() => {
+                                    if (data.redirect) {
+                                        window.location.href = data.redirect;
+                                    } else {
+                                        window.location.href = '{{ route("checkout.success", $order->id) }}';
+                                    }
+                                }, 1500);
+                            }
                         } else {
                             showGlobalMessage(data.message || 'Failed to initiate payment. Please try again.', 'error');
                             isSubmitting = false;

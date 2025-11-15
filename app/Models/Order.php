@@ -8,7 +8,8 @@ class Order extends Model
 {
     protected $fillable = [
         'order_number', 'customer_id', 'subtotal', 'tax', 'shipping', 'discount', 'total',
-        'status', 'payment_method', 'payment_status', 'shipping_address', 'billing_address', 'notes'
+        'status', 'payment_method', 'payment_status', 'shipping_address', 'billing_address', 'notes', 'razorpay_order_id',
+        'guest_name', 'guest_email', 'guest_phone'
     ];
 
     public function customer()

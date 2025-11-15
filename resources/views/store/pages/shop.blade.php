@@ -106,11 +106,11 @@
                                                                 @endif
                                                                 <span class="current__price">Rs.{{ number_format($product['price'], 2) }}</span>
                                                             </div>
-                                                            <div class="product__items--action d-flex justify-content-center">
+                                                            {{-- <div class="product__items--action d-flex justify-content-center">
                                                                 <a class="product__items--action__btn" data-open="modal1" data-slug="{{ $product['slug'] }}" href="javascript:void(0)">
                                                                     <span>Choose Options</span>
                                                                 </a>
-                                                            </div>
+                                                            </div> --}}
                                                         </div>
                                                     </div>
                                                 </div>

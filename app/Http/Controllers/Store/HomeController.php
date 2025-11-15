@@ -11,6 +11,7 @@ use App\Models\Slider;
 use App\Models\Product;
 use App\Models\BlogPost;
 use App\Models\Testimonial;
+use App\Models\Video;
 use Illuminate\Support\Str;
 
 class HomeController extends Controller
@@ -136,6 +137,13 @@ class HomeController extends Controller
                 ];
             });
 
-        return view('store.pages.home', compact('categories', 'subcategories', 'products', 'featuredProducts', 'collections', 'sliders', 'blogPosts', 'testimonials'));
+        // Fetch active videos for home page display
+        $videos = Video::where('status', 'active')
+            ->orderBy('sort_order')
+            ->orderBy('created_at', 'desc')
+            ->take(4)
+            ->get();
+
+        return view('store.pages.home', compact('categories', 'subcategories', 'products', 'featuredProducts', 'collections', 'sliders', 'blogPosts', 'testimonials', 'videos'));
     }
 }

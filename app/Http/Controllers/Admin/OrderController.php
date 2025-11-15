@@ -145,12 +145,19 @@ class OrderController extends Controller
 
     public function destroy(Order $order)
     {
+        $order->transactions()->delete();
+        $order->items()->delete();
         $order->delete();
         return redirect()->route('admin.orders.index')->with('success', 'Order deleted successfully');
     }
 
     public function bulkDelete(Request $request)
     {
+        $orders = Order::whereIn('id', $request->ids)->get();
+        foreach ($orders as $order) {
+            $order->transactions()->delete();
+            $order->items()->delete();
+        }
         Order::whereIn('id', $request->ids)->delete();
         return response()->json(['success' => 'Orders deleted successfully']);
     }

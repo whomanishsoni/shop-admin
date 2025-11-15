@@ -12,10 +12,16 @@ class PaymentGatewayController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $paymentGateways = PaymentGateway::select(['id', 'name', 'gateway_key', 'api_key', 'api_secret', 'status', 'config']);
+            $paymentGateways = PaymentGateway::select(['id', 'name', 'gateway_key', 'mode', 'status']);
             return DataTables::of($paymentGateways)
                 ->addColumn('checkbox', function($row) {
                     return '<input type="checkbox" class="select-item" value="'.$row->id.'">';
+                })
+                ->addColumn('mode', function($row) {
+                    if ($row->gateway_key === 'cod') {
+                        return '<span class="badge bg-secondary">N/A</span>';
+                    }
+                    return '<span class="badge bg-' . ($row->mode === 'live' ? 'success' : 'warning') . '">' . ucfirst($row->mode) . '</span>';
                 })
                 ->addColumn('status', function($row) {
                     return $row->status ? '<span class="badge bg-success">Active</span>' : '<span class="badge bg-danger">Inactive</span>';
@@ -31,7 +37,7 @@ class PaymentGatewayController extends Controller
                         </form>
                     ';
                 })
-                ->rawColumns(['checkbox', 'status', 'action'])
+                ->rawColumns(['checkbox', 'mode', 'status', 'action'])
                 ->make(true);
         }
         return view('admin.payment-gateways.index');
@@ -44,20 +50,28 @@ class PaymentGatewayController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
+        $request->validate([
             'name' => 'required|string|max:255',
             'gateway_key' => 'required|string|max:255|unique:payment_gateways,gateway_key',
-            'api_key' => 'nullable|string|max:255',
-            'api_secret' => 'nullable|string|max:255',
+            'mode' => 'nullable|in:test,live',
+            'test_key_id' => 'nullable|string|max:255',
+            'test_key_secret' => 'nullable|string|max:255',
+            'live_key_id' => 'nullable|string|max:255',
+            'live_key_secret' => 'nullable|string|max:255',
             'status' => 'required|in:0,1',
-            'config' => 'nullable|array',
         ]);
 
-        if (isset($validated['config'])) {
-            $validated['config'] = json_encode($validated['config']);
+        $data = $request->only([
+            'name', 'gateway_key', 'mode', 'test_key_id', 'test_key_secret',
+            'live_key_id', 'live_key_secret', 'status'
+        ]);
+
+        // Set default mode for Razorpay if not provided
+        if ($request->gateway_key === 'razorpay' && empty($data['mode'])) {
+            $data['mode'] = 'test';
         }
 
-        PaymentGateway::create($validated);
+        PaymentGateway::create($data);
 
         return redirect()->route('admin.payment-gateways.index')->with('success', 'Payment Gateway created successfully');
     }
@@ -74,20 +88,28 @@ class PaymentGatewayController extends Controller
 
     public function update(Request $request, PaymentGateway $paymentGateway)
     {
-        $validated = $request->validate([
+        $request->validate([
             'name' => 'required|string|max:255',
             'gateway_key' => 'required|string|max:255|unique:payment_gateways,gateway_key,'.$paymentGateway->id,
-            'api_key' => 'nullable|string|max:255',
-            'api_secret' => 'nullable|string|max:255',
+            'mode' => 'nullable|in:test,live',
+            'test_key_id' => 'nullable|string|max:255',
+            'test_key_secret' => 'nullable|string|max:255',
+            'live_key_id' => 'nullable|string|max:255',
+            'live_key_secret' => 'nullable|string|max:255',
             'status' => 'required|in:0,1',
-            'config' => 'nullable|array',
         ]);
 
-        if (isset($validated['config'])) {
-            $validated['config'] = json_encode($validated['config']);
+        $data = $request->only([
+            'name', 'gateway_key', 'mode', 'test_key_id', 'test_key_secret',
+            'live_key_id', 'live_key_secret', 'status'
+        ]);
+
+        // Set default mode for Razorpay if not provided
+        if ($request->gateway_key === 'razorpay' && empty($data['mode'])) {
+            $data['mode'] = 'test';
         }
 
-        $paymentGateway->update($validated);
+        $paymentGateway->update($data);
 
         return redirect()->route('admin.payment-gateways.index')->with('success', 'Payment Gateway updated successfully');
     }

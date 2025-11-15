@@ -16,12 +16,12 @@
     <div class="main__header main__header--style3 header__sticky">
         <div class="container-fluid-2">
             <div class="row align-items-center position__relative">
-                <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-4 col-6">
+                <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-4 col-4 order-lg-1 order-2 d-flex justify-content-center justify-content-lg-start">
                     <a class="main__logo--link" href="{{ route('home') }}">
                         <img class="main__logo--img" src="{{ !empty($settings['footer_logo']) ? asset('storage/' . $settings['site_logo']) : asset('assets/images/logo.png') }}" alt="{{ $settings['site_name'] ?? 'Waseem Fashion Studio' }} Logo">
                     </a>
                 </div>
-                <div class="col-xxl-5 col-xl-6 col-lg-6 col-md-4 col-3">
+                <div class="col-xxl-5 col-xl-6 col-lg-6 col-md-4 col-4 order-lg-2 order-1">
                     <div class="offcanvas__header--menu__open">
                         <a class="offcanvas__header--menu__open--btn" href="javascript:void(0)" data-offcanvas>
                             <svg xmlns="http://www.w3.org/2000/svg" class="ionicon offcanvas__header--menu__open--svg" viewBox="0 0 512 512">
@@ -90,7 +90,7 @@
                         </nav>
                     </div>
                 </div>
-                <div class="col-xxl-4 col-xl-3 col-lg-3 col-md-4 col-3">
+                <div class="col-xxl-4 col-xl-3 col-lg-3 col-md-4 col-4 order-lg-3 order-3">
                     <div class="header__account header__account2">
                         <ul class="d-flex justify-content-end">
                             <li class="header__account--items header__account2--items header__account--search__items d-sm-none">
@@ -144,7 +144,7 @@
         <div class="offcanvas__inner">
             <div class="offcanvas__logo">
                 <a class="offcanvas__logo_link" href="{{ route('home') }}">
-                    <img src="{{ asset('assets/images/logo.png') }}" alt="Logo" width="158" height="36">
+                        <img class="main__logo--img" src="{{ !empty($settings['footer_logo']) ? asset('storage/' . $settings['site_logo']) : asset('assets/images/logo.png') }}" alt="{{ $settings['site_name'] ?? 'Waseem Fashion Studio' }} Logo">
                 </a>
                 <button class="offcanvas__close--btn" data-offcanvas>close</button>
             </div>

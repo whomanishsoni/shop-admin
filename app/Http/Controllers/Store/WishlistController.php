@@ -11,8 +11,18 @@ class WishlistController extends Controller
 {
     public function __invoke()
     {
+        $customer = auth('customer')->user();
         $wishlistItems = $this->getWishlistItems();
-        return view('store.pages.account.wishlist', compact('wishlistItems'));
+
+        $profileData = [
+            'first_name' => $customer->first_name,
+            'last_name' => $customer->last_name,
+            'email' => $customer->email,
+            'contact_no' => $customer->contact_no,
+            'alternative_contact_no' => $customer->alternative_contact_no,
+        ];
+
+        return view('store.pages.account.wishlist', compact('wishlistItems', 'profileData'));
     }
 
     public function add(Request $request)

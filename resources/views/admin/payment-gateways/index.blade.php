@@ -27,6 +27,7 @@
                         <th width="30"><input type="checkbox" id="select-all"></th>
                         <th>Name</th>
                         <th>Gateway Key</th>
+                        <th>Mode</th>
                         <th>Status</th>
                         <th width="150">Actions</th>
                     </tr>
@@ -48,6 +49,7 @@ $(function() {
             {data: 'checkbox', name: 'checkbox', orderable: false, searchable: false},
             {data: 'name', name: 'name'},
             {data: 'gateway_key', name: 'gateway_key'},
+            {data: 'mode', name: 'mode'},
             {data: 'status', name: 'status'},
             {data: 'action', name: 'action', orderable: false, searchable: false}
         ]

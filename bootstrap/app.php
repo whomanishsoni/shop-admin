@@ -15,6 +15,12 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'verified.customer' => EnsureEmailIsVerified::class . ':customer',
         ]);
+
+        // Exclude payment routes from CSRF protection
+        $middleware->validateCsrfTokens(except: [
+            'checkout/initiate-payment/*',
+            'checkout/razorpay/callback',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

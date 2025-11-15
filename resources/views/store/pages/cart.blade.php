@@ -91,7 +91,7 @@
                             </div>
                         </div>
                         <div class="col-lg-4">
-                            <div class="cart__summary border-radius-10">
+                            <div class="cart__summary">
                                 {{-- <div class="coupon__code mb-30">
                                     <h3 class="coupon__code--title">Coupon</h3>
                                     <p class="coupon__code--desc">Enter your coupon code if you have one.</p>

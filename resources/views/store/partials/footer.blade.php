@@ -216,12 +216,16 @@
     </div>
 </footer>
 
-<!-- Scroll to top -->
-<button id="scroll__top">
-    <svg xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 0 512 512">
-        <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="48" d="M112 244l144-144 144 144M256 120v292" />
+
+<a target="_blank"
+   href="https://api.whatsapp.com/send?phone=917396992031&text=Hello%2C%20I%20am%20looking%20at%20this%20https%3A%2F%2Fwww.waseemfashionstudio.com%2F%20Need%20further%20information%20on%20this%20apparel%20piece%2C%20please%20help."
+   class="whatsapp-button">
+    <svg width="24" height="24" viewBox="0 0 32 32" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+        <path d="M16.001 2.667C8.64 2.667 2.667 8.64 2.667 16c0 2.816.832 5.44 2.262 7.637L2 30l6.582-2.878A13.26 13.26 0 0 0 16 29.333C23.36 29.333 29.333 23.36 29.333 16S23.36 2.667 16.001 2.667zm0 24c-2.293 0-4.421-.742-6.157-2.003l-.437-.314-3.907 1.71.832-4.114-.269-.421A10.61 10.61 0 0 1 5.333 16c0-5.867 4.8-10.667 10.667-10.667 5.867 0 10.667 4.8 10.667 10.667S21.868 26.667 16.001 26.667zm5.493-7.84c-.301-.149-1.778-.878-2.054-.978-.277-.102-.480-.149-.685.149-.202.296-.789.978-.968 1.178-.179.202-.356.225-.657.076-.301-.149-1.273-.47-2.425-1.502-.896-.797-1.501-1.78-1.677-2.078-.176-.296-.019-.456.132-.604.136-.135.301-.353.451-.528.149-.176.199-.3.300-.502.099-.202.050-.378-.025-.528-.075-.149-.685-1.653-.94-2.27-.247-.593-.497-.51-.685-.52-.176-.008-.378-.01-.58-.01-.202 0-.528.075-.804.378-.277.296-1.053 1.03-1.053 2.502 0 1.47 1.079 2.884 1.231 3.085.149.202 2.123 3.243 5.231 4.455.732.314 1.303.502 1.748.64.734.234 1.402.201 1.93.122.589-.087 1.778-.726 2.029-1.427.25-.702.25-1.304.176-1.427-.074-.122-.277-.198-.578-.346z"/>
     </svg>
-</button>
+</a>
+
+
 
 {{-- FOOTER ACCORDION SCRIPT (unchanged from previous fix) --}}
 <script>
@@ -290,3 +294,36 @@
         resizeTimer = setTimeout(initFooterAccordion, 120);
     });
 </script>
+
+<style>
+.whatsapp-button{
+    position: fixed;
+    bottom: 50px;
+    right: 20px;
+    z-index: 999;
+    background-color: #25d366;
+    border-radius: 50%;
+    color: #ffffff;
+    width: 55px;
+    height: 55px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0px 4px 18px rgba(0,0,0,0.3);
+    text-decoration: none;
+}
+
+.whatsapp-button svg{
+    width: 28px;
+    height: 28px;
+    fill: #fff;
+}
+
+/* Mobile devices */
+@media only screen and (max-width: 767px){
+    .whatsapp-button{
+        bottom: 80px;
+    }
+}
+</style>
+

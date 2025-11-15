@@ -11,54 +11,24 @@ class PaymentGatewaySeeder extends Seeder
     {
         $gateways = [
             [
-                'name' => 'Stripe',
-                'gateway_key' => 'stripe',
-                'api_key' => '',
-                'api_secret' => '',
-                'status' => false,
-                'config' => json_encode([
-                    'publishable_key' => '',
-                    'currency' => 'usd',
-                    'description' => 'Credit card payment via Stripe',
-                ]),
-            ],
-            [
-                'name' => 'PayPal',
-                'gateway_key' => 'paypal',
-                'api_key' => '',
-                'api_secret' => '',
-                'status' => false,
-                'config' => json_encode([
-                    'client_id' => '',
-                    'mode' => 'sandbox',
-                    'currency' => 'usd',
-                    'description' => 'PayPal payment gateway',
-                ]),
-            ],
-            [
                 'name' => 'Razorpay',
                 'gateway_key' => 'razorpay',
-                'api_key' => '',
-                'api_secret' => '',
-                'status' => false,
-                'config' => json_encode([
-                    'key_id' => '',
-                    'key_secret' => '',
-                    'currency' => 'INR',
-                    'description' => 'Razorpay payment gateway for India',
-                ]),
+                'mode' => 'test',
+                'test_key_id' => 'rzp_test_Rf8hHEs6KqmbN9',
+                'test_key_secret' => 'FSbOjp2Wzrk9Az0JSdMnpbMI',
+                'live_key_id' => '',
+                'live_key_secret' => '',
+                'status' => true,
             ],
             [
                 'name' => 'Cash on Delivery',
                 'gateway_key' => 'cod',
-                'api_key' => '',
-                'api_secret' => '',
+                'mode' => null,
+                'test_key_id' => null,
+                'test_key_secret' => null,
+                'live_key_id' => null,
+                'live_key_secret' => null,
                 'status' => true,
-                'config' => json_encode([
-                    'description' => 'Pay when you receive the order',
-                    'instructions' => 'Please have exact amount ready for delivery',
-                    'additional_fee' => 0,
-                ]),
             ],
         ];
 

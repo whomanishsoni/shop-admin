@@ -23,102 +23,154 @@
             <div class="container-fluid">
                 <div class="row cart__section--inner">
                     <div class="col-lg-8">
-                        @if(!$cartSummary['defaultAddress'])
+                        @if($cartSummary['isGuest'])
+                            <div id="guestWarning" class="alert alert-info">You're checking out as a guest. Your information will be used only for this order.</div>
+                        @elseif(!$cartSummary['defaultAddress'])
                             <div id="addressWarning" class="alert alert-warning">Please add at least one address to proceed with checkout.</div>
                         @endif
-                        <form action="{{ route('checkout.saveAddress') }}" method="POST" id="checkoutForm">
+
+                        <form action="{{ $cartSummary['isGuest'] ? route('checkout.createOrderAndPayment') : route('checkout.saveAddress') }}" method="POST" id="checkoutForm">
                             @csrf
 
                             <div class="checkout__content--step section__contact--information">
                                 <div class="section__header checkout__section--header d-flex align-items-center justify-content-between mb-25">
-                                    <h2 class="section__header--title h3">Contact information</h2>
+                                    <h2 class="section__header--title h3">{{ $cartSummary['isGuest'] ? 'Guest Information' : 'Contact information' }}</h2>
                                 </div>
 
                                 <div class="checkout__content--step section__shipping--address pt-10">
                                     <div class="checkout__content--step__inner3 border-radius-5">
-                                        <div class="checkout__address--content__header">
-                                            <div class="row customer__information--list" style="width:100%">
-                                                <div class="col-lg-6 mb-12 customer__information--step">
-                                                    <h4 class="customer__information--subtitle h5">Billing Address</h4>
-                                                    <ul>
-                                                        @if($cartSummary['defaultAddress'])
-                                                            <li><span class="customer__information--text">{{ $cartSummary['defaultAddress']->name }}</span></li>
-                                                            <li><span class="customer__information--text">{{ $cartSummary['defaultAddress']->address }}</span></li>
-                                                            <li><span class="customer__information--text">{{ $cartSummary['defaultAddress']->city }},</span></li>
-                                                            <li><span class="customer__information--text">{{ $cartSummary['defaultAddress']->state ?? '' }} - {{ $cartSummary['defaultAddress']->pincode }}</span></li>
-                                                        @else
-                                                            <li><span class="customer__information--text">Please fill below</span></li>
-                                                            <li><span class="customer__information--text">Address details</span></li>
-                                                            <li><span class="customer__information--text">to continue</span></li>
-                                                            <li><span class="customer__information--text">& checkout</span></li>
-                                                        @endif
-                                                    </ul>
+                                        @if(!$cartSummary['isGuest'])
+                                            <div class="checkout__address--content__header">
+                                                <div class="row customer__information--list" style="width:100%">
+                                                    <div class="col-lg-6 mb-12 customer__information--step">
+                                                        <h4 class="customer__information--subtitle h5">Billing Address</h4>
+                                                        <ul>
+                                                            @if($cartSummary['defaultAddress'])
+                                                                <li><span class="customer__information--text">{{ $cartSummary['defaultAddress']->name }}</span></li>
+                                                                <li><span class="customer__information--text">{{ $cartSummary['defaultAddress']->address }}</span></li>
+                                                                <li><span class="customer__information--text">{{ $cartSummary['defaultAddress']->city }},</span></li>
+                                                                <li><span class="customer__information--text">{{ $cartSummary['defaultAddress']->state ?? '' }} - {{ $cartSummary['defaultAddress']->pincode }}</span></li>
+                                                            @else
+                                                                <li><span class="customer__information--text">Please fill below</span></li>
+                                                                <li><span class="customer__information--text">Address details</span></li>
+                                                                <li><span class="customer__information--text">to continue</span></li>
+                                                                <li><span class="customer__information--text">& checkout</span></li>
+                                                            @endif
+                                                        </ul>
+                                                    </div>
+                                                    <div class="col-lg-6 mb-12 customer__information--step">
+                                                        <h4 class="customer__information--subtitle h5">Shipping Address</h4>
+                                                        <ul>
+                                                            @if(Session::has('checkout_address') && isset(Session::get('checkout_address')['shipping']) && Session::get('checkout_address')['shipping'] !== Session::get('checkout_address')['billing'])
+                                                                <li><span class="customer__information--text">{{ Session::get('checkout_address')['shipping']['name'] }}</span></li>
+                                                                <li><span class="customer__information--text">{{ Session::get('checkout_address')['shipping']['address'] }}</span></li>
+                                                                <li><span class="customer__information--text">{{ Session::get('checkout_address')['shipping']['city'] }},</span></li>
+                                                                <li><span class="customer__information--text">{{ Session::get('checkout_address')['shipping']['state'] ?? '' }} - {{ Session::get('checkout_address')['shipping']['pincode'] }}</span></li>
+                                                            @elseif($cartSummary['defaultAddress'])
+                                                                <li><span class="customer__information--text">{{ $cartSummary['defaultAddress']->name }}</span></li>
+                                                                <li><span class="customer__information--text">{{ $cartSummary['defaultAddress']->address }}</span></li>
+                                                                <li><span class="customer__information--text">{{ $cartSummary['defaultAddress']->city }},</span></li>
+                                                                <li><span class="customer__information--text">{{ $cartSummary['defaultAddress']->state ?? '' }} - {{ $cartSummary['defaultAddress']->pincode }}</span></li>
+                                                            @else
+                                                                <li><span class="customer__information--text">Please fill below</span></li>
+                                                                <li><span class="customer__information--text">Address details</span></li>
+                                                                <li><span class="customer__information--text">to continue</span></li>
+                                                                <li><span class="customer__information--text">& checkout</span></li>
+                                                            @endif
+                                                        </ul>
+                                                    </div>
                                                 </div>
-                                                <div class="col-lg-6 mb-12 customer__information--step">
-                                                    <h4 class="customer__information--subtitle h5">Shipping Address</h4>
-                                                    <ul>
-                                                        @if(Session::has('checkout_address') && isset(Session::get('checkout_address')['shipping']) && Session::get('checkout_address')['shipping'] !== Session::get('checkout_address')['billing'])
-                                                            <li><span class="customer__information--text">{{ Session::get('checkout_address')['shipping']['name'] }}</span></li>
-                                                            <li><span class="customer__information--text">{{ Session::get('checkout_address')['shipping']['address'] }}</span></li>
-                                                            <li><span class="customer__information--text">{{ Session::get('checkout_address')['shipping']['city'] }},</span></li>
-                                                            <li><span class="customer__information--text">{{ Session::get('checkout_address')['shipping']['state'] ?? '' }} - {{ Session::get('checkout_address')['shipping']['pincode'] }}</span></li>
-                                                        @elseif($cartSummary['defaultAddress'])
-                                                            <li><span class="customer__information--text">{{ $cartSummary['defaultAddress']->name }}</span></li>
-                                                            <li><span class="customer__information--text">{{ $cartSummary['defaultAddress']->address }}</span></li>
-                                                            <li><span class="customer__information--text">{{ $cartSummary['defaultAddress']->city }},</span></li>
-                                                            <li><span class="customer__information--text">{{ $cartSummary['defaultAddress']->state ?? '' }} - {{ $cartSummary['defaultAddress']->pincode }}</span></li>
-                                                        @else
-                                                            <li><span class="customer__information--text">Please fill below</span></li>
-                                                            <li><span class="customer__information--text">Address details</span></li>
-                                                            <li><span class="customer__information--text">to continue</span></li>
-                                                            <li><span class="customer__information--text">& checkout</span></li>
-                                                        @endif
-                                                    </ul>
-                                                </div>
-                                            </div>
 
-                                            <div class="shipping__contact--box__list" style="border-top:1px solid #ccc">
-                                                <div class="shipping__radio--input">
-                                                    <input class="shipping__radio--input__field" id="radiobox" name="checkmethod" type="radio" {{ old('checkmethod', 'same') === 'same' ? 'checked' : '' }} value="same">
+                                                <div class="shipping__contact--box__list" style="border-top:1px solid #ccc">
+                                                    <div class="shipping__radio--input">
+                                                        <input class="shipping__radio--input__field" id="radiobox" name="checkmethod" type="radio" {{ old('checkmethod', 'same') === 'same' ? 'checked' : '' }} value="same">
+                                                    </div>
+                                                    <label class="shipping__radio--label" for="radiobox">
+                                                        <span class="shipping__radio--label__primary">Same as billing address</span>
+                                                    </label>
                                                 </div>
-                                                <label class="shipping__radio--label" for="radiobox">
-                                                    <span class="shipping__radio--label__primary">Same as billing address</span>
-                                                </label>
-                                            </div>
-                                            <div class="shipping__contact--box__list">
-                                                <div class="shipping__radio--input">
-                                                    <input class="shipping__radio--input__field" id="radiobox2" name="checkmethod" type="radio" {{ old('checkmethod') === 'different' ? 'checked' : '' }} value="different">
+                                                <div class="shipping__contact--box__list">
+                                                    <div class="shipping__radio--input">
+                                                        <input class="shipping__radio--input__field" id="radiobox2" name="checkmethod" type="radio" {{ old('checkmethod') === 'different' ? 'checked' : '' }} value="different">
+                                                    </div>
+                                                    <label class="shipping__radio--label" for="radiobox2">
+                                                        <span class="shipping__radio--label__primary">Use a different shipping address</span>
+                                                    </label>
                                                 </div>
-                                                <label class="shipping__radio--label" for="radiobox2">
-                                                    <span class="shipping__radio--label__primary">Use a different shipping address</span>
-                                                </label>
                                             </div>
-                                        </div>
+                                        @endif
 
                                         <div class="checkout__content--input__box--wrapper">
-                                            <div class="row" id="shippingAddressFields">
-                                                <div class="col-lg-6 mb-12">
-                                                    <div class="checkout__input--list">
-                                                        <label>
-                                                            <input class="checkout__input--field border-radius-5 @error('first_name') is-invalid @enderror"
-                                                                   name="first_name" id="first_name"
-                                                                   value="{{ old('first_name') }}"
-                                                                   placeholder="First name" type="text">
-                                                        </label>
-                                                        @error('first_name') <span class="text-danger">{{ $message }}</span> @enderror
+                                            <div class="row" id="addressFields">
+                                                @if($cartSummary['isGuest'])
+                                                    <div class="col-lg-6 mb-12">
+                                                        <div class="checkout__input--list">
+                                                            <label>
+                                                                <input class="checkout__input--field border-radius-5 @error('first_name') is-invalid @enderror"
+                                                                       name="first_name" id="first_name"
+                                                                       value="{{ old('first_name') }}"
+                                                                       placeholder="First name" type="text" required>
+                                                            </label>
+                                                            @error('first_name') <span class="text-danger">{{ $message }}</span> @enderror
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div class="col-lg-6 mb-12">
-                                                    <div class="checkout__input--list">
-                                                        <label>
-                                                            <input class="checkout__input--field border-radius-5 @error('last_name') is-invalid @enderror"
-                                                                   name="last_name" id="last_name"
-                                                                   value="{{ old('last_name') }}"
-                                                                   placeholder="Last name" type="text" required>
-                                                        </label>
-                                                        @error('last_name') <span class="text-danger">{{ $message }}</span> @enderror
+                                                    <div class="col-lg-6 mb-12">
+                                                        <div class="checkout__input--list">
+                                                            <label>
+                                                                <input class="checkout__input--field border-radius-5 @error('last_name') is-invalid @enderror"
+                                                                       name="last_name" id="last_name"
+                                                                       value="{{ old('last_name') }}"
+                                                                       placeholder="Last name" type="text" required>
+                                                            </label>
+                                                            @error('last_name') <span class="text-danger">{{ $message }}</span> @enderror
+                                                        </div>
                                                     </div>
-                                                </div>
+                                                    <div class="col-lg-6 mb-12">
+                                                        <div class="checkout__input--list">
+                                                            <label>
+                                                                <input class="checkout__input--field border-radius-5 @error('email') is-invalid @enderror"
+                                                                       name="email" id="email"
+                                                                       value="{{ old('email') }}"
+                                                                       placeholder="Email address" type="email" required>
+                                                            </label>
+                                                            @error('email') <span class="text-danger">{{ $message }}</span> @enderror
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-6 mb-12">
+                                                        <div class="checkout__input--list">
+                                                            <label>
+                                                                <input class="checkout__input--field border-radius-5 @error('phone') is-invalid @enderror"
+                                                                       name="phone" id="phone"
+                                                                       value="{{ old('phone') }}"
+                                                                       placeholder="Phone number" type="text" required>
+                                                            </label>
+                                                            @error('phone') <span class="text-danger">{{ $message }}</span> @enderror
+                                                        </div>
+                                                    </div>
+                                                @else
+                                                    <div class="col-lg-6 mb-12">
+                                                        <div class="checkout__input--list">
+                                                            <label>
+                                                                <input class="checkout__input--field border-radius-5 @error('first_name') is-invalid @enderror"
+                                                                       name="first_name" id="first_name"
+                                                                       value="{{ old('first_name') }}"
+                                                                       placeholder="First name" type="text">
+                                                            </label>
+                                                            @error('first_name') <span class="text-danger">{{ $message }}</span> @enderror
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-6 mb-12">
+                                                        <div class="checkout__input--list">
+                                                            <label>
+                                                                <input class="checkout__input--field border-radius-5 @error('last_name') is-invalid @enderror"
+                                                                       name="last_name" id="last_name"
+                                                                       value="{{ old('last_name') }}"
+                                                                       placeholder="Last name" type="text" required>
+                                                            </label>
+                                                            @error('last_name') <span class="text-danger">{{ $message }}</span> @enderror
+                                                        </div>
+                                                    </div>
+                                                @endif
                                                 <div class="col-12 mb-12">
                                                     <div class="checkout__input--list">
                                                         <label>
@@ -186,7 +238,7 @@
                                 </div>
                             </div>
                             <div class="checkout__content--step__footer d-flex align-items-center">
-                                <button type="submit" class="continue__shipping--btn primary__btn border-radius-5">Continue to Shipping</button>
+                                <button type="submit" class="continue__shipping--btn primary__btn border-radius-5">{{ $cartSummary['isGuest'] ? 'Continue to Payment' : 'Continue to Shipping' }}</button>
                                 <a class="previous__link--content" href="{{ route('shop') }}">Return to Shop</a>
                             </div>
                         </form>
@@ -271,14 +323,23 @@
                                 </table>
                             </div>
                             <div class="cart__summary--footer">
-                                <form action="{{ route('checkout.createOrderAndPayment') }}" method="POST" id="payNowForm" @if(!$cartSummary['defaultAddress']) class="disabled-form" @endif>
-                                    @csrf
-                                    <button type="submit" class="primary__btn checkout border-radius-5 w-100 {{ !$cartSummary['defaultAddress'] ? 'disabled' : '' }}"
-                                            @if(!$cartSummary['defaultAddress']) onclick="event.preventDefault(); alert('Please add at least one default address to proceed.')" @endif
-                                            style="width: 100% !important;">
-                                        Proceed To Payment
-                                    </button>
-                                </form>
+                                @if($cartSummary['isGuest'])
+                                    <form action="{{ route('checkout.createOrderAndPayment') }}" method="POST" id="payNowForm">
+                                        @csrf
+                                        <button type="submit" class="primary__btn checkout border-radius-5 w-100" style="width: 100% !important;">
+                                            Proceed To Payment
+                                        </button>
+                                    </form>
+                                @else
+                                    <form action="{{ route('checkout.createOrderAndPayment') }}" method="POST" id="payNowForm" @if(!$cartSummary['defaultAddress']) class="disabled-form" @endif>
+                                        @csrf
+                                        <button type="submit" class="primary__btn checkout border-radius-5 w-100 {{ !$cartSummary['defaultAddress'] ? 'disabled' : '' }}"
+                                                @if(!$cartSummary['defaultAddress']) onclick="event.preventDefault(); alert('Please add at least one default address to proceed.')" @endif
+                                                style="width: 100% !important;">
+                                            Proceed To Payment
+                                        </button>
+                                    </form>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -326,22 +387,40 @@
             const checkoutForm = document.querySelector('#checkoutForm');
             if (checkoutForm) {
                 checkoutForm.addEventListener('submit', function(e) {
-                    const sameAsBilling = document.getElementById('radiobox');
-                    const differentShipping = document.getElementById('radiobox2');
-                    const shippingFields = document.querySelectorAll('#shippingAddressFields input, #shippingAddressFields select');
-
-                    if (differentShipping.checked) {
+                    @if($cartSummary['isGuest'])
+                        // For guests, validate all required fields
+                        const requiredFields = this.querySelectorAll('input[required], select[required]');
                         let isValid = true;
-                        shippingFields.forEach(field => {
-                            if (field.required && !field.value.trim()) {
+                        requiredFields.forEach(field => {
+                            if (!field.value.trim()) {
                                 isValid = false;
+                                field.classList.add('is-invalid');
+                            } else {
+                                field.classList.remove('is-invalid');
                             }
                         });
                         if (!isValid) {
                             e.preventDefault();
-                            alert('Please fill all required shipping address fields.');
+                            alert('Please fill all required fields.');
                         }
-                    }
+                    @else
+                        const sameAsBilling = document.getElementById('radiobox');
+                        const differentShipping = document.getElementById('radiobox2');
+                        const shippingFields = document.querySelectorAll('#shippingAddressFields input, #shippingAddressFields select');
+
+                        if (differentShipping.checked) {
+                            let isValid = true;
+                            shippingFields.forEach(field => {
+                                if (field.required && !field.value.trim()) {
+                                    isValid = false;
+                                }
+                            });
+                            if (!isValid) {
+                                e.preventDefault();
+                                alert('Please fill all required shipping address fields.');
+                            }
+                        }
+                    @endif
                 });
             }
 

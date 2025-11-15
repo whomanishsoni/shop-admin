@@ -11,7 +11,12 @@
                                 <div class="row">
                                     <div class="col-12 col-lg-6 offset-lg-6">
                                         <div class="hero__slider--items__inner">
-
+                                            <br>
+                                            <br>
+                                            <br>
+                                            <br>
+                                            <br>
+                                            <br>
                                         </div>
                                     </div>
                                 </div>
@@ -69,7 +74,7 @@
         margin-bottom: 20px;
     }
 
-    .primary__btn.slider__btn {
+    .primary__btn {
         font-size: clamp(0.75rem, 2vw, 0.9rem); /* Smaller font size */
         padding: 8px 16px; /* Reduced padding for smaller button */
         line-height: 1.5;

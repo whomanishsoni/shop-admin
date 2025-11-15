@@ -22,7 +22,15 @@ class OrderController extends Controller
             ->latest()
             ->get();
 
-        return view('store.pages.account.orders', compact('orders'));
+        $profileData = [
+            'first_name' => $customer->first_name,
+            'last_name' => $customer->last_name,
+            'email' => $customer->email,
+            'contact_no' => $customer->contact_no,
+            'alternative_contact_no' => $customer->alternative_contact_no,
+        ];
+
+        return view('store.pages.account.orders', compact('orders', 'profileData'));
     }
 
     public function invoice($id)

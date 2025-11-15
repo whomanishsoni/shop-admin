@@ -118,14 +118,14 @@ class AccountController extends Controller
                 'user_email' => $customer->email,
                 'site_name' => config('app.name'),
                 'site_url' => config('app.url'),
-                'verification_url' => $verificationUrl,
+                'verification_link' => $verificationUrl,
             ];
 
             $subject = $this->replaceTemplateVariables($template->subject, $data);
             $body = $this->replaceTemplateVariables($template->body, $data);
 
             try {
-                Mail::raw($body, function ($message) use ($customer, $subject) {
+                Mail::html($body, function ($message) use ($customer, $subject) {
                     $message->to($customer->email)
                             ->subject($subject)
                             ->from(config('mail.from.address'), config('mail.from.name'));
@@ -211,7 +211,7 @@ class AccountController extends Controller
                 $subject = $this->replaceTemplateVariables($template->subject, $data);
                 $body = $this->replaceTemplateVariables($template->body, $data);
 
-                Mail::raw($body, function ($message) use ($customer, $subject) {
+                Mail::html($body, function ($message) use ($customer, $subject) {
                     $message->to($customer->email)
                             ->subject($subject)
                             ->from(config('mail.from.address'), config('mail.from.name'));
@@ -256,17 +256,17 @@ class AccountController extends Controller
                         'site_url' => config('app.url'),
                         'user_name' => $user->first_name . ' ' . $user->last_name,
                         'user_email' => $user->email,
-                        'reset_url' => config('app.url') . '/reset-password?token=' . $token . '&email=' . urlencode($user->email),
+                        'reset_link' => config('app.url') . '/reset-password?token=' . $token . '&email=' . urlencode($user->email),
                     ];
 
                     $subject = $this->replaceTemplateVariables($template->subject, $data);
                     $body = $this->replaceTemplateVariables($template->body, $data);
 
                     Log::info('Attempting to send email to: ' . $user->email . ' with subject: ' . $subject);
-                    Log::debug('Email reset URL: ' . $data['reset_url']);
+                    Log::debug('Email reset URL: ' . $data['reset_link']);
 
                     try {
-                        Mail::raw($body, function ($message) use ($user, $subject) {
+                        Mail::html($body, function ($message) use ($user, $subject) {
                             $message->to($user->email)
                                     ->subject($subject)
                                     ->from(config('mail.from.address'), config('mail.from.name'));

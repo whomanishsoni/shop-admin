@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 13, 2025 at 04:28 AM
+-- Generation Time: Nov 14, 2025 at 11:44 AM
 -- Server version: 8.0.33
 -- PHP Version: 8.2.29
 
@@ -69,7 +69,8 @@ INSERT INTO `addresses` (`id`, `customer_id`, `name`, `address`, `city`, `state`
 (76, 1, 'Kermit Hoffman', '74 Nobel Lane Tempor incidunt odi', 'Eu pariatur Quaerat', '', '311001', 'India', 0, '2025-10-16 05:34:13', '2025-10-16 05:34:13'),
 (74, 1, 'Alden Walton', '621 White First Court Et in ut accusantium', 'Assumenda rerum anim', '', 'Quia ut ipsam qui se', 'India', 0, '2025-10-16 03:31:04', '2025-10-16 03:31:04'),
 (75, 1, 'Chancellor Perry', '22 North Cowley Avenue Tempora quia ut volu', 'Nulla pariatur Exce', '', 'Exercitationem elit', 'India', 0, '2025-10-16 03:43:38', '2025-10-16 03:43:38'),
-(78, 1, 'Lysandra Ratliff', '414 East First Court Corrupti est irure', 'Iure rerum vel labor', '', 'Ipsa esse qui dolor', 'India', 0, '2025-10-18 01:06:47', '2025-10-18 01:06:47');
+(78, 1, 'Lysandra Ratliff', '414 East First Court Corrupti est irure', 'Iure rerum vel labor', '', 'Ipsa esse qui dolor', 'India', 0, '2025-10-18 01:06:47', '2025-10-18 01:06:47'),
+(79, 6, 'Ferris Nielsen', '431 North White Milton Extension Alias reiciendis omn', 'Sint voluptatem re', NULL, 'Quod minus ea accusa', 'India', 1, '2025-11-14 06:03:11', '2025-11-14 06:03:11');
 
 -- --------------------------------------------------------
 
@@ -360,8 +361,12 @@ CREATE TABLE `customers` (
 --
 
 INSERT INTO `customers` (`id`, `first_name`, `last_name`, `email`, `password`, `contact_no`, `alternative_contact_no`, `home_address`, `shipping_address`, `office_address`, `city`, `state`, `pincode`, `country`, `created_at`, `updated_at`, `remember_token`, `email_verified_at`) VALUES
-(1, 'manish', 'soni', 'whomanishsoni@gmail.com', '$2y$12$GY1BfFcisgiiNJeUEU7omeGefp6A9VdKgSAG7prE4J5ooD5nZsa.e', '9460966996', '9460966996', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-10-11 01:02:17', '2025-10-13 06:58:13', NULL, NULL),
-(2, 'Kadeem', 'Gilbert', 'whomanishsonii@gmail.com', '$2y$12$qFbf20bsAtwhAVztj3TPE.tPCUZv4cfmoP53NoygWz8w8PU.BY7UG', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-10-11 02:59:00', '2025-10-11 02:59:00', NULL, NULL);
+(1, 'manish', 'soni', 'whomanishsoni@gmail.com', '$2y$12$lCH6SzC/9jeCfGpQ6UNJYeTfmDnXJtBhBywMO14PNYOqeaLi5i7oW', '9460966996', '9460966996', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-10-11 01:02:17', '2025-10-13 06:58:13', NULL, '2025-11-13 08:38:26'),
+(2, 'abc', 'xyz', 'customer@gmail.com', '$2y$12$lCH6SzC/9jeCfGpQ6UNJYeTfmDnXJtBhBywMO14PNYOqeaLi5i7oW', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-10-11 02:59:00', '2025-10-11 02:59:00', NULL, '2025-11-13 08:38:26'),
+(3, 'Jenette', 'Francis', '0xmanishsoni@gmail.com', '$2y$12$Lk8bawvtPRbVw0MzGj/oUO.podTpKVijYF5ZK7AZPAz2rWyJ3/jq6', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-11-13 08:42:26', '2025-11-13 08:42:26', NULL, NULL),
+(4, 'Patricia', 'Sykes', 'manishneosoni@gmail.com', '$2y$12$eXmKoTBGlQX5ohGvforFYOGWbTUv1v1Ed/PjBU0pxwYLBnyGLan6G', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-11-13 10:22:19', '2025-11-13 10:22:40', NULL, '2025-11-13 10:22:40'),
+(5, 'Test', 'User', 'test@example.com', '$2y$12$e/C6KUWg1Dl3.TNIJrsLG.TxyMYdTC.bDFKkuV.JPlAix76oPqglG', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-11-14 05:02:46', '2025-11-14 05:02:46', NULL, '2025-11-14 05:02:46'),
+(6, 'Ferris', 'Nielsen', 'lulybevas@mailinator.com', '$2y$12$8BeJynvypNNSF01rnPnu2.XmUf/TzzfwqYSkcXvSHtJK4oYROwOSC', '+1 (794) 493-2143', '988774404', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-11-14 06:03:11', '2025-11-14 06:13:54', NULL, '2025-11-14 06:03:11');
 
 -- --------------------------------------------------------
 
@@ -385,13 +390,13 @@ CREATE TABLE `email_templates` (
 --
 
 INSERT INTO `email_templates` (`id`, `name`, `subject`, `body`, `variables`, `status`, `created_at`, `updated_at`) VALUES
-(1, 'Welcome Email', 'Welcome to {{site_name}}!', '<h1>Welcome {{user_name}}!</h1><p>Thank you for registering at {{site_name}}. We are excited to have you on board.</p><p>Best regards,<br>{{site_name}} Team</p>', '\"[\\\"{{user_name}}\\\",\\\"{{user_email}}\\\",\\\"{{site_name}}\\\",\\\"{{site_url}}\\\"]\"', 1, '2025-10-11 01:01:40', '2025-10-11 01:01:40'),
+(1, 'Welcome Email', 'Welcome to {{site_name}}!', '<h1>Welcome {{user_name}}!</h1>\r\n\r\n<p>Thank you for registering at {{site_name}}. We are excited to have you on board.</p>\r\n\r\n<p>Best regards,<br />\r\n{{site_name}} Team</p>', '\"[\\\"{{user_name}}\\\",\\\"{{user_email}}\\\",\\\"{{site_name}}\\\",\\\"{{site_url}}\\\"]\"', 1, '2025-10-11 01:01:40', '2025-11-13 10:15:15'),
 (2, 'Forgot Password', 'Reset Your Password - {{site_name}}', '<h1>Password Reset Request</h1><p>Hi {{user_name}},</p><p>You have requested to reset your password. Click the link below to reset:</p><p><a href=\"{{reset_link}}\">Reset Password</a></p><p>This link will expire in 60 minutes.</p><p>If you did not request this, please ignore this email.</p><p>Best regards,<br>{{site_name}} Team</p>', '\"[\\\"{{user_name}}\\\",\\\"{{user_email}}\\\",\\\"{{reset_link}}\\\",\\\"{{site_name}}\\\"]\"', 1, '2025-10-11 01:01:40', '2025-10-11 01:01:40'),
 (3, 'Order Confirmation', 'Order Confirmation #{{order_number}} - {{site_name}}', '<h1>Thank you for your order!</h1><p>Hi {{customer_name}},</p><p>Your order #{{order_number}} has been confirmed and is being processed.</p><h3>Order Details:</h3><p>Order Number: {{order_number}}<br>Order Total: {{order_total}}<br>Payment Method: {{payment_method}}<br>Shipping Address: {{shipping_address}}</p><p>You can track your order status from your account dashboard.</p><p>Best regards,<br>{{site_name}} Team</p>', '\"[\\\"{{customer_name}}\\\",\\\"{{order_number}}\\\",\\\"{{order_total}}\\\",\\\"{{payment_method}}\\\",\\\"{{shipping_address}}\\\",\\\"{{site_name}}\\\"]\"', 1, '2025-10-11 01:01:40', '2025-10-11 01:01:40'),
 (4, 'Order Shipped', 'Your Order #{{order_number}} Has Been Shipped', '<h1>Your order is on the way!</h1><p>Hi {{customer_name}},</p><p>Great news! Your order #{{order_number}} has been shipped and is on its way to you.</p><h3>Shipping Details:</h3><p>Tracking Number: {{tracking_number}}<br>Carrier: {{carrier_name}}<br>Estimated Delivery: {{estimated_delivery}}</p><p>You can track your package using the tracking number above.</p><p>Best regards,<br>{{site_name}} Team</p>', '\"[\\\"{{customer_name}}\\\",\\\"{{order_number}}\\\",\\\"{{tracking_number}}\\\",\\\"{{carrier_name}}\\\",\\\"{{estimated_delivery}}\\\",\\\"{{site_name}}\\\"]\"', 1, '2025-10-11 01:01:40', '2025-10-11 01:01:40'),
 (5, 'Order Delivered', 'Your Order #{{order_number}} Has Been Delivered', '<h1>Order Delivered Successfully!</h1><p>Hi {{customer_name}},</p><p>Your order #{{order_number}} has been delivered successfully.</p><p>We hope you love your purchase! If you have any questions or concerns, please don\'t hesitate to contact us.</p><p>Please take a moment to leave a review of your products.</p><p>Thank you for shopping with us!</p><p>Best regards,<br>{{site_name}} Team</p>', '\"[\\\"{{customer_name}}\\\",\\\"{{order_number}}\\\",\\\"{{site_name}}\\\"]\"', 1, '2025-10-11 01:01:40', '2025-10-11 01:01:40'),
 (6, 'Order Cancelled', 'Order #{{order_number}} Cancelled - {{site_name}}', '<h1>Order Cancelled</h1><p>Hi {{customer_name}},</p><p>Your order #{{order_number}} has been cancelled as per your request.</p><h3>Cancellation Details:</h3><p>Order Number: {{order_number}}<br>Cancellation Reason: {{cancellation_reason}}<br>Refund Status: {{refund_status}}</p><p>If you paid online, your refund will be processed within 5-7 business days.</p><p>If you have any questions, please contact our support team.</p><p>Best regards,<br>{{site_name}} Team</p>', '\"[\\\"{{customer_name}}\\\",\\\"{{order_number}}\\\",\\\"{{cancellation_reason}}\\\",\\\"{{refund_status}}\\\",\\\"{{site_name}}\\\"]\"', 1, '2025-10-11 01:01:40', '2025-10-11 01:01:40'),
-(7, 'New Customer Registration', 'Verify Your Email - {{site_name}}', '<h1>Welcome to {{site_name}}!</h1><p>Hi {{user_name}},</p><p>Thank you for registering with us. Please verify your email address by clicking the link below:</p><p><a href=\"{{verification_link}}\">Verify Email Address</a></p><p>This link will expire in 24 hours.</p><p>If you did not create an account, please ignore this email.</p><p>Best regards,<br>{{site_name}} Team</p>', '\"[\\\"{{user_name}}\\\",\\\"{{user_email}}\\\",\\\"{{verification_link}}\\\",\\\"{{site_name}}\\\"]\"', 1, '2025-10-11 01:01:40', '2025-10-11 01:01:40'),
+(7, 'New Customer Registration', 'Verify Your Email - {{site_name}}', '<h1>Welcome to {{site_name}}!</h1>\r\n\r\n<p>Hi {{user_name}},</p>\r\n\r\n<p>Thank you for registering with us. Please verify your email address by clicking the link below:</p>\r\n\r\n<p><a href=\"{{verification_link}}\">Verify Email Address</a></p>\r\n\r\n<p>This link will expire in 24 hours.</p>\r\n\r\n<p>If you did not create an account, please ignore this email.</p>\r\n\r\n<p>Best regards,<br />\r\n{{site_name}} Team</p>', '\"[\\\"{{user_name}}\\\",\\\"{{user_email}}\\\",\\\"{{verification_link}}\\\",\\\"{{site_name}}\\\"]\"', 1, '2025-10-11 01:01:40', '2025-11-13 10:18:52'),
 (8, 'Low Stock Alert', 'Low Stock Alert - {{product_name}}', '<h1>Low Stock Alert</h1><p>Hello Admin,</p><p>The following product is running low on stock:</p><p>Product: {{product_name}}<br>SKU: {{product_sku}}<br>Current Stock: {{current_stock}}<br>Threshold: {{threshold}}</p><p>Please restock soon to avoid going out of stock.</p>', '\"[\\\"{{product_name}}\\\",\\\"{{product_sku}}\\\",\\\"{{current_stock}}\\\",\\\"{{threshold}}\\\"]\"', 1, '2025-10-11 01:01:40', '2025-10-11 01:01:40');
 
 -- --------------------------------------------------------
@@ -554,7 +559,16 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (49, '2025_11_12_110115_drop_product_collections_table', 10),
 (50, '2025_11_12_110024_create_product_collections_table', 11),
 (51, '2025_11_12_144051_add_is_featured_to_subcategories_table', 12),
-(52, '2025_11_12_144157_add_is_featured_to_collections_table', 12);
+(52, '2025_11_12_144157_add_is_featured_to_collections_table', 12),
+(53, '2025_11_13_084230_add_razorpay_order_id_to_orders_table', 13),
+(54, '2025_11_13_102631_modify_payment_gateways_table_remove_config_add_mode', 14),
+(55, '2025_11_13_112040_add_missing_payment_gateway_columns', 15),
+(56, '2025_11_13_113109_make_mode_column_nullable_in_payment_gateways_table', 16),
+(57, '2025_11_13_114024_add_more_fields_to_transactions_table', 17),
+(58, '2025_11_14_060547_modify_transactions_table_add_payment_details', 18),
+(59, '2025_11_14_071021_add_additional_transaction_fields', 19),
+(60, '2025_11_14_083231_add_webhook_secret_to_payment_gateways_table', 20),
+(61, '2025_11_14_104753_add_guest_fields_to_orders_table', 21);
 
 -- --------------------------------------------------------
 
@@ -582,7 +596,7 @@ CREATE TABLE `notifications` (
 CREATE TABLE `orders` (
   `id` bigint UNSIGNED NOT NULL,
   `order_number` varchar(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `customer_id` bigint UNSIGNED NOT NULL,
+  `customer_id` bigint UNSIGNED DEFAULT NULL,
   `subtotal` decimal(10,2) NOT NULL DEFAULT '0.00',
   `tax` decimal(10,2) NOT NULL DEFAULT '0.00',
   `shipping` decimal(10,2) NOT NULL DEFAULT '0.00',
@@ -591,23 +605,23 @@ CREATE TABLE `orders` (
   `status` varchar(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'pending',
   `payment_method` varchar(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `payment_status` varchar(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'pending',
+  `razorpay_order_id` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `shipping_address` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `billing_address` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `notes` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `guest_name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `guest_email` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `guest_phone` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `orders`
 --
 
-INSERT INTO `orders` (`id`, `order_number`, `customer_id`, `subtotal`, `tax`, `shipping`, `discount`, `total`, `status`, `payment_method`, `payment_status`, `shipping_address`, `billing_address`, `notes`, `created_at`, `updated_at`) VALUES
-(48, 'ORD-AV4TA1YS', 1, 1200.00, 216.00, 0.00, 0.00, 1416.00, 'pending', 'cod', 'pending', '31 West Fabien Boulevard Lorem ad ex aliquam, Iusto rem aliquip do, 311001, India', '762 North Nobel Freeway Aperiam id quidem vo, Aute quia sed volupt, Non nostrud ipsum v, India', NULL, '2025-10-17 22:24:37', '2025-10-17 22:25:34'),
-(49, 'ORD-S1RRTMFU', 1, 5520.00, 993.60, 0.00, 100.00, 6413.60, 'pending', 'cod', 'pending', '414 East First Court Corrupti est irure, Iure rerum vel labor, Ipsa esse qui dolor, India', '762 North Nobel Freeway Aperiam id quidem vo, Aute quia sed volupt, Non nostrud ipsum v, India', NULL, '2025-10-18 01:07:21', '2025-10-18 01:07:45'),
-(47, 'ORD-5DYVUPXA', 1, 1840.00, 331.20, 0.00, 0.00, 2171.20, 'pending', NULL, 'pending', '31 West Fabien Boulevard Lorem ad ex aliquam, Iusto rem aliquip do, 311001, India', '762 North Nobel Freeway Aperiam id quidem vo, Aute quia sed volupt, Non nostrud ipsum v, India', NULL, '2025-10-17 05:53:11', '2025-10-17 05:53:11'),
-(46, 'ORD-GPREGYYU', 1, 3680.00, 662.40, 0.00, 0.00, 4342.40, 'pending', NULL, 'pending', '31 West Fabien Boulevard Lorem ad ex aliquam, Iusto rem aliquip do, 311001, India', '762 North Nobel Freeway Aperiam id quidem vo, Aute quia sed volupt, Non nostrud ipsum v, India', NULL, '2025-10-16 07:10:52', '2025-10-16 07:10:52'),
-(45, 'ORD-2EQC6TTR', 1, 1840.00, 331.20, 0.00, 100.00, 2071.20, 'pending', 'cod', 'pending', '31 West Fabien Boulevard Lorem ad ex aliquam, Iusto rem aliquip do, 311001, India', '762 North Nobel Freeway Aperiam id quidem vo, Aute quia sed volupt, Non nostrud ipsum v, India', NULL, '2025-10-16 05:58:39', '2025-10-16 06:06:05');
+INSERT INTO `orders` (`id`, `order_number`, `customer_id`, `subtotal`, `tax`, `shipping`, `discount`, `total`, `status`, `payment_method`, `payment_status`, `razorpay_order_id`, `shipping_address`, `billing_address`, `notes`, `created_at`, `updated_at`, `guest_name`, `guest_email`, `guest_phone`) VALUES
+(11, 'ORD-AGUYAYTS', 6, 2199.00, 395.82, 0.00, 0.00, 2594.82, 'confirmed', 'razorpay', 'paid', 'order_RfbYgUrH8I1YBh', '431 North White Milton Extension Alias reiciendis omn, Sint voluptatem re, Quod minus ea accusa, India', '431 North White Milton Extension Alias reiciendis omn, Sint voluptatem re, Quod minus ea accusa, India', NULL, '2025-11-14 06:02:24', '2025-11-14 06:03:11', 'Ferris Nielsen', 'lulybevas@mailinator.com', '+1 (794) 493-2143');
 
 -- --------------------------------------------------------
 
@@ -632,11 +646,7 @@ CREATE TABLE `order_items` (
 --
 
 INSERT INTO `order_items` (`id`, `order_id`, `product_id`, `name`, `price`, `quantity`, `attributes`, `created_at`, `updated_at`) VALUES
-(42, 45, 1, 'Rhysley Rayon Red Kurti', 1840.00, 1, '{\"size\": \"L\", \"color\": \"Yellow\"}', '2025-10-16 05:58:39', '2025-10-16 05:58:39'),
-(43, 46, 1, 'Rhysley Rayon Red Kurti', 1840.00, 2, '{\"size\": \"XS\", \"color\": \"Red\"}', '2025-10-16 07:10:52', '2025-10-16 07:10:52'),
-(44, 47, 1, 'Rhysley Rayon Red Kurti', 1840.00, 1, '{\"size\":\"M\",\"color\":\"White\"}', '2025-10-17 05:53:11', '2025-10-17 05:53:11'),
-(45, 48, 2, 'Women\'s Rayon Viscose Anarkali Printed Kurta', 1200.00, 1, '{\"color\":\"Green\",\"size\":\"S\"}', '2025-10-17 22:24:37', '2025-10-17 22:24:37'),
-(46, 49, 1, 'Rhysley Rayon Red Kurti', 1840.00, 3, '{\"size\":\"XS\",\"color\":\"Red\"}', '2025-10-18 01:07:21', '2025-10-18 01:07:21');
+(11, 11, 7, 'Jiya Saree Set', 2199.00, 1, '[]', '2025-11-14 06:02:24', '2025-11-14 06:02:24');
 
 -- --------------------------------------------------------
 
@@ -679,6 +689,13 @@ CREATE TABLE `password_reset_tokens` (
   `created_at` timestamp NULL DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Dumping data for table `password_reset_tokens`
+--
+
+INSERT INTO `password_reset_tokens` (`email`, `token`, `created_at`) VALUES
+('0xmanishsoni@gmail.com', '$2y$12$K5pjRjzqV2ZBfUfyDZqqQOoBVzAowZWN7BkepaiAh.lZml5rehUVG', '2025-11-13 08:42:27');
+
 -- --------------------------------------------------------
 
 --
@@ -691,8 +708,13 @@ CREATE TABLE `payment_gateways` (
   `gateway_key` varchar(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `api_key` varchar(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `api_secret` varchar(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `mode` enum('test','live') COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `test_key_id` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `test_key_secret` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `live_key_id` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `live_key_secret` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `webhook_secret` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `status` tinyint(1) NOT NULL DEFAULT '1',
-  `config` longtext COLLATE utf8mb4_unicode_ci,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -701,11 +723,9 @@ CREATE TABLE `payment_gateways` (
 -- Dumping data for table `payment_gateways`
 --
 
-INSERT INTO `payment_gateways` (`id`, `name`, `gateway_key`, `api_key`, `api_secret`, `status`, `config`, `created_at`, `updated_at`) VALUES
-(1, 'Stripe', 'stripe', '', '', 0, '\"{\\\"publishable_key\\\":\\\"\\\",\\\"currency\\\":\\\"usd\\\",\\\"description\\\":\\\"Credit card payment via Stripe\\\"}\"', '2025-10-11 01:01:40', '2025-10-11 01:01:40'),
-(2, 'PayPal', 'paypal', '', '', 0, '\"{\\\"client_id\\\":\\\"\\\",\\\"mode\\\":\\\"sandbox\\\",\\\"currency\\\":\\\"usd\\\",\\\"description\\\":\\\"PayPal payment gateway\\\"}\"', '2025-10-11 01:01:40', '2025-10-11 01:01:40'),
-(3, 'Razorpay', 'razorpay', '', '', 0, '\"{\\\"key_id\\\":\\\"\\\",\\\"key_secret\\\":\\\"\\\",\\\"currency\\\":\\\"INR\\\",\\\"description\\\":\\\"Razorpay payment gateway for India\\\"}\"', '2025-10-11 01:01:40', '2025-10-11 01:01:40'),
-(5, 'Cash on Delivery', 'cod', '', '', 1, '{\"description\": \"Pay when you receive the order\", \"instructions\": \"Please have exact amount ready for delivery\", \"additional_fee\": 0}', '2025-10-15 06:43:28', '2025-10-15 06:43:28');
+INSERT INTO `payment_gateways` (`id`, `name`, `gateway_key`, `api_key`, `api_secret`, `mode`, `test_key_id`, `test_key_secret`, `live_key_id`, `live_key_secret`, `webhook_secret`, `status`, `created_at`, `updated_at`) VALUES
+(3, 'Razorpay', 'razorpay', NULL, NULL, 'test', 'rzp_test_Rf8hHEs6KqmbN9', 'FSbOjp2Wzrk9Az0JSdMnpbMI', '', '', NULL, 1, '2025-10-11 01:01:40', '2025-11-13 06:01:25'),
+(5, 'Cash on Delivery', 'cod', '', '', 'test', NULL, NULL, NULL, NULL, NULL, 1, '2025-10-15 06:43:28', '2025-11-13 06:03:41');
 
 -- --------------------------------------------------------
 
@@ -969,7 +989,7 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('jApFyU3ILdr5Z686dhLXkoH6KzFa4R4QLgt3nc8Y', 1, '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoidGtZc2tUUk50bWlKUVh4ekxLNVo3d1JWS0JDMFlHMjZIYnYwb09KUSI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MzQ6Imh0dHA6Ly9zaG9wLnRlc3QvYWRtaW4vY29sbGVjdGlvbnMiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjM6InVybCI7YTowOnt9czo1MDoibG9naW5fd2ViXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6MTt9', 1763007691);
+('zVRUmMPzfhoVT6Oj81w1lAaXY9pkyGW6hSkvaIGQ', NULL, '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiem5HazFsUW44QXc1VlIwREFsWTZRTHhqdWdsWlZKblcxcWtNQ0tKeCI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJuZXciO2E6MDp7fXM6Mzoib2xkIjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MzI6Imh0dHA6Ly9zaG9wLnRlc3QvYWNjb3VudC9wcm9maWxlIjt9czo1NToibG9naW5fY3VzdG9tZXJfNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI7aTo2O30=', 1763120652);
 
 -- --------------------------------------------------------
 
@@ -991,14 +1011,14 @@ CREATE TABLE `settings` (
 --
 
 INSERT INTO `settings` (`id`, `key`, `value`, `type`, `created_at`, `updated_at`) VALUES
-(1, 'site_name', 'Waseem Fashion Studio', 'text', '2025-10-11 01:01:40', '2025-11-10 01:55:12'),
+(1, 'site_name', 'Waseem Fashion Studio', 'text', '2025-10-11 01:01:40', '2025-11-13 09:27:19'),
 (2, 'site_tagline', 'Premium Ethnic & Contemporary Wear', 'text', '2025-10-11 01:01:40', '2025-11-10 01:55:12'),
 (3, 'site_email', 'info@example.com', 'text', '2025-10-11 01:01:40', '2025-10-11 01:01:40'),
 (4, 'site_phone', '+91 1234567890', 'text', '2025-10-11 01:01:40', '2025-10-11 01:01:40'),
 (5, 'site_address', '123 Main Street, New Delhi, India', 'textarea', '2025-10-11 01:01:40', '2025-10-11 01:01:40'),
-(6, 'site_logo', 'settings/wjjIeYOzKRcKMN3SDJVJ1ASkNn15EqCFu5xF6vzI.jpg', 'image', '2025-10-11 01:01:40', '2025-11-10 01:55:39'),
+(6, 'site_logo', 'settings/O8zDcD9tZw4FLzaABNUZIF9va9kvzV4MBCCK4wqk.png', 'image', '2025-10-11 01:01:40', '2025-11-14 00:19:41'),
 (7, 'site_favicon', 'settings/5yJWBFT2WMpr9oTCEEKADPQEUo0otCcgdy5HGFtD.png', 'image', '2025-10-11 01:01:40', '2025-10-11 06:10:32'),
-(8, 'footer_logo', 'settings/wjjIeYOzKRcKMN3SDJVJ1ASkNn15EqCFu5xF6vzI.jpg', 'image', '2025-10-11 01:01:40', '2025-11-12 09:11:09'),
+(8, 'footer_logo', 'settings/ew7APp6rKPdEU1V9JazOMZ2NBHOgW4Hit7Nnr7iO.png', 'image', '2025-10-11 01:01:40', '2025-11-13 04:43:15'),
 (9, 'footer_text', '© 2025 My E-Commerce Store. All rights reserved.', 'textarea', '2025-10-11 01:01:40', '2025-10-11 01:01:40'),
 (10, 'facebook_url', 'https://www.facebook.com/', 'text', '2025-10-11 01:01:40', '2025-10-11 05:40:19'),
 (11, 'twitter_url', 'http://x.com/whomanishsoni', 'text', '2025-10-11 01:01:40', '2025-10-11 05:42:19'),
@@ -1011,7 +1031,7 @@ INSERT INTO `settings` (`id`, `key`, `value`, `type`, `created_at`, `updated_at`
 (18, 'smtp_username', '', 'text', '2025-10-11 01:01:40', '2025-10-11 01:01:40'),
 (19, 'smtp_password', '', 'text', '2025-10-11 01:01:40', '2025-10-11 01:01:40'),
 (20, 'smtp_encryption', 'tls', 'text', '2025-10-11 01:01:40', '2025-10-11 01:01:40'),
-(21, 'mail_from_address', 'noreply@example.com', 'text', '2025-10-11 01:01:40', '2025-10-11 01:01:40'),
+(21, 'mail_from_address', 'no-reply@waseemfashionstudio.com', 'text', '2025-10-11 01:01:40', '2025-11-13 09:57:43'),
 (22, 'mail_from_name', 'My E-Commerce Store', 'text', '2025-10-11 01:01:40', '2025-10-11 01:01:40'),
 (23, 'meta_title', 'My E-Commerce Store - Best Online Shopping', 'text', '2025-10-11 01:01:40', '2025-10-11 01:01:40'),
 (24, 'meta_description', 'Shop the latest products at great prices. Fast shipping across India.', 'textarea', '2025-10-11 01:01:40', '2025-10-11 01:01:40'),
@@ -1034,11 +1054,11 @@ INSERT INTO `settings` (`id`, `key`, `value`, `type`, `created_at`, `updated_at`
 (41, 'contact_email', 'info@waseemfashionstudio.com', 'text', '2025-10-11 03:11:40', '2025-11-12 09:11:47'),
 (42, 'business_address', '#101, Hyderabad, Telangana - 500001', 'text', '2025-10-11 03:11:40', '2025-10-11 06:00:00'),
 (43, 'business_hours', NULL, 'text', '2025-10-11 03:11:40', '2025-10-11 03:11:40'),
-(44, 'mail_host', 'smtp.gmail.com', 'text', '2025-11-10 01:55:12', '2025-11-10 01:55:12'),
-(45, 'mail_port', '587', 'text', '2025-11-10 01:55:12', '2025-11-10 01:55:12'),
-(46, 'mail_username', 'your-email@gmail.com', 'text', '2025-11-10 01:55:12', '2025-11-10 01:55:12'),
-(47, 'mail_password', 'your-app-password', 'text', '2025-11-10 01:55:12', '2025-11-10 01:55:12'),
-(48, 'mail_encryption', 'tls', 'text', '2025-11-10 01:55:12', '2025-11-10 01:55:12');
+(44, 'mail_host', 'waseemfashionstudio.com', 'text', '2025-11-10 01:55:12', '2025-11-13 09:58:50'),
+(45, 'mail_port', '465', 'text', '2025-11-10 01:55:12', '2025-11-13 09:58:50'),
+(46, 'mail_username', 'no-reply@waseemfashionstudio.com', 'text', '2025-11-10 01:55:12', '2025-11-13 09:57:43'),
+(47, 'mail_password', 'i3L684rm~', 'text', '2025-11-10 01:55:12', '2025-11-13 09:57:43'),
+(48, 'mail_encryption', 'tls', 'text', '2025-11-10 01:55:12', '2025-11-13 09:58:50');
 
 -- --------------------------------------------------------
 
@@ -1280,13 +1300,37 @@ CREATE TABLE `transactions` (
   `id` bigint UNSIGNED NOT NULL,
   `order_id` bigint UNSIGNED NOT NULL,
   `transaction_id` varchar(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `gateway_order_id` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `gateway_transaction_id` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `amount` decimal(10,2) NOT NULL,
+  `currency` varchar(3) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'INR',
+  `fee` decimal(10,2) DEFAULT NULL,
+  `tax` decimal(10,2) DEFAULT NULL,
+  `acquirer_data` longtext DEFAULT NULL,
+  `error_code` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `error_description` text COLLATE utf8mb4_unicode_ci,
+  `payment_response` longtext DEFAULT NULL,
   `payment_method` varchar(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `payment_mode` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `bank_name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `card_type` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `card_network` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `wallet_name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `vpa` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `gateway_response` longtext DEFAULT NULL,
+  `payment_gateway` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `status` varchar(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'pending',
   `payment_date` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `transactions`
+--
+
+INSERT INTO `transactions` (`id`, `order_id`, `transaction_id`, `gateway_order_id`, `gateway_transaction_id`, `amount`, `currency`, `fee`, `tax`, `acquirer_data`, `error_code`, `error_description`, `payment_response`, `payment_method`, `payment_mode`, `bank_name`, `card_type`, `card_network`, `wallet_name`, `vpa`, `gateway_response`, `payment_gateway`, `status`, `payment_date`, `created_at`, `updated_at`) VALUES
+(10, 11, 'pay_RfbZ4FJ82ARKZF', 'order_RfbYgUrH8I1YBh', NULL, 2594.82, 'INR', 61.24, 9.34, '{\"auth_code\": \"331098\"}', NULL, NULL, NULL, 'razorpay', 'card', NULL, 'credit', 'Visa', NULL, NULL, '{\"id\": \"pay_RfbZ4FJ82ARKZF\", \"fee\": 6124, \"tax\": 934, \"vpa\": null, \"bank\": null, \"card\": {\"id\": \"card_RfbZ4TtHX3HuQn\", \"emi\": true, \"name\": \"\", \"type\": \"credit\", \"last4\": \"0153\", \"entity\": \"card\", \"issuer\": \"UTIB\", \"network\": \"Visa\", \"sub_type\": \"consumer\", \"token_iin\": null, \"international\": false}, \"email\": \"lulybevas@mailinator.com\", \"notes\": [], \"amount\": 259482, \"entity\": \"payment\", \"method\": \"card\", \"status\": \"captured\", \"wallet\": null, \"card_id\": \"card_RfbZ4TtHX3HuQn\", \"contact\": \"+17944932143\", \"captured\": true, \"currency\": \"INR\", \"order_id\": \"order_RfbYgUrH8I1YBh\", \"created_at\": 1763119973, \"error_code\": null, \"error_step\": null, \"invoice_id\": null, \"description\": \"Order #ORD-AGUYAYTS\", \"error_reason\": null, \"error_source\": null, \"acquirer_data\": {\"auth_code\": \"331098\"}, \"international\": false, \"refund_status\": null, \"amount_refunded\": 0, \"error_description\": null}', NULL, 'paid', '2025-11-14 06:03:11', '2025-11-14 06:03:11', '2025-11-14 06:03:11');
 
 -- --------------------------------------------------------
 
@@ -1668,7 +1712,7 @@ ALTER TABLE `activity_logs`
 -- AUTO_INCREMENT for table `addresses`
 --
 ALTER TABLE `addresses`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=79;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=80;
 
 --
 -- AUTO_INCREMENT for table `banners`
@@ -1728,7 +1772,7 @@ ALTER TABLE `currencies`
 -- AUTO_INCREMENT for table `customers`
 --
 ALTER TABLE `customers`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `email_templates`
@@ -1764,7 +1808,7 @@ ALTER TABLE `languages`
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=62;
 
 --
 -- AUTO_INCREMENT for table `notifications`
@@ -1776,13 +1820,13 @@ ALTER TABLE `notifications`
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=50;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `order_items`
 --
 ALTER TABLE `order_items`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `pages`
@@ -1908,7 +1952,7 @@ ALTER TABLE `ticket_replies`
 -- AUTO_INCREMENT for table `transactions`
 --
 ALTER TABLE `transactions`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `users`

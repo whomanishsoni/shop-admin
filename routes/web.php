@@ -15,7 +15,7 @@ use App\Http\Controllers\Admin\{
     FaqController, BlogCategoryController, BlogPostController, PageController,
     SubscriberController, BannerController, ActivityLogController, NotificationController,
     UserController, AnalyticsController, BackupController, ProductImportExportController,
-    TestimonialController, CollectionController
+    TestimonialController, CollectionController, VideoController as AdminVideoController
 };
 use App\Http\Controllers\Store\{
     HomeController, AccountController, AboutController, CartController,
@@ -64,6 +64,9 @@ Route::get('/checkout/coupon/remove', [CheckoutController::class, 'removeCoupon'
 Route::get('/checkout/success/{id}', [CheckoutController::class, 'success'])->name('checkout.success');
 Route::get('/checkout/payment/{orderId?}', [CheckoutController::class, 'payment'])->name('checkout.payment');
 Route::post('/checkout/initiate-payment/{orderId}', [CheckoutController::class, 'initiatePayment'])->name('checkout.initiatePayment');
+Route::post('/checkout/razorpay/callback', [CheckoutController::class, 'razorpayCallback'])->name('checkout.razorpay.callback');
+Route::post('/checkout/complete-razorpay-payment/{orderId}', [CheckoutController::class, 'completeRazorpayPayment'])->name('checkout.completeRazorpayPayment');
+Route::get('/checkout/test-razorpay-callback/{orderId}', [CheckoutController::class, 'testRazorpayCallback'])->name('checkout.testRazorpayCallback');
 
 Route::get('/wishlist', [WishlistController::class, '__invoke'])->name('wishlist');
 Route::post('/wishlist/add', [WishlistController::class, 'add'])->name('wishlist.add');
@@ -120,6 +123,8 @@ Route::get('/shipping-policy', [LegalController::class, 'shippingPolicy'])->name
 Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
 Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show');
 Route::get('/blog/{category?}', [BlogController::class, 'index'])->name('blog.index');
+
+
 
 // Admin routes
 Route::prefix('admin')->name('admin.')->group(function () {
@@ -187,7 +192,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         // Transactions
         Route::resource('transactions', TransactionController::class)->only(['index', 'show']);
-        Route::post('transactions/bulk-delete', [TransactionController::class, 'bulkDelete'])->name('transactions.bulk-delete');
 
         // Support
         Route::resource('tickets', TicketController::class);
@@ -259,6 +263,17 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('products/import', [ProductImportExportController::class, 'import'])->name('products.import');
         Route::post('products/import', [ProductImportExportController::class, 'processImport'])->name('products.import.process');
         Route::get('products/export', [ProductImportExportController::class, 'export'])->name('products.export');
+
+        // Videos
+        Route::get('videos', [AdminVideoController::class, 'index'])->name('videos.index');
+        Route::get('videos/create', [AdminVideoController::class, 'create'])->name('videos.create');
+        Route::post('videos', [AdminVideoController::class, 'store'])->name('videos.store');
+        Route::get('videos/{video}/edit', [AdminVideoController::class, 'edit'])->name('videos.edit');
+        Route::put('videos/{video}', [AdminVideoController::class, 'update'])->name('videos.update');
+        Route::delete('videos/{video}', [AdminVideoController::class, 'destroy'])->name('videos.destroy');
+        Route::post('videos/bulk-delete', [AdminVideoController::class, 'bulkDelete'])->name('videos.bulk-delete');
+        Route::post('videos/upload-chunk', [AdminVideoController::class, 'uploadChunk'])->name('videos.upload-chunk');
+        Route::post('videos/merge-chunks', [AdminVideoController::class, 'mergeChunks'])->name('videos.merge-chunks');
 
         // Settings Pages
         Route::get('seo-settings', [SettingController::class, 'seo'])->name('seo-settings');

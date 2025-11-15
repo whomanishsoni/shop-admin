@@ -106,6 +106,17 @@ class SettingController extends Controller
             // Always set MAIL_MAILER to smtp when updating mail settings
             if ($request->hasAny($mailFields)) {
                 $this->updateEnvVariable('MAIL_MAILER', 'smtp');
+
+                // Set encryption based on port
+                $port = $request->input('mail_port');
+                if ($port == 465) {
+                    $this->updateEnvVariable('MAIL_ENCRYPTION', 'ssl');
+                } elseif ($port == 587) {
+                    $this->updateEnvVariable('MAIL_ENCRYPTION', 'tls');
+                } elseif ($port == 25) {
+                    $this->updateEnvVariable('MAIL_ENCRYPTION', '');
+                }
+
                 \Artisan::call('config:clear');
                 \Artisan::call('config:cache');
             }
@@ -148,24 +159,21 @@ class SettingController extends Controller
             return;
         }
 
-        $envContent = file_get_contents($path);
+        $lines = file($path, FILE_IGNORE_NEW_LINES);
+        $updated = false;
 
-        // Escape special characters in value
-        $value = str_replace('"', '\"', $value);
-
-        // Check if key exists
-        if (preg_match("/^{$key}=.*/m", $envContent)) {
-            // Update existing key
-            $envContent = preg_replace(
-                "/^{$key}=.*/m",
-                "{$key}=\"{$value}\"",
-                $envContent
-            );
-        } else {
-            // Add new key
-            $envContent .= "\n{$key}=\"{$value}\"";
+        foreach ($lines as &$line) {
+            if (strpos(trim($line), $key . '=') === 0) {
+                $line = $key . '="' . addslashes($value) . '"';
+                $updated = true;
+                break;
+            }
         }
 
-        file_put_contents($path, $envContent);
+        if (!$updated) {
+            $lines[] = $key . '="' . addslashes($value) . '"';
+        }
+
+        file_put_contents($path, implode("\n", $lines));
     }
 }

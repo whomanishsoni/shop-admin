@@ -111,6 +111,8 @@
                     href="{{ route('admin.faqs.index') }}">FAQs</a>
                 <a class="collapse-item {{ request()->routeIs('admin.testimonials.index') ? 'active' : '' }}"
                     href="{{ route('admin.testimonials.index') }}">Testimonials</a>
+                <a class="collapse-item {{ request()->routeIs('admin.videos.*') ? 'active' : '' }}"
+                    href="{{ route('admin.videos.index') }}">Videos</a>
             </div>
         </div>
     </li>

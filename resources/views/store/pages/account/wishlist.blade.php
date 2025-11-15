@@ -20,7 +20,7 @@
     </section>
     <section class="my__account--section section--padding">
         <div class="container">
-            <p class="account__welcome--text">Hello, Guest! Welcome to your dashboard!</p>
+            <p class="account__welcome--text">Hello, <?php echo ucfirst(strtolower($profileData['first_name'])); ?> <?php echo ucfirst(strtolower($profileData['last_name'])); ?>! Welcome to your dashboard!</p>
             <div class="my__account--section__inner border-radius-10 d-flex">
                 <div class="account__left--sidebar">
                     <h2 class="account__content--title h3 mb-20">My Account</h2>

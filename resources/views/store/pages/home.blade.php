@@ -66,11 +66,11 @@
                                                         @endif
                                                         <span class="current__price">Rs. {{ number_format($product['price'], 2) }}</span>
                                                     </div>
-                                                    <div class="product__items--action d-flex">
+                                                    {{-- <div class="product__items--action d-flex">
                                                         <a class="product__items--action__btn" data-open="modal1" href="javascript:void(0)" onclick="loadQuickview('{{ $product['slug'] }}')">
                                                             <span>Choose Options</span>
                                                         </a>
-                                                    </div>
+                                                    </div> --}}
                                                 </div>
                                             </div>
                                         </div>
@@ -112,87 +112,37 @@
         }
         </style>
 
+        @if($videos->count() > 0)
         <section class="banner__section banner__style2 section--padding" style="background-color: #f7f3f3;">
             <div class="section__heading text-center mb-35">
                 <h2 class="section__heading--maintitle">CELEBRITIES & INFLUENCERS</h2>
             </div>
             <div class="container-fluid">
                 <div class="row mb--n28">
-                    <div class="col-lg-3 col-md-order mb-28">
-                        <div class="banner__items position__relative" style="border-radius: 10px 10px 10px 10px; overflow: hidden;">
-                            <a class="banner__items--thumbnail" href="{{ route('shop') }}">
-                                <!-- VIDEO BLOCK -->
-                                <video
-                                    class="banner__items--thumbnail__img img-fluid"
-                                    autoplay
-                                    muted
-                                    loop
-                                    playsinline
-                                >
-                                    <source src="{{ asset('assets/images/v1.mp4') }}" type="video/mp4">
-                                    Your browser does not support the video tag.
-                                </video>
-                                <!-- END VIDEO BLOCK -->
-                            </a>
+                    @foreach($videos as $video)
+                        <div class="col-lg-3 col-md-order mb-28">
+                            <div class="banner__items position__relative" style="border-radius: 10px 10px 10px 10px; overflow: hidden;">
+                                <div class="banner__items--thumbnail">
+                                    <!-- DYNAMIC VIDEO BLOCK -->
+                                    <video
+                                        class="banner__items--thumbnail__img img-fluid"
+                                        autoplay
+                                        muted
+                                        loop
+                                        playsinline
+                                    >
+                                        <source src="{{ asset('storage/' . $video->video_path) }}" type="video/mp4">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                    <!-- END DYNAMIC VIDEO BLOCK -->
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-lg-3 col-md-order mb-28">
-                        <div class="banner__items position__relative" style="border-radius: 10px 10px 10px 10px; overflow: hidden;">
-                            <a class="banner__items--thumbnail" href="{{ route('shop') }}">
-                                <!-- VIDEO BLOCK -->
-                                <video
-                                    class="banner__items--thumbnail__img img-fluid"
-                                    autoplay
-                                    muted
-                                    loop
-                                    playsinline
-                                >
-                                    <source src="{{ asset('assets/images/v2.mp4') }}" type="video/mp4">
-                                    Your browser does not support the video tag.
-                                </video>
-                                <!-- END VIDEO BLOCK -->
-                            </a>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-order mb-28">
-                        <div class="banner__items position__relative" style="border-radius: 10px 10px 10px 10px; overflow: hidden;">
-                            <a class="banner__items--thumbnail" href="{{ route('shop') }}">
-                                <!-- VIDEO BLOCK -->
-                                <video
-                                    class="banner__items--thumbnail__img img-fluid"
-                                    autoplay
-                                    muted
-                                    loop
-                                    playsinline
-                                >
-                                    <source src="{{ asset('assets/images/v3.mp4') }}" type="video/mp4">
-                                    Your browser does not support the video tag.
-                                </video>
-                                <!-- END VIDEO BLOCK -->
-                            </a>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-order mb-28">
-                        <div class="banner__items position__relative" style="border-radius: 10px 10px 10px 10px; overflow: hidden;">
-                            <a class="banner__items--thumbnail" href="{{ route('shop') }}">
-                                <!-- VIDEO BLOCK -->
-                                <video
-                                    class="banner__items--thumbnail__img img-fluid"
-                                    autoplay
-                                    muted
-                                    loop
-                                    playsinline
-                                >
-                                    <source src="{{ asset('assets/images/v4.mp4') }}" type="video/mp4">
-                                    Your browser does not support the video tag.
-                                </video>
-                                <!-- END VIDEO BLOCK -->
-                            </a>
-                        </div>
-                    </div>
+                    @endforeach
                 </div>
             </div>
         </section>
+        @endif
 
         <section class="banner__section banner__style2 section--padding" style="background-color: #f7f3f3;">
             <div class="section__heading text-center mb-35">
@@ -366,4 +316,13 @@
             });
         }
     </script>
+    <style>
+        /* Remove bottom border / shadow on hover */
+        .product__items:hover,
+        .product__items--thumbnail:hover {
+            border: none !important;
+            box-shadow: none !important;
+            transform: none !important;
+        }
+    </style>
 @endpush

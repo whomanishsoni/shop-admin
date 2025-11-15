@@ -26,39 +26,67 @@
             </div>
 
             <div class="mb-3">
-                <label for="gateway_key" class="form-label">Gateway Key <span class="text-danger">*</span></label>
-                <input type="text" class="form-control @error('gateway_key') is-invalid @enderror"
-                       id="gateway_key" name="gateway_key" value="{{ old('gateway_key', $paymentGateway->gateway_key) }}" placeholder="e.g., razorpay" required>
+                <label for="gateway_key" class="form-label">Gateway Type <span class="text-danger">*</span></label>
+                <select class="form-control @error('gateway_key') is-invalid @enderror" id="gateway_key" name="gateway_key" required>
+                    <option value="">Select Gateway</option>
+                    <option value="razorpay" {{ old('gateway_key', $paymentGateway->gateway_key) == 'razorpay' ? 'selected' : '' }}>Razorpay</option>
+                    <option value="cod" {{ old('gateway_key', $paymentGateway->gateway_key) == 'cod' ? 'selected' : '' }}>Cash on Delivery</option>
+                </select>
                 @error('gateway_key')
                     <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
             </div>
 
-            <div class="mb-3">
-                <label for="api_key" class="form-label">API Key</label>
-                <input type="text" class="form-control @error('api_key') is-invalid @enderror"
-                       id="api_key" name="api_key" value="{{ old('api_key', $paymentGateway->api_key) }}" placeholder="e.g., rzp_test_xxxxxxxxxxxx">
-                @error('api_key')
+            <div class="mb-3" id="mode-section" style="display: none;">
+                <label for="mode" class="form-label">Mode <span class="text-danger">*</span></label>
+                <select class="form-control @error('mode') is-invalid @enderror" id="mode" name="mode">
+                    <option value="test" {{ old('mode', $paymentGateway->mode) == 'test' ? 'selected' : '' }}>Test</option>
+                    <option value="live" {{ old('mode', $paymentGateway->mode) == 'live' ? 'selected' : '' }}>Live</option>
+                </select>
+                @error('mode')
                     <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
             </div>
 
-            <div class="mb-3">
-                <label for="api_secret" class="form-label">API Secret</label>
-                <input type="text" class="form-control @error('api_secret') is-invalid @enderror"
-                       id="api_secret" name="api_secret" value="{{ old('api_secret', $paymentGateway->api_secret) }}" placeholder="e.g., xxxxxxxxxxxxxxxx">
-                @error('api_secret')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-            </div>
+            <!-- Razorpay API Keys Section -->
+            <div id="razorpay-keys" style="display: none;">
+                <h5 class="mb-3">API Credentials</h5>
 
-            <div class="mb-3">
-                <label for="config" class="form-label">Additional Config (JSON)</label>
-                <textarea class="form-control @error('config') is-invalid @enderror"
-                          id="config" name="config" rows="4" placeholder='e.g., {"webhook_url": "https://example.com/webhook"}'>{{ old('config', json_encode($paymentGateway->config, JSON_PRETTY_PRINT)) }}</textarea>
-                @error('config')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
+                <div class="mb-3">
+                    <label for="test_key_id" class="form-label">Test Key ID</label>
+                    <input type="text" class="form-control @error('test_key_id') is-invalid @enderror"
+                           id="test_key_id" name="test_key_id" value="{{ old('test_key_id', $paymentGateway->test_key_id) }}" placeholder="rzp_test_xxxxxxxxxxxx">
+                    @error('test_key_id')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="mb-3">
+                    <label for="test_key_secret" class="form-label">Test Key Secret</label>
+                    <input type="password" class="form-control @error('test_key_secret') is-invalid @enderror"
+                           id="test_key_secret" name="test_key_secret" value="{{ old('test_key_secret', $paymentGateway->test_key_secret) }}" placeholder="xxxxxxxxxxxx">
+                    @error('test_key_secret')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="mb-3">
+                    <label for="live_key_id" class="form-label">Live Key ID</label>
+                    <input type="text" class="form-control @error('live_key_id') is-invalid @enderror"
+                           id="live_key_id" name="live_key_id" value="{{ old('live_key_id', $paymentGateway->live_key_id) }}" placeholder="rzp_live_xxxxxxxxxxxx">
+                    @error('live_key_id')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="mb-3">
+                    <label for="live_key_secret" class="form-label">Live Key Secret</label>
+                    <input type="password" class="form-control @error('live_key_secret') is-invalid @enderror"
+                           id="live_key_secret" name="live_key_secret" value="{{ old('live_key_secret', $paymentGateway->live_key_secret) }}" placeholder="xxxxxxxxxxxx">
+                    @error('live_key_secret')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
             </div>
 
             <div class="mb-3">
@@ -82,3 +110,29 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+$(document).ready(function() {
+    function toggleFields() {
+        var gatewayKey = $('#gateway_key').val();
+        if (gatewayKey === 'razorpay') {
+            $('#mode-section').show();
+            $('#razorpay-keys').show();
+            $('#mode').prop('required', true);
+        } else {
+            $('#mode-section').hide();
+            $('#razorpay-keys').hide();
+            $('#mode').prop('required', false);
+        }
+    }
+
+    $('#gateway_key').on('change', function() {
+        toggleFields();
+    });
+
+    // Initial check
+    toggleFields();
+});
+</script>
+@endpush

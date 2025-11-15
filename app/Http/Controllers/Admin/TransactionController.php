@@ -13,39 +13,64 @@ class TransactionController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $transactions = Transaction::with('order')->select('*');
-            return DataTables::of($transactions)
+            $query = Transaction::with('order.customer');
+
+            // Apply filters
+            if ($request->filled('status')) {
+                $query->where('status', $request->status);
+            }
+
+            if ($request->filled('payment_method')) {
+                $query->where('payment_method', $request->payment_method);
+            }
+
+            if ($request->filled('date_from')) {
+                $query->whereDate('payment_date', '>=', $request->date_from);
+            }
+
+            if ($request->filled('date_to')) {
+                $query->whereDate('payment_date', '<=', $request->date_to);
+            }
+
+            return DataTables::of($query)
                 ->addColumn('checkbox', function($row) {
                     return '<input type="checkbox" class="select-item" value="'.$row->id.'">';
                 })
+                ->addColumn('customer', function($row) {
+                    return $row->order && $row->order->customer ? $row->order->customer->name : 'N/A';
+                })
                 ->addColumn('order', function($row) {
-                    return $row->order ? $row->order->order_number : 'N/A';
+                    return $row->order ? '<a href="'.route('admin.orders.show', $row->order->id).'">'.$row->order->order_number.'</a>' : 'N/A';
+                })
+                ->addColumn('transaction_id', function($row) {
+                    return $row->transaction_id ?? 'N/A';
                 })
                 ->addColumn('amount', function($row) {
-                    return '$'.number_format($row->amount, 2);
+                    return '₹'.number_format($row->amount, 2);
+                })
+                ->addColumn('payment_method', function($row) {
+                    return ucfirst($row->payment_method ?? 'N/A');
+                })
+                ->addColumn('payment_mode', function($row) {
+                    return ucfirst($row->payment_mode ?? 'N/A');
                 })
                 ->addColumn('status', function($row) {
                     $badges = [
                         'pending' => 'warning',
-                        'completed' => 'success',
+                        'paid' => 'success',
                         'failed' => 'danger',
                         'refunded' => 'info'
                     ];
                     $badge = $badges[$row->status] ?? 'secondary';
                     return '<span class="badge bg-'.$badge.'">'.ucfirst($row->status).'</span>';
                 })
-                ->addColumn('action', function($row) {
-                    return '
-                        <a href="'.route('admin.transactions.show', $row->id).'" class="btn btn-sm btn-info"><i class="fas fa-eye"></i></a>
-                        <a href="'.route('admin.transactions.edit', $row->id).'" class="btn btn-sm btn-primary"><i class="fas fa-edit"></i></a>
-                        <form action="'.route('admin.transactions.destroy', $row->id).'" method="POST" class="d-inline delete-form">
-                            '.csrf_field().'
-                            '.method_field('DELETE').'
-                            <button type="submit" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
-                        </form>
-                    ';
+                ->addColumn('payment_date', function($row) {
+                    return $row->payment_date ? $row->payment_date->format('d M Y H:i') : 'N/A';
                 })
-                ->rawColumns(['checkbox', 'status', 'action'])
+                ->addColumn('action', function($row) {
+                    return '<a href="'.route('admin.transactions.show', $row->id).'" class="btn btn-sm btn-info"><i class="fas fa-eye"></i></a>';
+                })
+                ->rawColumns(['checkbox', 'order', 'status', 'action'])
                 ->make(true);
         }
         return view('admin.transactions.index');
@@ -62,9 +87,13 @@ class TransactionController extends Controller
         $validated = $request->validate([
             'order_id' => 'required|exists:orders,id',
             'transaction_id' => 'required|string|unique:transactions,transaction_id',
+            'gateway_transaction_id' => 'nullable|string',
             'amount' => 'required|numeric|min:0',
+            'currency' => 'required|string|size:3',
+            'payment_response' => 'nullable|json',
             'payment_method' => 'required|string',
-            'status' => 'required|in:pending,completed,failed,refunded',
+            'payment_gateway' => 'nullable|string',
+            'status' => 'required|in:pending,paid,failed,refunded',
             'payment_date' => 'nullable|date'
         ]);
 
@@ -90,9 +119,13 @@ class TransactionController extends Controller
         $validated = $request->validate([
             'order_id' => 'required|exists:orders,id',
             'transaction_id' => 'required|string|unique:transactions,transaction_id,'.$transaction->id,
+            'gateway_transaction_id' => 'nullable|string',
             'amount' => 'required|numeric|min:0',
+            'currency' => 'required|string|size:3',
+            'payment_response' => 'nullable|json',
             'payment_method' => 'required|string',
-            'status' => 'required|in:pending,completed,failed,refunded',
+            'payment_gateway' => 'nullable|string',
+            'status' => 'required|in:pending,paid,failed,refunded',
             'payment_date' => 'nullable|date'
         ]);
 
@@ -101,15 +134,5 @@ class TransactionController extends Controller
         return redirect()->route('admin.transactions.index')->with('success', 'Transaction updated successfully');
     }
 
-    public function destroy(Transaction $transaction)
-    {
-        $transaction->delete();
-        return redirect()->route('admin.transactions.index')->with('success', 'Transaction deleted successfully');
-    }
 
-    public function bulkDelete(Request $request)
-    {
-        Transaction::whereIn('id', $request->ids)->delete();
-        return response()->json(['success' => 'Transactions deleted successfully']);
-    }
 }
