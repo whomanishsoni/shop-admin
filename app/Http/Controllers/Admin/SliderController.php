@@ -9,6 +9,24 @@ use Yajra\DataTables\Facades\DataTables;
 
 class SliderController extends Controller
 {
+    use ImageProcessable;
+
+    public function __construct()
+    {
+        // Remove any file size restrictions - via Laravel config override
+        if (function_exists('ini_set')) {
+            ini_set('upload_max_filesize', '0'); // Unlimited
+            ini_set('post_max_size', '0'); // Unlimited
+            ini_set('memory_limit', '1024M');
+            ini_set('max_execution_time', '300');
+            ini_set('max_input_time', '300');
+            ini_set('file_uploads', '1');
+        }
+
+        // Also try Laravel's config override (might work better)
+        config(['filesystems.max_file_size' => 0]);
+        config(['app.maximum_upload_size' => 0]);
+    }
     public function index(Request $request)
     {
         if ($request->ajax()) {
@@ -49,21 +67,28 @@ class SliderController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'link' => 'nullable|url',
-            'sort_order' => 'nullable|integer',
-            'status' => 'required|in:0,1',
-        ]);
+        try {
+            $validated = $request->validate([
+                'title' => 'required|string|max:255',
+                'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp',
+                'link' => 'nullable|url',
+                'sort_order' => 'nullable|integer',
+                'status' => 'required|in:0,1',
+            ]);
 
-        if ($request->hasFile('image')) {
-            $validated['image'] = $request->file('image')->store('sliders', 'public');
+            if ($request->hasFile('image')) {
+                $validated['image'] = $this->processImage($request->file('image'), 'sliders');
+            }
+
+            Slider::create($validated);
+
+            return redirect()->route('admin.sliders.index')->with('success', 'Slider created successfully');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return back()->withErrors($e->errors());
+        } catch (\Exception $e) {
+            \Log::error('Slider creation failed: ' . $e->getMessage());
+            return back()->withErrors(['error' => 'Failed to create slider. Please try again.']);
         }
-
-        Slider::create($validated);
-
-        return redirect()->route('admin.sliders.index')->with('success', 'Slider created successfully');
     }
 
     public function show(Slider $slider)
@@ -80,14 +105,14 @@ class SliderController extends Controller
     {
         $validated = $request->validate([
             'title' => 'required|string|max:255',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp',
             'link' => 'nullable|url',
             'sort_order' => 'nullable|integer',
             'status' => 'required|in:0,1',
         ]);
 
         if ($request->hasFile('image')) {
-            $validated['image'] = $request->file('image')->store('sliders', 'public');
+            $validated['image'] = $this->processImage($request->file('image'), 'sliders');
         }
 
         $slider->update($validated);

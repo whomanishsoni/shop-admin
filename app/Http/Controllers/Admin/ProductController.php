@@ -16,6 +16,7 @@ use Yajra\DataTables\Facades\DataTables;
 
 class ProductController extends Controller
 {
+    use ImageProcessable;
     public function index(Request $request)
     {
         if ($request->ajax()) {
@@ -100,8 +101,7 @@ class ProductController extends Controller
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string',
             'meta_keywords' => 'nullable|string|max:255',
-            'images' => 'nullable|array',
-            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:20048',
+            'uploaded_images' => 'nullable|string',
             'attributes' => 'nullable|array',
             'attributes.*' => 'nullable', // Allow array or string
             'attributes.*.*' => 'nullable|string', // Validate individual values in arrays
@@ -120,6 +120,11 @@ class ProductController extends Controller
         // Set default stock to 1 if not provided
         $validated['stock'] = $validated['stock'] ?? 1;
 
+        // Convert empty sale_price to null to avoid MySQL decimal errors
+        if (isset($validated['sale_price']) && $validated['sale_price'] === '') {
+            $validated['sale_price'] = null;
+        }
+
         // Handle is_featured checkbox - if not present, set to false
         $validated['is_featured'] = $request->has('is_featured') ? 1 : 0;
 
@@ -132,16 +137,18 @@ class ProductController extends Controller
         // Sync collections
         $product->collections()->sync($request->input('collections', []));
 
-        // Handle image uploads
-        if ($request->hasFile('images')) {
-            $product->images()->update(['is_primary' => false]);
-            foreach ($request->file('images') as $index => $image) {
-                $path = $image->store('products', 'public');
-                $product->images()->create([
-                    'image' => $path,
-                    'sort_order' => $index,
-                    'is_primary' => $index === 0
-                ]);
+        // Handle uploaded images (from AJAX uploads)
+        if ($request->filled('uploaded_images')) {
+            $uploadedImages = json_decode($request->input('uploaded_images'), true);
+            if (is_array($uploadedImages)) {
+                $product->images()->update(['is_primary' => false]);
+                foreach ($uploadedImages as $index => $imagePath) {
+                    $product->images()->create([
+                        'image' => $imagePath,
+                        'sort_order' => $index,
+                        'is_primary' => $index === 0
+                    ]);
+                }
             }
         }
 
@@ -230,8 +237,7 @@ class ProductController extends Controller
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string',
             'meta_keywords' => 'nullable|string|max:255',
-            'images' => 'nullable|array',
-            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:20048',
+            'uploaded_images' => 'nullable|string',
             'delete_images' => 'nullable|array',
             'delete_images.*' => 'nullable|exists:product_images,id',
             'attributes' => 'nullable|array',
@@ -251,6 +257,11 @@ class ProductController extends Controller
 
         // Set default stock to 1 if not provided
         $validated['stock'] = $validated['stock'] ?? 1;
+
+        // Convert empty sale_price to null to avoid MySQL decimal errors
+        if (isset($validated['sale_price']) && $validated['sale_price'] === '') {
+            $validated['sale_price'] = null;
+        }
 
         // Handle is_featured checkbox - if not present, set to false
         $validated['is_featured'] = $request->has('is_featured') ? 1 : 0;
@@ -278,18 +289,20 @@ class ProductController extends Controller
             }
         }
 
-        // Handle image uploads
-        if ($request->hasFile('images')) {
-            $existingCount = $product->images()->count();
-            $hasPrimary = $product->images()->where('is_primary', true)->exists();
+        // Handle uploaded images (from AJAX uploads)
+        if ($request->filled('uploaded_images')) {
+            $uploadedImages = json_decode($request->input('uploaded_images'), true);
+            if (is_array($uploadedImages)) {
+                $existingCount = $product->images()->count();
+                $hasPrimary = $product->images()->where('is_primary', true)->exists();
 
-            foreach ($request->file('images') as $index => $image) {
-                $path = $image->store('products', 'public');
-                $product->images()->create([
-                    'image' => $path,
-                    'sort_order' => $existingCount + $index,
-                    'is_primary' => !$hasPrimary && $index === 0 // Set first uploaded image as primary if no primary exists
-                ]);
+                foreach ($uploadedImages as $index => $imagePath) {
+                    $product->images()->create([
+                        'image' => $imagePath,
+                        'sort_order' => $existingCount + $index,
+                        'is_primary' => !$hasPrimary && $index === 0 // Set first uploaded image as primary if no primary exists
+                    ]);
+                }
             }
         }
 
@@ -362,5 +375,272 @@ class ProductController extends Controller
     {
         $subcategories = Subcategory::where('category_id', $category_id)->get(['id', 'name']);
         return response()->json($subcategories);
+    }
+
+    /**
+     * Initialize chunked upload
+     */
+    public function uploadChunk(Request $request)
+    {
+        \Log::info('Initializing chunked upload', $request->all());
+
+        try {
+            $action = $request->get('action');
+
+            if ($action === 'initialize') {
+                return $this->initializeChunkUpload($request);
+            } elseif ($action === 'finalize') {
+                return $this->finalizeChunkUpload($request);
+            }
+
+            return response()->json(['error' => 'Invalid action'], 400);
+        } catch (\Exception $e) {
+            \Log::error('Chunk upload error: ' . $e->getMessage());
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    /**
+     * Initialize chunked file upload
+     */
+    private function initializeChunkUpload(Request $request)
+    {
+        $fileId = $request->get('file_id');
+        $fileName = $request->get('file_name');
+        $fileSize = $request->get('file_size');
+        $fileType = $request->get('file_type');
+
+        // Store initialization data in session/cache
+        $uploadData = [
+            'file_name' => $fileName,
+            'file_size' => $fileSize,
+            'file_type' => $fileType,
+            'chunks' => [],
+            'uploaded_bytes' => 0,
+            'status' => 'initializing'
+        ];
+
+        // Store in cache with 1 hour expiration
+        \Cache::put('upload_' . $fileId, $uploadData, 3600);
+
+        \Log::info("Initialized upload for file: {$fileName}, size: {$fileSize}");
+
+        return response()->json([
+            'success' => true,
+            'file_id' => $fileId,
+            'message' => 'Upload initialized'
+        ]);
+    }
+
+    /**
+     * Finalize chunked upload and process the file
+     */
+    private function finalizeChunkUpload(Request $request)
+    {
+        $fileId = $request->get('file_id');
+        $uploadData = \Cache::get('upload_' . $fileId);
+
+        if (!$uploadData) {
+            return response()->json(['error' => 'Upload session not found'], 404);
+        }
+
+        try {
+            $tempPath = $this->mergeChunks($uploadData);
+            $finalPath = $this->processImage(file_get_contents($tempPath), 'products');
+
+            // Cleanup
+            @unlink($tempPath);
+            \Cache::forget('upload_' . $fileId);
+
+            \Log::info("Finalized upload for file: {$uploadData['file_name']}, final path: {$finalPath}");
+
+            return response()->json([
+                'success' => true,
+                'file_id' => $fileId,
+                'path' => $finalPath,
+                'message' => 'Upload completed successfully'
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Finalize upload error: ' . $e->getMessage());
+            return response()->json(['error' => 'Failed to finalize upload'], 500);
+        }
+    }
+
+    /**
+     * Upload small chunk using FormData
+     */
+    public function uploadChunkSmall(Request $request)
+    {
+        \Log::info('Uploading chunk', [
+            'file_id' => $request->get('file_id'),
+            'chunk_index' => $request->get('chunk_index'),
+            'total_chunks' => $request->get('total_chunks')
+        ]);
+
+        try {
+            $fileId = $request->get('file_id');
+            $chunkIndex = (int) $request->get('chunk_index');
+            $totalChunks = (int) $request->get('total_chunks');
+
+            $uploadData = \Cache::get('upload_' . $fileId);
+            if (!$uploadData) {
+                return response()->json(['error' => 'Upload session not found'], 404);
+            }
+
+            if (!$request->hasFile('chunk')) {
+                return response()->json(['error' => 'No chunk file provided'], 400);
+            }
+
+            $chunkFile = $request->file('chunk');
+            $chunkContent = file_get_contents($chunkFile->getRealPath());
+
+            // Store chunk temporarily
+            $chunkDir = storage_path('app/temp/chunks/' . $fileId);
+            if (!file_exists($chunkDir)) {
+                mkdir($chunkDir, 0755, true);
+            }
+
+            $chunkPath = $chunkDir . '/chunk_' . $chunkIndex;
+            file_put_contents($chunkPath, $chunkContent);
+
+            // Update upload data
+            $uploadData['chunks'][] = $chunkIndex;
+            $uploadData['uploaded_bytes'] += strlen($chunkContent);
+
+            // Update status
+            if (count($uploadData['chunks']) === $totalChunks) {
+                $uploadData['status'] = 'complete';
+            } else {
+                $uploadData['status'] = 'uploading';
+            }
+
+            \Cache::put('upload_' . $fileId, $uploadData, 3600);
+
+            \Log::info("Chunk {$chunkIndex}/{$totalChunks} uploaded for file {$fileId}");
+
+            return response()->json([
+                'success' => true,
+                'chunk_index' => $chunkIndex,
+                'uploaded_bytes' => $uploadData['uploaded_bytes']
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Chunk upload error: ' . $e->getMessage());
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    /**
+     * Upload large file directly (streaming approach)
+     */
+    public function uploadLargeFile(Request $request)
+    {
+        \Log::info('Upload large file request', [
+            'file_name' => $request->header('X-File-Name'),
+            'file_size' => $request->header('X-File-Size'),
+            'file_type' => $request->header('X-File-Type')
+        ]);
+
+        try {
+            $content = file_get_contents('php://input');
+            if (empty($content)) {
+                return response()->json(['error' => 'No file content received'], 400);
+            }
+
+            $fileName = $request->header('X-File-Name');
+            $fileSize = $request->header('X-File-Size');
+            $fileType = $request->header('X-File-Type');
+            $fileId = $request->header('X-File-Id');
+
+            if (!$fileName || !$fileSize) {
+                return response()->json(['error' => 'Missing file metadata'], 400);
+            }
+
+            // Create a temporary file from the raw content
+            $tempPath = tempnam(sys_get_temp_dir(), 'upload_');
+            file_put_contents($tempPath, $content);
+
+            // Create a file object from the temp file for processImage
+            $tempFile = new \Illuminate\Http\UploadedFile(
+                $tempPath,
+                $fileName,
+                $fileType,
+                null,
+                true
+            );
+
+            // Process the image
+            $finalPath = $this->processImage($tempFile, 'products');
+
+            // Cleanup temp file
+            @unlink($tempPath);
+
+            \Log::info("Large file uploaded: {$fileName}, size: {$fileSize}, final path: {$finalPath}");
+
+            return response()->json([
+                'success' => true,
+                'file_id' => $fileId,
+                'path' => $finalPath,
+                'message' => 'Large file uploaded successfully'
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Large file upload error: ' . $e->getMessage());
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    /**
+     * Merge uploaded chunks into final file
+     */
+    private function mergeChunks(array $uploadData)
+    {
+        $chunkDir = storage_path('app/temp/chunks/' . $uploadData['chunks'][0] ?? 'temp');
+        $finalFile = storage_path('app/temp/' . $uploadData['file_name']);
+
+        if (!file_exists(dirname($finalFile))) {
+            mkdir(dirname($finalFile), 0755, true);
+        }
+
+        $finalFp = fopen($finalFile, 'wb');
+
+        if (!$finalFp) {
+            throw new \Exception('Cannot create final file');
+        }
+
+        // Sort chunks by index
+        sort($uploadData['chunks']);
+
+        foreach ($uploadData['chunks'] as $chunkIndex) {
+            $chunkPath = storage_path('app/temp/chunks/' . $uploadData['file_id'] . '/chunk_' . $chunkIndex);
+            if (!file_exists($chunkPath)) {
+                fclose($finalFp);
+                throw new \Exception("Missing chunk: {$chunkIndex}");
+            }
+
+            $chunkContent = file_get_contents($chunkPath);
+            fwrite($finalFp, $chunkContent);
+
+            // Cleanup chunk
+            @unlink($chunkPath);
+        }
+
+        fclose($finalFp);
+
+        // Cleanup chunk directory
+        @rmdir(dirname($chunkPath));
+
+        return $finalFile;
+    }
+
+    /**
+     * Get uploaded files for product edit
+     */
+    public function getUploadedImages(Request $request)
+    {
+        $productId = $request->get('product_id');
+        $uploadedFiles = \Cache::get('uploaded_files_' . $productId, []);
+
+        return response()->json([
+            'files' => $uploadedFiles
+        ]);
     }
 }

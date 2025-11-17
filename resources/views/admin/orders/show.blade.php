@@ -37,10 +37,10 @@
                     <div class="col-md-6">
                         <strong>Status:</strong>
                         <p class="mb-0">
-                            <span class="badge bg-{{ 
-                                $order->status === 'completed' ? 'success' : 
-                                ($order->status === 'processing' ? 'info' : 
-                                ($order->status === 'cancelled' ? 'danger' : 'warning')) 
+                            <span class="badge bg-{{
+                                $order->status === 'completed' ? 'success' :
+                                ($order->status === 'processing' ? 'info' :
+                                ($order->status === 'cancelled' ? 'danger' : 'warning'))
                             }}">
                                 {{ ucfirst($order->status) }}
                             </span>
@@ -96,30 +96,30 @@
             <div class="card-body">
                 <div class="d-flex justify-content-between mb-2">
                     <span>Subtotal:</span>
-                    <span>${{ number_format($order->subtotal, 2) }}</span>
+                    <span>₹{{ number_format($order->subtotal, 2) }}</span>
                 </div>
                 @if($order->tax)
                 <div class="d-flex justify-content-between mb-2">
                     <span>Tax:</span>
-                    <span>${{ number_format($order->tax, 2) }}</span>
+                    <span>₹{{ number_format($order->tax, 2) }}</span>
                 </div>
                 @endif
                 @if($order->shipping)
                 <div class="d-flex justify-content-between mb-2">
                     <span>Shipping:</span>
-                    <span>${{ number_format($order->shipping, 2) }}</span>
+                    <span>₹{{ number_format($order->shipping, 2) }}</span>
                 </div>
                 @endif
                 @if($order->discount)
                 <div class="d-flex justify-content-between mb-2 text-danger">
                     <span>Discount:</span>
-                    <span>-${{ number_format($order->discount, 2) }}</span>
+                    <span>-₹{{ number_format($order->discount, 2) }}</span>
                 </div>
                 @endif
                 <hr>
                 <div class="d-flex justify-content-between">
                     <strong>Total:</strong>
-                    <strong>${{ number_format($order->total, 2) }}</strong>
+                    <strong>₹{{ number_format($order->total, 2) }}</strong>
                 </div>
             </div>
         </div>
@@ -132,8 +132,8 @@
                 <a href="{{ route('admin.orders.edit', $order->id) }}" class="btn btn-warning btn-block w-100 mb-2">
                     <i class="fas fa-edit"></i> Edit Order
                 </a>
-                
-                <form action="{{ route('admin.orders.destroy', $order->id) }}" method="POST" 
+
+                <form action="{{ route('admin.orders.destroy', $order->id) }}" method="POST"
                       onsubmit="return confirm('Are you sure you want to delete this order?')">
                     @csrf
                     @method('DELETE')

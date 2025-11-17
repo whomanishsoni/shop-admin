@@ -89,8 +89,14 @@
                                                     <div class="product__items">
                                                         <div class="product__items--thumbnail">
                                                             <a class="product__items--link" href="{{ route('product.detail', $product['slug']) }}">
-                                                                <img class="product__items--img product__primary--img" src="{{ $product['image_primary'] }}" alt="{{ $product['name'] }}">
-                                                                <img class="product__items--img product__secondary--img" src="{{ $product['image_secondary'] }}" alt="{{ $product['name'] }}">
+                                                                <img class="product__items--img product__primary--img lazy"
+                                                                     src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiBmaWxsPSIjRjNGNEY2Ii8+CjxjaXJjbGUgY3g9IjEwMCIgY3k9IjEwMCIgcj0iNDAiIHN0cm9rZT0iI0U1RTVFNSIgc3Ryb2tlLXdpZHRoPSIyIiBmaWxsPSJub25lIi8+CjxwYXRoIGQ9Ik0xMDAgODVWMTIwIiBzdHJva2U9IiNFNUU1RTUiIHN0cm9rZS13aWR0aD0iNiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+Cjwvc3ZnPgo="
+                                                                     data-src="{{ $product['image_primary'] }}"
+                                                                     alt="{{ $product['name'] }}">
+                                                                <img class="product__items--img product__secondary--img lazy"
+                                                                     src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiBmaWxsPSIjRjNGNEY2Ii8+CjxjaXJjbGUgY3g9IjEwMCIgY3k9IjEwMCIgcj0iNDAiIHN0cm9rZT0iI0U1RTVFNSIgc3Ryb2tlLXdpZHRoPSIyIiBmaWxsPSJub25lIi8+CjxwYXRoIGQ9Ik0xMDAgODVWMTIwIiBzdHJva2U9IiNFNUU1RTUiIHN0cm9rZS13aWR0aD0iNiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+Cjwvc3ZnPgo="
+                                                                     data-src="{{ $product['image_secondary'] }}"
+                                                                     alt="{{ $product['name'] }}">
                                                             </a>
                                                             @if ($product['on_sale'])
                                                                 <div class="product__badge">
@@ -210,6 +216,48 @@
             });
         });
     </script>
+
+    <!-- Lazy Loading Implementation for Shop Images -->
+    <script>
+        // Lazy Loading Implementation for Images (Shop Page)
+        document.addEventListener("DOMContentLoaded", function() {
+            // Lazy loading for images
+            const lazyImages = document.querySelectorAll('img.lazy');
+
+            // Intersection Observer options
+            const imageObserverOptions = {
+                root: null, // Use the viewport as the root
+                rootMargin: '50px 0px', // Trigger 50px before the element enters the viewport
+                threshold: 0.01 // Trigger when 1% of the element is visible
+            };
+
+            // Function to load images
+            function loadImage(img) {
+                const src = img.getAttribute('data-src');
+                if (src) {
+                    img.src = src;
+                    img.classList.remove('lazy');
+                    img.classList.add('lazy-loaded');
+                }
+            }
+
+            // Create observers
+            const imageObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        loadImage(img);
+                        observer.unobserve(img);
+                    }
+                });
+            }, imageObserverOptions);
+
+            // Observe all lazy images
+            lazyImages.forEach(img => {
+                imageObserver.observe(img);
+            });
+        });
+    </script>
     <style>
         .product__items--thumbnail {
             aspect-ratio: 3 / 4;
@@ -227,6 +275,37 @@
             object-fit: cover;
             object-position: center;
             display: block;
+        }
+
+        /* Lazy Loading Styles for Shop Page */
+        img.lazy {
+            transition: opacity 0.3s ease-in-out;
+            opacity: 0;
+        }
+
+        img.lazy-loaded {
+            opacity: 1;
+        }
+
+        /* Placeholder styling for better UX */
+        img.lazy::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            margin: -10px 0 0 -10px;
+            background: transparent;
+            border: 2px solid #e5e5e5;
+            border-top: 2px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
     </style>
 @endpush

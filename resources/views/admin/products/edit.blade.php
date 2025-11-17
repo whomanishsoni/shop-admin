@@ -10,7 +10,7 @@
     </a>
 </div>
 
-<form action="{{ route('admin.products.update', $product->id) }}" method="POST" enctype="multipart/form-data">
+<form action="{{ route('admin.products.update', $product->id) }}" method="POST" enctype="multipart/form-data" id="product-form">
     @csrf
     @method('PUT')
 
@@ -100,10 +100,17 @@
                              style="cursor: pointer; background-color: #f8f9fc;">
                             <i class="fas fa-cloud-upload-alt fa-3x text-primary mb-3"></i>
                             <p class="mb-0">Drag and drop images here or click to browse</p>
-                            <small class="text-muted">Supports: JPG, PNG, GIF, WEBP (Max: 2MB each)</small>
-                            <input type="file" id="file-input" name="images[]" multiple accept="image/*" class="d-none">
+                            <small class="text-muted">Supports: JPG, PNG, GIF, WEBP (No file size limit)</small>
+                            <input type="file" id="file-input" multiple accept="image/*" class="d-none">
+                            <div id="upload-progress" class="mt-3 d-none">
+                                <div class="progress">
+                                    <div class="progress-bar" role="progressbar" style="width: 0%">0%</div>
+                                </div>
+                            </div>
                         </div>
                         <div id="preview-container" class="row mt-3"></div>
+                        <!-- Hidden input to store uploaded image paths -->
+                        <input type="hidden" name="uploaded_images" id="uploaded-images">
                     </div>
                 </div>
             </div>
@@ -323,6 +330,7 @@
 @push('scripts')
 <script src="https://cdn.ckeditor.com/4.20.1/standard/ckeditor.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="{{ asset('js/chunked-upload.js') }}"></script>
 <script>
 $(document).ready(function() {
     $('.select2').select2({
@@ -346,10 +354,27 @@ $(document).ready(function() {
         ]
     });
 
+    // Chunked upload implementation
     const dropZone = document.getElementById('drop-zone');
     const fileInput = document.getElementById('file-input');
     const previewContainer = document.getElementById('preview-container');
-    let selectedFiles = [];
+    const uploadedImagesInput = document.getElementById('uploaded-images');
+    const progressBar = document.getElementById('upload-progress');
+
+    let uploadedImages = [];
+    let uploadedFiles = []; // Store original file objects for retry
+    let uploadUploader;
+
+    // Initialize chunked uploader
+    function initUploader() {
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        uploadUploader = new ChunkedFileUpload({
+            endpoint: '{{ route("admin.products.update", $product->id) }}',
+            csrfToken: csrfToken
+        });
+    }
+
+    initUploader();
 
     dropZone.addEventListener('click', () => fileInput.click());
 
@@ -365,7 +390,7 @@ $(document).ready(function() {
     dropZone.addEventListener('drop', (e) => {
         e.preventDefault();
         dropZone.classList.remove('border-primary', 'bg-light');
-        const files = Array.from(e.dataTransfer.files);
+        const files = Array.from(e.dataTransfer.files).filter(file => file.type.startsWith('image/'));
         handleFiles(files);
     });
 
@@ -374,46 +399,260 @@ $(document).ready(function() {
         handleFiles(files);
     });
 
-    function handleFiles(files) {
-        selectedFiles = [...selectedFiles, ...files];
-        updateFileInput();
-        renderPreviews();
+    async function handleFiles(files) {
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+
+            // Show progress bar
+            progressBar.classList.remove('d-none');
+
+            // Create uploading preview
+            const previewId = 'preview_' + Date.now() + '_' + i;
+            createUploadingPreview(file, previewId);
+
+            // Store file object for retry
+            uploadedFiles.push({
+                id: previewId,
+                file: file,
+                uploaded: false
+            });
+
+            try {
+                // Always use streaming upload for reliability and unlimited size support
+                let uploadPath = await uploadWithStream(file, file.name);
+
+                if (uploadPath) {
+                    uploadedImages.push(uploadPath);
+                    uploadedImagesInput.value = JSON.stringify(uploadedImages);
+
+                    // Mark as uploaded
+                    const fileIndex = uploadedFiles.findIndex(f => f.id === previewId);
+                    if (fileIndex !== -1) {
+                        uploadedFiles[fileIndex].uploaded = true;
+                    }
+
+                    updatePreviewSuccess(previewId, uploadPath);
+                } else {
+                    throw new Error('Upload failed - no path returned');
+                }
+            } catch (error) {
+                console.error('Upload failed:', error);
+                updatePreviewError(previewId);
+            }
+        }
+
+        // Hide progress bar
+        setTimeout(() => {
+            progressBar.classList.add('d-none');
+        }, 1000);
     }
 
-    function updateFileInput() {
-        const dt = new DataTransfer();
-        selectedFiles.forEach(file => dt.items.add(file));
-        fileInput.files = dt.files;
-    }
+    async function uploadWithStream(file, filename) {
+        return new Promise((resolve, reject) => {
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', '{{ route("admin.products.upload-large-file") }}', true);
+            xhr.setRequestHeader('X-CSRF-TOKEN', document.querySelector('meta[name="csrf-token"]').getAttribute('content'));
+            xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+            xhr.setRequestHeader('X-File-Name', encodeURIComponent(filename));
+            xhr.setRequestHeader('X-File-Size', file.size);
+            xhr.setRequestHeader('X-File-Type', file.type);
 
-    function renderPreviews() {
-        previewContainer.innerHTML = '';
-        selectedFiles.forEach((file, index) => {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                const col = document.createElement('div');
-                col.className = 'col-md-3 mb-3';
-                col.innerHTML = `
-                    <div class="card">
-                        <img src="${e.target.result}" class="card-img-top" style="height: 150px; object-fit: cover;">
-                        <div class="card-body p-2">
-                            <button type="button" class="btn btn-danger btn-sm w-100" onclick="removeImage(${index})">
-                                <i class="fas fa-trash"></i> Remove
-                            </button>
-                        </div>
-                    </div>
-                `;
-                previewContainer.appendChild(col);
+            xhr.upload.onprogress = (e) => {
+                if (e.lengthComputable) {
+                    const percent = Math.round((e.loaded / e.total) * 100);
+                    document.querySelector('.progress-bar').style.width = percent + '%';
+                    document.querySelector('.progress-bar').textContent = percent + '%';
+                }
             };
-            reader.readAsDataURL(file);
+
+            xhr.onload = () => {
+                if (xhr.status === 200) {
+                    try {
+                        const response = JSON.parse(xhr.responseText);
+                        if (response.success && response.path) {
+                            resolve(response.path);
+                        } else {
+                            reject(new Error(response.message || 'Upload failed'));
+                        }
+                    } catch (e) {
+                        reject(new Error('Invalid response'));
+                    }
+                } else {
+                    reject(new Error(`Upload failed: ${xhr.status}`));
+                }
+            };
+
+            xhr.onerror = () => reject(new Error('Network error'));
+            xhr.send(file);
         });
     }
 
-    window.removeImage = function(index) {
-        selectedFiles.splice(index, 1);
-        updateFileInput();
-        renderPreviews();
-    };
+    async function uploadWithChunked(file, filename) {
+        return new Promise((resolve, reject) => {
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', '{{ route("admin.products.upload-large-file") }}', true);
+            xhr.setRequestHeader('X-CSRF-TOKEN', document.querySelector('meta[name="csrf-token"]').getAttribute('content'));
+            xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+            xhr.setRequestHeader('X-File-Name', encodeURIComponent(filename));
+            xhr.setRequestHeader('X-File-Size', file.size);
+            xhr.setRequestHeader('X-File-Type', file.type);
+
+            xhr.upload.onprogress = (e) => {
+                if (e.lengthComputable) {
+                    const percent = Math.round((e.loaded / e.total) * 100);
+                    document.querySelector('.progress-bar').style.width = percent + '%';
+                    document.querySelector('.progress-bar').textContent = percent + '%';
+                }
+            };
+
+            xhr.onload = () => {
+                if (xhr.status === 200) {
+                    try {
+                        const response = JSON.parse(xhr.responseText);
+                        if (response.success && response.path) {
+                            resolve(response.path);
+                        } else {
+                            reject(new Error(response.message || 'Chunked upload failed'));
+                        }
+                    } catch (e) {
+                        reject(new Error('Invalid chunked response'));
+                    }
+                } else {
+                    reject(new Error(`Chunked upload failed: ${xhr.status}`));
+                }
+            };
+
+            xhr.onerror = () => reject(new Error('Network error during chunked upload'));
+            xhr.send(file);
+        });
+    }
+
+    function createUploadingPreview(file, previewId) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const col = document.createElement('div');
+            col.className = 'col-md-3 mb-3';
+            col.id = previewId;
+            col.innerHTML = `
+                <div class="card">
+                    <img src="${e.target.result}" class="card-img-top" style="height: 150px; object-fit: cover; opacity: 0.6;">
+                    <div class="card-body p-2 text-center">
+                        <div class="spinner-border spinner-border-sm" role="status">
+                            <span class="visually-hidden">Uploading...</span>
+                        </div>
+                        <small class="text-muted">Uploading...</small>
+                    </div>
+                </div>
+            `;
+            previewContainer.appendChild(col);
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function updatePreviewSuccess(previewId, imagePath) {
+        const preview = document.getElementById(previewId);
+        const img = preview.querySelector('img');
+        const body = preview.querySelector('.card-body');
+
+        img.style.opacity = '1';
+        body.innerHTML = `
+            <button type="button" class="btn btn-success btn-sm w-100" disabled>
+                <i class="fas fa-check"></i> Uploaded
+            </button>
+        `;
+    }
+
+            function updatePreviewError(previewId) {
+                const preview = document.getElementById(previewId);
+                const body = preview.querySelector('.card-body');
+
+                body.innerHTML = `
+                    <button type="button" class="btn btn-danger btn-sm w-100" onclick="retryUpload('${previewId}')">
+                        <i class="fas fa-redo"></i> Retry
+                    </button>
+                `;
+            }
+
+            window.removeImage = function(index) {
+                uploadedImages.splice(index, 1);
+                uploadedImagesInput.value = JSON.stringify(uploadedImages);
+                renderFinalPreviews();
+            };
+
+            // Retry functionality for failed uploads
+            window.retryUpload = async function(previewId) {
+                // Find the original file from stored files array
+                const fileData = uploadedFiles.find(f => f.id === previewId);
+                if (!fileData) {
+                    console.error('Original file not found for retry');
+                    return;
+                }
+
+                const file = fileData.file;
+
+                // Create new upload attempt
+                createUploadingPreview(file, previewId);
+
+                // Progress bar back to visible
+                progressBar.classList.remove('d-none');
+
+                try {
+                    // Attempt re-upload using streaming for all files (unlimited size support)
+                    const uploadPath = await uploadWithStream(file, file.name);
+
+                    if (uploadPath) {
+                        uploadedImages.push(uploadPath);
+                        uploadedImagesInput.value = JSON.stringify(uploadedImages);
+
+                        // Mark as uploaded
+                        fileData.uploaded = true;
+
+                        updatePreviewSuccess(previewId, uploadPath);
+                    } else {
+                        throw new Error('Retry upload failed');
+                    }
+                } catch (error) {
+                    console.error('Retry upload failed:', error);
+                    updatePreviewError(previewId);
+                }
+
+                // Hide progress bar
+                setTimeout(() => {
+                    progressBar.classList.add('d-none');
+                }, 1000);
+            };
+
+            // Helper function to convert data URL back to file
+            async function dataURLToFile(dataURL, filename) {
+                const arr = dataURL.split(',');
+                const mime = arr[0].match(/:(.*?);/)[1];
+                const bstr = atob(arr[1]);
+                let n = bstr.length;
+                const u8arr = new Uint8Array(n);
+                while(n--){
+                    u8arr[n] = bstr.charCodeAt(n);
+                }
+                return new File([u8arr], filename, {type:mime});
+            }
+
+    function renderFinalPreviews() {
+        previewContainer.innerHTML = '';
+        uploadedImages.forEach((imagePath, index) => {
+            const col = document.createElement('div');
+            col.className = 'col-md-3 mb-3';
+            col.innerHTML = `
+                <div class="card">
+                    <img src="/storage/${imagePath}" class="card-img-top" style="height: 150px; object-fit: cover;">
+                    <div class="card-body p-2">
+                        <button type="button" class="btn btn-danger btn-sm w-100" onclick="removeImage(${index})">
+                            <i class="fas fa-trash"></i> Remove
+                        </button>
+                    </div>
+                </div>
+            `;
+            previewContainer.appendChild(col);
+        });
+    }
 
     document.getElementById('name').addEventListener('input', function(e) {
         const slug = e.target.value

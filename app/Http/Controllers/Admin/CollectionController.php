@@ -10,6 +10,16 @@ use Yajra\DataTables\Facades\DataTables;
 
 class CollectionController extends Controller
 {
+    use ImageProcessable;
+
+    public function __construct()
+    {
+        // Increase PHP limits for file uploads
+        ini_set('upload_max_filesize', '5M');
+        ini_set('post_max_size', '5M');
+        ini_set('memory_limit', '512M');
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -60,27 +70,34 @@ class CollectionController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'slug' => 'nullable|string|unique:collections,slug',
-            'description' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
-            'sort_order' => 'nullable|integer|min:0',
-            'status' => 'required|boolean',
-            'is_featured' => 'nullable|boolean',
-        ]);
+        try {
+            $validated = $request->validate([
+                'name' => 'required|string|max:255',
+                'slug' => 'nullable|string|unique:collections,slug',
+                'description' => 'nullable|string',
+                'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:5120',
+                'sort_order' => 'nullable|integer|min:0',
+                'status' => 'required|boolean',
+                'is_featured' => 'nullable|boolean',
+            ]);
 
-        // Generate slug if not provided
-        $validated['slug'] = $validated['slug'] ?? Str::slug($request->name);
+            // Generate slug if not provided
+            $validated['slug'] = $validated['slug'] ?? Str::slug($request->name);
 
-        // Handle image upload
-        if ($request->hasFile('image')) {
-            $validated['image'] = $request->file('image')->store('collections', 'public');
+            // Handle image upload
+            if ($request->hasFile('image')) {
+                $validated['image'] = $this->processImage($request->file('image'), 'collections');
+            }
+
+            Collection::create($validated);
+
+            return redirect()->route('admin.collections.index')->with('success', 'Collection created successfully');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return back()->withErrors($e->errors());
+        } catch (\Exception $e) {
+            \Log::error('Collection creation failed: ' . $e->getMessage());
+            return back()->withErrors(['error' => 'Failed to create collection. Please try with a smaller image.']);
         }
-
-        Collection::create($validated);
-
-        return redirect()->route('admin.collections.index')->with('success', 'Collection created successfully');
     }
 
     /**
@@ -105,37 +122,44 @@ class CollectionController extends Controller
      */
     public function update(Request $request, Collection $collection)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'slug' => 'nullable|string|unique:collections,slug,' . $collection->id,
-            'description' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
-            'remove_image' => 'nullable|boolean',
-            'sort_order' => 'nullable|integer|min:0',
-            'status' => 'required|boolean',
-            'is_featured' => 'nullable|boolean',
-        ]);
+        try {
+            $validated = $request->validate([
+                'name' => 'required|string|max:255',
+                'slug' => 'nullable|string|unique:collections,slug,' . $collection->id,
+                'description' => 'nullable|string',
+                'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:5120',
+                'remove_image' => 'nullable|boolean',
+                'sort_order' => 'nullable|integer|min:0',
+                'status' => 'required|boolean',
+                'is_featured' => 'nullable|boolean',
+            ]);
 
-        // Generate slug if not provided
-        $validated['slug'] = $validated['slug'] ?? Str::slug($request->name);
+            // Generate slug if not provided
+            $validated['slug'] = $validated['slug'] ?? Str::slug($request->name);
 
-        // Handle image removal
-        if ($request->has('remove_image') && $request->remove_image) {
-            if ($collection->image && \Storage::disk('public')->exists($collection->image)) {
-                \Storage::disk('public')->delete($collection->image);
+            // Handle image removal
+            if ($request->has('remove_image') && $request->remove_image) {
+                if ($collection->image && \Storage::disk('public')->exists($collection->image)) {
+                    \Storage::disk('public')->delete($collection->image);
+                }
+                $validated['image'] = null;
+            } elseif ($request->hasFile('image')) {
+                // Delete old image if exists
+                if ($collection->image && \Storage::disk('public')->exists($collection->image)) {
+                    \Storage::disk('public')->delete($collection->image);
+                }
+                $validated['image'] = $this->processImage($request->file('image'), 'collections');
             }
-            $validated['image'] = null;
-        } elseif ($request->hasFile('image')) {
-            // Delete old image if exists
-            if ($collection->image && \Storage::disk('public')->exists($collection->image)) {
-                \Storage::disk('public')->delete($collection->image);
-            }
-            $validated['image'] = $request->file('image')->store('collections', 'public');
+
+            $collection->update($validated);
+
+            return redirect()->route('admin.collections.index')->with('success', 'Collection updated successfully');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return back()->withErrors($e->errors());
+        } catch (\Exception $e) {
+            \Log::error('Collection update failed: ' . $e->getMessage());
+            return back()->withErrors(['error' => 'Failed to update collection. Please try with a smaller image.']);
         }
-
-        $collection->update($validated);
-
-        return redirect()->route('admin.collections.index')->with('success', 'Collection updated successfully');
     }
 
     /**

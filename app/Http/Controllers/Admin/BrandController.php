@@ -11,6 +11,16 @@ use Yajra\DataTables\Facades\DataTables;
 
 class BrandController extends Controller
 {
+    use ImageProcessable;
+
+    public function __construct()
+    {
+        // Increase PHP limits for file uploads
+        ini_set('upload_max_filesize', '5M');
+        ini_set('post_max_size', '5M');
+        ini_set('memory_limit', '512M');
+    }
+
     public function index(Request $request)
     {
         if ($request->ajax()) {
@@ -48,20 +58,27 @@ class BrandController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255|unique:brands',
-            'slug' => 'required|string|max:255|unique:brands',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'status' => 'required|boolean'
-        ]);
+        try {
+            $validated = $request->validate([
+                'name' => 'required|string|max:255|unique:brands',
+                'slug' => 'required|string|max:255|unique:brands',
+                'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:5120',
+                'status' => 'required|boolean'
+            ]);
 
-        if ($request->hasFile('image')) {
-            $validated['image'] = $request->file('image')->store('brands', 'public');
+            if ($request->hasFile('image')) {
+                $validated['image'] = $this->processImage($request->file('image'), 'brands');
+            }
+
+            Brand::create($validated);
+
+            return redirect()->route('admin.brands.index')->with('success', 'Brand created successfully');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return back()->withErrors($e->errors());
+        } catch (\Exception $e) {
+            \Log::error('Brand creation failed: ' . $e->getMessage());
+            return back()->withErrors(['error' => 'Failed to create brand. Please try with a smaller image.']);
         }
-
-        Brand::create($validated);
-
-        return redirect()->route('admin.brands.index')->with('success', 'Brand created successfully');
     }
 
     public function edit(Brand $brand)
@@ -71,29 +88,36 @@ class BrandController extends Controller
 
     public function update(Request $request, Brand $brand)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255|unique:brands,name,'.$brand->id,
-            'slug' => 'required|string|max:255|unique:brands,slug,'.$brand->id,
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'remove_image' => 'nullable|boolean',
-            'status' => 'required|boolean'
-        ]);
+        try {
+            $validated = $request->validate([
+                'name' => 'required|string|max:255|unique:brands,name,'.$brand->id,
+                'slug' => 'required|string|max:255|unique:brands,slug,'.$brand->id,
+                'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:5120',
+                'remove_image' => 'nullable|boolean',
+                'status' => 'required|boolean'
+            ]);
 
-        if ($request->has('remove_image') && $request->remove_image) {
-            if ($brand->image) {
-                Storage::disk('public')->delete($brand->image);
+            if ($request->has('remove_image') && $request->remove_image) {
+                if ($brand->image) {
+                    Storage::disk('public')->delete($brand->image);
+                }
+                $validated['image'] = null;
+            } elseif ($request->hasFile('image')) {
+                if ($brand->image) {
+                    Storage::disk('public')->delete($brand->image);
+                }
+                $validated['image'] = $this->processImage($request->file('image'), 'brands');
             }
-            $validated['image'] = null;
-        } elseif ($request->hasFile('image')) {
-            if ($brand->image) {
-                Storage::disk('public')->delete($brand->image);
-            }
-            $validated['image'] = $request->file('image')->store('brands', 'public');
+
+            $brand->update($validated);
+
+            return redirect()->route('admin.brands.index')->with('success', 'Brand updated successfully');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return back()->withErrors($e->errors());
+        } catch (\Exception $e) {
+            \Log::error('Brand update failed: ' . $e->getMessage());
+            return back()->withErrors(['error' => 'Failed to update brand. Please try with a smaller image.']);
         }
-
-        $brand->update($validated);
-
-        return redirect()->route('admin.brands.index')->with('success', 'Brand updated successfully');
     }
 
     public function destroy(Brand $brand)

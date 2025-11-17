@@ -9,6 +9,16 @@ use Yajra\DataTables\Facades\DataTables;
 
 class BannerController extends Controller
 {
+    use ImageProcessable;
+
+    public function __construct()
+    {
+        // Increase PHP limits for file uploads
+        ini_set('upload_max_filesize', '5M');
+        ini_set('post_max_size', '5M');
+        ini_set('memory_limit', '512M');
+    }
+
     public function index(Request $request)
     {
         if ($request->ajax()) {
@@ -49,22 +59,29 @@ class BannerController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'link' => 'nullable|url',
-            'position' => 'nullable|string|max:255',
-            'order' => 'nullable|integer',
-            'status' => 'required|in:0,1'
-        ]);
+        try {
+            $validated = $request->validate([
+                'title' => 'required|string|max:255',
+                'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:5120',
+                'link' => 'nullable|url',
+                'position' => 'nullable|string|max:255',
+                'order' => 'nullable|integer',
+                'status' => 'required|in:0,1'
+            ]);
 
-        if ($request->hasFile('image')) {
-            $validated['image'] = $request->file('image')->store('banners', 'public');
+            if ($request->hasFile('image')) {
+                $validated['image'] = $this->processImage($request->file('image'), 'banners');
+            }
+
+            Banner::create($validated);
+
+            return redirect()->route('admin.banners.index')->with('success', 'Banner created successfully');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return back()->withErrors($e->errors());
+        } catch (\Exception $e) {
+            \Log::error('Banner creation failed: ' . $e->getMessage());
+            return back()->withErrors(['error' => 'Failed to create banner. Please try with a smaller image.']);
         }
-
-        Banner::create($validated);
-
-        return redirect()->route('admin.banners.index')->with('success', 'Banner created successfully');
     }
 
     public function show(Banner $banner)
@@ -79,22 +96,29 @@ class BannerController extends Controller
 
     public function update(Request $request, Banner $banner)
     {
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'link' => 'nullable|url',
-            'position' => 'nullable|string|max:255',
-            'order' => 'nullable|integer',
-            'status' => 'required|in:0,1'
-        ]);
+        try {
+            $validated = $request->validate([
+                'title' => 'required|string|max:255',
+                'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:5120',
+                'link' => 'nullable|url',
+                'position' => 'nullable|string|max:255',
+                'order' => 'nullable|integer',
+                'status' => 'required|in:0,1'
+            ]);
 
-        if ($request->hasFile('image')) {
-            $validated['image'] = $request->file('image')->store('banners', 'public');
+            if ($request->hasFile('image')) {
+                $validated['image'] = $this->processImage($request->file('image'), 'banners');
+            }
+
+            $banner->update($validated);
+
+            return redirect()->route('admin.banners.index')->with('success', 'Banner updated successfully');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return back()->withErrors($e->errors());
+        } catch (\Exception $e) {
+            \Log::error('Banner update failed: ' . $e->getMessage());
+            return back()->withErrors(['error' => 'Failed to update banner. Please try with a smaller image.']);
         }
-
-        $banner->update($validated);
-
-        return redirect()->route('admin.banners.index')->with('success', 'Banner updated successfully');
     }
 
     public function destroy(Banner $banner)

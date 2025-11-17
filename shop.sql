@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 14, 2025 at 11:44 AM
+-- Generation Time: Nov 16, 2025 at 12:54 PM
 -- Server version: 8.0.33
 -- PHP Version: 8.2.29
 
@@ -90,6 +90,13 @@ CREATE TABLE `banners` (
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Dumping data for table `banners`
+--
+
+INSERT INTO `banners` (`id`, `title`, `image`, `link`, `position`, `order`, `status`, `created_at`, `updated_at`) VALUES
+(1, 'ddd', 'banners/1763215015_691886a747b2d.webp', NULL, 'home', 0, 1, '2025-11-15 08:26:55', '2025-11-15 08:26:55');
+
 -- --------------------------------------------------------
 
 --
@@ -158,10 +165,10 @@ CREATE TABLE `blog_posts` (
 
 INSERT INTO `blog_posts` (`id`, `title`, `slug`, `content`, `blog_category_id`, `author_id`, `featured_image`, `status`, `created_at`, `updated_at`) VALUES
 (2, 'Top 10 Trending Kurti Styles Every Woman Should Own in 2025', 'top-10-trending-kurti-styles-every-woman-should-own-in-2025', '<p>Stay ahead of the fashion curve with our curated list of the top 10 kurti styles dominating 2025. From bold prints to minimalist designs, discover must-have kurtis to refresh your wardrobe.</p>', 2, 1, NULL, 'published', '2025-10-17 02:05:40', '2025-11-11 06:38:22'),
-(3, 'The Secret to Choosing the Perfect Kurti for Your Body Type', 'the-secret-to-choosing-the-perfect-kurti-for-your-body-type', '<p>Find the ideal kurti that flatters your unique body shape. This guide breaks down expert tips to select cuts, lengths, and fabrics that enhance your silhouette and boost confidence.</p>', 3, 1, 'blog-posts/KYCdh7baxlDCyrf0StJpkcD5DIger9XjBvgrU5WP.jpg', 'published', '2025-10-17 02:08:28', '2025-11-12 01:13:05'),
-(4, 'How to Style Your Kurtis for Every Occasion', 'how-to-style-your-kurtis-for-every-occasion', '<p>Learn how to transform your kurtis for any event, from casual brunches to festive gatherings. Explore pairing ideas, accessories, and styling tips for versatile, chic looks.</p>', 4, 1, 'blog-posts/T0wKx4j6fEAERijP3wM4CO4lfrI276rhWC1JdTop.jpg', 'published', '2025-10-17 02:09:23', '2025-11-12 01:12:51'),
-(5, 'Why Sustainable Fabrics Are the Future of Women’s Fashion', 'why-sustainable-fabrics-are-the-future-of-womens-fashion', '<p>Discover why sustainable fabrics like organic cotton and bamboo are revolutionizing women&rsquo;s fashion. This blog explores eco-friendly kurti options and their impact on style and the planet.</p>', 5, 1, 'blog-posts/AuUKxCHGx90kx0Tt3MkbUqsOpCtOMb36ZUg7dZzv.jpg', 'published', '2025-10-17 02:10:06', '2025-11-12 01:12:35'),
-(6, 'Transform Your Outfit with These Styling Hacks', 'transform-your-outfit-with-these-styling-hacks', '<p>Elevate your kurti outfits with simple yet effective styling hacks. From layering techniques to accessorizing, learn how to create stunning looks with minimal effort.</p>', 6, 1, 'blog-posts/vTo63sWBRT40N7mZDJlKChEPH6OOd6ERyeXuLSpR.jpg', 'published', '2025-10-17 02:10:33', '2025-11-12 01:12:21');
+(3, 'The Secret to Choosing the Perfect Kurti for Your Body Type', 'the-secret-to-choosing-the-perfect-kurti-for-your-body-type', '<p>Find the ideal kurti that flatters your unique body shape. This guide breaks down expert tips to select cuts, lengths, and fabrics that enhance your silhouette and boost confidence.</p>', 3, 1, 'blog-posts/1763214973_6918867d933f4.webp', 'published', '2025-10-17 02:08:28', '2025-11-15 08:26:13'),
+(4, 'How to Style Your Kurtis for Every Occasion', 'how-to-style-your-kurtis-for-every-occasion', '<p>Learn how to transform your kurtis for any event, from casual brunches to festive gatherings. Explore pairing ideas, accessories, and styling tips for versatile, chic looks.</p>', 4, 1, 'blog-posts/1763214986_6918868ad0ab8.webp', 'published', '2025-10-17 02:09:23', '2025-11-15 08:26:26'),
+(5, 'Why Sustainable Fabrics Are the Future of Women’s Fashion', 'why-sustainable-fabrics-are-the-future-of-womens-fashion', '<p>Discover why sustainable fabrics like organic cotton and bamboo are revolutionizing women&rsquo;s fashion. This blog explores eco-friendly kurti options and their impact on style and the planet.</p>', 5, 1, 'blog-posts/1763214961_6918867189461.webp', 'published', '2025-10-17 02:10:06', '2025-11-15 08:26:01'),
+(6, 'Transform Your Outfit with These Styling Hacks', 'transform-your-outfit-with-these-styling-hacks', '<p>Elevate your kurti outfits with simple yet effective styling hacks. From layering techniques to accessorizing, learn how to create stunning looks with minimal effort.</p>', 6, 1, 'blog-posts/1763214947_69188663512c2.webp', 'published', '2025-10-17 02:10:33', '2025-11-15 08:25:47');
 
 -- --------------------------------------------------------
 
@@ -184,7 +191,7 @@ CREATE TABLE `brands` (
 --
 
 INSERT INTO `brands` (`id`, `name`, `slug`, `image`, `status`, `created_at`, `updated_at`) VALUES
-(5, 'Mandir', 'mandir', NULL, 1, '2025-10-13 05:17:18', '2025-10-13 05:17:18'),
+(5, 'Mandir', 'mandir', 'brands/1763213847_6918821756f10.webp', 1, '2025-10-13 05:17:18', '2025-11-15 08:07:27'),
 (3, 'Rangoli', 'rangoli', NULL, 1, '2025-10-13 05:14:49', '2025-10-13 05:14:49'),
 (4, 'Radhika', 'radhika', NULL, 1, '2025-10-13 05:17:01', '2025-10-13 05:17:01'),
 (6, 'Neeru\'s', 'neeru-s', NULL, 1, '2025-10-13 05:17:43', '2025-10-13 05:17:43'),
@@ -245,6 +252,26 @@ INSERT INTO `categories` (`id`, `name`, `slug`, `description`, `image`, `sort_or
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `celebrities`
+--
+
+CREATE TABLE `celebrities` (
+  `id` bigint UNSIGNED NOT NULL,
+  `name` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `slug` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `bio` text COLLATE utf8mb4_unicode_ci,
+  `image` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `profession` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `social_links` longtext DEFAULT NULL,
+  `status` enum('active','inactive') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'active',
+  `sort_order` int NOT NULL DEFAULT '0',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `collections`
 --
 
@@ -267,9 +294,9 @@ CREATE TABLE `collections` (
 
 INSERT INTO `collections` (`id`, `name`, `slug`, `description`, `image`, `sort_order`, `status`, `is_featured`, `created_at`, `updated_at`) VALUES
 (9, 'Raagmayi', 'raagmayi', 'Elegant and graceful collection inspired by traditional melodies', NULL, 0, 1, 1, '2025-11-12 06:04:29', '2025-11-12 22:51:31'),
-(10, 'Jashn De Fleurs', 'jashn-de-fleurs', 'Celebration of flowers in exquisite designs and craftsmanship', 'collections/pMCUnA9zeTYcBdsXAUHVAvv3WyHxRsMP2fFXTBBp.jpg', 0, 1, 1, '2025-11-12 06:04:29', '2025-11-12 22:34:52'),
-(11, 'Swarniraha', 'swarniraha', 'Golden radiance collection with luxurious and shimmering designs', 'collections/V4tPzzi2RG3FeOI7d8qU76EtCwCkxCwHZChZmTvd.jpg', 0, 1, 1, '2025-11-12 06:04:29', '2025-11-12 22:35:09'),
-(12, 'Tarang', 'tarang', 'Flowing waves of elegance in contemporary fashion', 'collections/aqpGbbbANeyi0M8sZxmdVgza9WI7SPtmTLJunmGW.webp', 0, 1, 1, '2025-11-12 06:04:29', '2025-11-12 22:29:08'),
+(10, 'Jashn De Fleurs', 'jashn-de-fleurs', 'Celebration of flowers in exquisite designs and craftsmanship', 'collections/1763213473_691880a1d9113.webp', 0, 1, 1, '2025-11-12 06:04:29', '2025-11-15 08:01:14'),
+(11, 'Swarniraha', 'swarniraha', 'Golden radiance collection with luxurious and shimmering designs', 'collections/1763213525_691880d552f0e.webp', 0, 1, 1, '2025-11-12 06:04:29', '2025-11-15 08:02:05'),
+(12, 'Tarang', 'tarang', 'Flowing waves of elegance in contemporary fashion', 'collections/1763213714_6918819270084.webp', 0, 1, 1, '2025-11-12 06:04:29', '2025-11-15 08:05:15'),
 (13, 'Fleur', 'fleur', 'Delicate floral inspirations brought to life in stunning garments', NULL, 0, 1, 0, '2025-11-12 06:04:29', '2025-11-12 22:29:14'),
 (14, 'Zaria', 'zaria', 'Radiant and bold collection for the modern woman', NULL, 0, 1, 0, '2025-11-12 06:04:29', '2025-11-12 22:29:19'),
 (15, 'Avanya', 'avanya', 'Timeless beauty and sophistication in every piece', NULL, 0, 1, 0, '2025-11-12 06:04:29', '2025-11-12 22:29:24'),
@@ -568,7 +595,10 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (58, '2025_11_14_060547_modify_transactions_table_add_payment_details', 18),
 (59, '2025_11_14_071021_add_additional_transaction_fields', 19),
 (60, '2025_11_14_083231_add_webhook_secret_to_payment_gateways_table', 20),
-(61, '2025_11_14_104753_add_guest_fields_to_orders_table', 21);
+(61, '2025_11_14_104753_add_guest_fields_to_orders_table', 21),
+(64, '2025_11_14_143132_create_celebrities_table', 22),
+(65, '2025_11_14_143135_create_videos_table', 22),
+(66, '2025_11_14_161556_drop_views_column_from_videos_table', 23);
 
 -- --------------------------------------------------------
 
@@ -760,7 +790,7 @@ CREATE TABLE `products` (
 --
 
 INSERT INTO `products` (`id`, `name`, `slug`, `description`, `short_description`, `price`, `sale_price`, `stock`, `sku`, `category_id`, `subcategory_id`, `brand_id`, `status`, `is_featured`, `meta_title`, `meta_description`, `meta_keywords`, `created_at`, `updated_at`) VALUES
-(7, 'Jiya Saree Set', 'jiya-saree-set', '<h1>Jiya Saree Set</h1>', 'Jiya Saree Set', 2399.00, 2199.00, 10, 'PROD-P3Y8CYMV', 2, 6, 4, 'active', 1, NULL, NULL, NULL, '2025-11-10 04:23:44', '2025-11-11 08:55:19'),
+(7, 'Jiya Saree Set', 'jiya-saree-set', '<h1>Jiya Saree Set</h1>\r\n', 'Jiya Saree Set', 2399.00, 2199.00, 10, 'PROD-P3Y8CYMV', 2, 6, 4, 'active', 1, '', '', '', '2025-11-10 04:23:44', '2025-11-15 10:27:06'),
 (4, 'neela sharara set', 'neela-sharara-set', '<h1>neela sharara set</h1>', 'neela sharara set', 2000.00, 1800.00, 10, 'PROD-BVIEPDQ0', 2, 8, 5, 'active', 0, NULL, NULL, NULL, '2025-11-10 03:05:32', '2025-11-12 05:13:00'),
 (5, 'Zarira Lehenga Set', 'zarira-lehenga-set', '<h1>Zarira Lehenga Set</h1>', 'Zarira Lehenga Set', 3000.00, 2499.00, 1, 'PROD-MLJ8AGEA', 2, 5, 3, 'active', 1, NULL, NULL, NULL, '2025-11-10 04:04:18', '2025-11-11 08:51:05'),
 (6, 'Niya Lehenga Set', 'niya-lehenga-set', '<h1>Niya Lehenga Set</h1>', 'Niya Lehenga Set', 2499.00, 2399.00, 10, 'PROD-1LQIDYEQ', 2, NULL, 4, 'active', 0, NULL, NULL, NULL, '2025-11-10 04:07:25', '2025-11-12 05:12:49'),
@@ -811,10 +841,10 @@ CREATE TABLE `product_attribute_values` (
 --
 
 INSERT INTO `product_attribute_values` (`id`, `product_id`, `attribute_id`, `value`, `created_at`, `updated_at`) VALUES
-(76, 4, 2, '[\"Bright Red\"]', '2025-11-12 06:28:22', '2025-11-12 06:28:22'),
-(75, 4, 1, '[\"XS\",\"S\",\"M\",\"L\",\"XL\",\"2XL\",\"3XL\",\"4XL\",\"5XL\",\"6XL\"]', '2025-11-12 06:28:22', '2025-11-12 06:28:22'),
-(77, 5, 1, '[\"XS\",\"S\",\"M\",\"L\",\"XL\",\"2XL\",\"3XL\",\"4XL\",\"5XL\",\"6XL\"]', '2025-11-12 06:29:14', '2025-11-12 06:29:14'),
-(78, 5, 2, '[\"Magenta Pink\"]', '2025-11-12 06:29:14', '2025-11-12 06:29:14');
+(84, 4, 2, '[\"Bright Red\"]', '2025-11-15 09:01:17', '2025-11-15 09:01:17'),
+(83, 4, 1, '[\"XS\",\"S\",\"M\",\"L\",\"XL\",\"2XL\",\"3XL\",\"4XL\",\"5XL\",\"6XL\"]', '2025-11-15 09:01:17', '2025-11-15 09:01:17'),
+(89, 5, 1, '[\"XS\",\"S\",\"M\",\"L\",\"XL\",\"2XL\",\"3XL\",\"4XL\",\"5XL\",\"6XL\"]', '2025-11-15 09:02:09', '2025-11-15 09:02:09'),
+(90, 5, 2, '[\"Magenta Pink\"]', '2025-11-15 09:02:09', '2025-11-15 09:02:09');
 
 -- --------------------------------------------------------
 
@@ -869,23 +899,20 @@ CREATE TABLE `product_images` (
 --
 
 INSERT INTO `product_images` (`id`, `product_id`, `image`, `alt_text`, `sort_order`, `is_primary`, `created_at`, `updated_at`) VALUES
-(17, 6, 'products/Etvl2xWGRgpjIiGG6iVz5ePOgfYWCtAHqUgOeVHE.jpg', NULL, 3, 0, '2025-11-10 04:08:13', '2025-11-10 04:08:13'),
-(16, 6, 'products/ZW3WqLdSXG3gLC4TUFfe1c6Cx7fHGwOSphmxWAyd.jpg', NULL, 2, 0, '2025-11-10 04:07:53', '2025-11-10 04:07:53'),
-(15, 6, 'products/1db6npM38Z9B9MdrYALCTE0eiltKNRxdz4tOz4n6.jpg', NULL, 1, 0, '2025-11-10 04:07:42', '2025-11-10 04:07:42'),
-(32, 7, 'products/8aXR3eyWkM3A0BKFOKltKVm2trBiAL7vHr2o5HTq.jpg', NULL, 1, 0, '2025-11-10 04:24:28', '2025-11-10 04:24:28'),
-(31, 7, 'products/Lzzr8nQvRpA9wM2zLbRV4X3sbAewxMOq0eI2xIYU.jpg', NULL, 0, 1, '2025-11-10 04:23:44', '2025-11-10 04:23:44'),
-(28, 4, 'products/EqCORbrfW2vapUMEFBnHcBq6RQvXf05xd2e2UR3I.jpg', NULL, 0, 1, '2025-11-10 04:20:58', '2025-11-10 04:20:58'),
-(13, 5, 'products/rNDi1lAFzffmvNwtYxqZoHDfs0AxqOxLatcz0lGC.jpg', NULL, 1, 1, '2025-11-10 04:04:18', '2025-11-10 04:09:43'),
-(14, 6, 'products/g5I3wTWEwWzf8CIYzzQQu6dTCrIxavz9loQJiZud.jpg', NULL, 0, 1, '2025-11-10 04:07:25', '2025-11-10 04:07:25'),
-(18, 5, 'products/VS3JnF5OE5JccpCjlVP8nxbthnxt5E6O2Zw9SHRG.jpg', NULL, 2, 0, '2025-11-10 04:08:28', '2025-11-10 04:08:28'),
-(19, 5, 'products/W1EDrs3uaSzNtwaFTTHhiNylXg6HRU0DWq12NDfK.jpg', NULL, 3, 0, '2025-11-10 04:08:42', '2025-11-10 04:08:42'),
-(20, 5, 'products/WPIdCC5ajmsnOYRm8LqSDwWVGsfsWvkyem6cZcu9.jpg', NULL, 4, 0, '2025-11-10 04:08:57', '2025-11-10 04:08:57'),
-(30, 4, 'products/LqgePizieOSSCOcGVQFR0oAdxqMf4F9rpnK7Dlft.jpg', NULL, 2, 0, '2025-11-10 04:21:30', '2025-11-10 04:21:30'),
-(29, 4, 'products/SNt4p0xgDdPFgpmSA2FX6Z4G6rcu6sIZXRKnNN4M.jpg', NULL, 1, 0, '2025-11-10 04:21:17', '2025-11-10 04:21:17'),
-(35, 8, 'products/juVqXMOIbs4opi2qtN8C2iA4nZ9nD4oOaUsnpUZL.jpg', NULL, 1, 0, '2025-11-10 04:30:07', '2025-11-10 04:30:07'),
-(34, 8, 'products/zSUjDk1lROAiktrmn1gv8Fq9S3NpGLD1A7sFgvU1.jpg', NULL, 1, 1, '2025-11-10 04:29:03', '2025-11-10 04:29:15'),
-(36, 9, 'products/Kw2HdBHifRg0CdBCD3tx7nG71tXAwjH6X45OWudV.jpg', NULL, 0, 1, '2025-11-10 04:32:35', '2025-11-10 04:32:35'),
-(37, 9, 'products/cVD5zZMtFsvxXZlbL8TtoTt7NGrDJWocG26iozNj.jpg', NULL, 1, 0, '2025-11-10 04:33:08', '2025-11-10 04:33:08');
+(49, 6, 'products/1763217176_69188f18e63bc.webp', NULL, 1, 0, '2025-11-15 09:02:57', '2025-11-15 09:02:57'),
+(50, 6, 'products/1763217206_69188f3615c86.webp', NULL, 2, 0, '2025-11-15 09:03:26', '2025-11-15 09:03:26'),
+(40, 7, 'products/1763215490_69188882141b5.webp', NULL, 1, 0, '2025-11-15 08:34:50', '2025-11-15 08:34:50'),
+(47, 5, 'products/1763217129_69188ee9313bd.webp', NULL, 3, 0, '2025-11-15 09:02:09', '2025-11-15 09:02:09'),
+(48, 6, 'products/1763217176_69188f1843c4c.webp', NULL, 0, 1, '2025-11-15 09:02:56', '2025-11-15 09:02:56'),
+(46, 5, 'products/1763217128_69188ee889378.webp', NULL, 2, 0, '2025-11-15 09:02:09', '2025-11-15 09:02:09'),
+(45, 5, 'products/1763217111_69188ed75d9db.webp', NULL, 1, 0, '2025-11-15 09:01:52', '2025-11-15 09:01:52'),
+(44, 5, 'products/1763217110_69188ed6cf2c1.webp', NULL, 0, 1, '2025-11-15 09:01:51', '2025-11-15 09:01:51'),
+(43, 4, 'products/1763217077_69188eb5222cc.webp', NULL, 1, 0, '2025-11-15 09:01:17', '2025-11-15 09:01:17'),
+(42, 4, 'products/1763217062_69188ea613328.webp', NULL, 0, 1, '2025-11-15 09:01:02', '2025-11-15 09:01:02'),
+(51, 8, 'products/1763217297_69188f91007c0.webp', NULL, 0, 1, '2025-11-15 09:04:57', '2025-11-15 09:04:57'),
+(53, 9, 'products/1763217651_691890f32fb62.webp', NULL, 1, 0, '2025-11-15 09:10:51', '2025-11-15 09:10:51'),
+(52, 9, 'products/1763217597_691890bd8f0ce.webp', NULL, 0, 1, '2025-11-15 09:09:58', '2025-11-15 09:09:58'),
+(39, 7, 'products/1763215465_6918886976748.webp', NULL, 0, 1, '2025-11-15 08:34:26', '2025-11-15 08:34:26');
 
 -- --------------------------------------------------------
 
@@ -989,7 +1016,9 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('zVRUmMPzfhoVT6Oj81w1lAaXY9pkyGW6hSkvaIGQ', NULL, '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiem5HazFsUW44QXc1VlIwREFsWTZRTHhqdWdsWlZKblcxcWtNQ0tKeCI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJuZXciO2E6MDp7fXM6Mzoib2xkIjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MzI6Imh0dHA6Ly9zaG9wLnRlc3QvYWNjb3VudC9wcm9maWxlIjt9czo1NToibG9naW5fY3VzdG9tZXJfNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI7aTo2O30=', 1763120652);
+('GYUU7A75RWlO3F2dMALUNVcIDU312etfQ7UAyOMp', 1, '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoicEZDaHdOQjB1d0FZRHVqRXM2bmVMSE1YcGIwaEdibFFPY3h6dk42NCI7czozOiJ1cmwiO2E6MDp7fXM6OToiX3ByZXZpb3VzIjthOjE6e3M6MzoidXJsIjtzOjMyOiJodHRwOi8vc2hvcC50ZXN0L2FkbWluL2Rhc2hib2FyZCI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fXM6NTA6ImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjE7fQ==', 1763295637),
+('KHf7jUBT7PPylL2kP3UeAplOFsSP3zFMokJhVWvT', 1, '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoiR094TzVnc2JYNGZpc25leEE0T0dXQ29zcWRsVFVHRWJsSkxWZm9tdSI7czozOiJ1cmwiO2E6MDp7fXM6OToiX3ByZXZpb3VzIjthOjE6e3M6MzoidXJsIjtzOjM5OiJodHRwOi8vc2hvcC50ZXN0L2FkbWluL3Byb2R1Y3RzLzEyL2VkaXQiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjUwOiJsb2dpbl93ZWJfNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI7aToxO30=', 1763287737),
+('7oPJvwyTectHZd1yQy2nmBRe6wo4X5xQ2YRxy6Tf', 1, '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoick9PSDVveXdpeENpRHhKeFVDaFZVRFdQNFFRenk1VkpoOVJtTEhEQiI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MzY6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9hZG1pbi9wcm9kdWN0cyI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fXM6NTA6ImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjE7fQ==', 1763295430);
 
 -- --------------------------------------------------------
 
@@ -1143,7 +1172,7 @@ CREATE TABLE `sliders` (
 --
 
 INSERT INTO `sliders` (`id`, `title`, `image`, `link`, `sort_order`, `status`, `created_at`, `updated_at`) VALUES
-(4, 'slider', 'sliders/8Fcg2lA2gfFyjXMwkuGnVUqDg5RlXRZiDs3PRBM9.jpg', NULL, 1, 1, '2025-11-10 02:38:46', '2025-11-12 04:03:34');
+(7, 'dsds', 'sliders/1763198139_691844bb208b8.webp', NULL, 0, 1, '2025-11-15 03:45:39', '2025-11-15 03:45:39');
 
 -- --------------------------------------------------------
 
@@ -1172,13 +1201,13 @@ CREATE TABLE `subcategories` (
 INSERT INTO `subcategories` (`id`, `category_id`, `name`, `slug`, `description`, `image`, `sort_order`, `status`, `is_featured`, `created_at`, `updated_at`) VALUES
 (32, 2, 'Dresses', 'dresses', 'Elegant dresses for various occasions and events', NULL, 10, 1, 1, '2025-11-12 06:10:57', '2025-11-12 09:37:12'),
 (31, 2, 'Co-ord Sets', 'co-ord-sets', 'Matching co-ordinated sets for perfect styling', NULL, 9, 1, 1, '2025-11-12 06:10:57', '2025-11-12 09:47:36'),
-(25, 2, 'Saree Sets', 'saree-sets', 'Beautiful saree sets with matching blouses and accessories', 'subcategories/E2yFZWc59YRVoiqi3iasKiQvKdsKcXaUW6vuIGHz.jpg', 3, 1, 1, '2025-11-12 06:10:57', '2025-11-12 22:36:20'),
-(24, 2, 'Lehenga Sets', 'lehenga-sets', 'Traditional lehenga sets for weddings and festive celebrations', 'subcategories/sk1tzeQJjctnVP109jASjRuoZACicUDUygLfMeN0.jpg', 2, 1, 1, '2025-11-12 06:10:57', '2025-11-12 22:36:52'),
+(25, 2, 'Saree Sets', 'saree-sets', 'Beautiful saree sets with matching blouses and accessories', 'subcategories/1763209213_69186ffd5d0be.webp', 3, 1, 1, '2025-11-12 06:10:57', '2025-11-15 06:50:14'),
+(24, 2, 'Lehenga Sets', 'lehenga-sets', 'Traditional lehenga sets for weddings and festive celebrations', 'subcategories/1763209281_6918704191abc.webp', 2, 1, 1, '2025-11-12 06:10:57', '2025-11-15 06:51:22'),
 (23, 2, 'Kaftan Sets', 'kaftan-sets', 'Elegant kaftan sets perfect for casual and semi-formal occasions', NULL, 1, 1, 1, '2025-11-12 06:10:57', '2025-11-12 09:37:12'),
 (34, 2, 'Jumpsuits', 'jumpsuits', 'Stylish jumpsuits combining comfort and fashion', NULL, 12, 1, 0, '2025-11-12 06:10:57', '2025-11-12 06:10:57'),
 (33, 2, 'Gowns', 'gowns', 'Luxurious gowns for special occasions and celebrations', NULL, 11, 1, 0, '2025-11-12 06:10:57', '2025-11-12 06:10:57'),
-(26, 2, 'Anarkali Sets', 'anarkali-sets', 'Graceful Anarkali suits with intricate embroidery work', 'subcategories/cN5EbUlpQbveUe6IajVD3b9DbrE7ZZ35gMdV4nXR.jpg', 4, 1, 1, '2025-11-12 06:10:57', '2025-11-12 22:37:34'),
-(27, 2, 'Sharara Sets', 'sharara-sets', 'Flowing sharara sets with elegant designs and comfort', 'subcategories/faXwdxhBXDVWQqeSHZhp9jm9yWigL8N0Bl30on8J.jpg', 5, 1, 1, '2025-11-12 06:10:57', '2025-11-12 22:38:18'),
+(26, 2, 'Anarkali Sets', 'anarkali-sets', 'Graceful Anarkali suits with intricate embroidery work', 'subcategories/1763209323_6918706bba775.webp', 4, 1, 1, '2025-11-12 06:10:57', '2025-11-15 06:52:04'),
+(27, 2, 'Sharara Sets', 'sharara-sets', 'Flowing sharara sets with elegant designs and comfort', 'subcategories/1763209355_6918708b49a66.webp', 5, 1, 1, '2025-11-12 06:10:57', '2025-11-15 06:52:35'),
 (28, 2, 'Jacket Sets', 'jacket-sets', 'Stylish jacket sets combining tradition with modern fashion', NULL, 6, 1, 0, '2025-11-12 06:10:57', '2025-11-12 06:10:57'),
 (29, 2, 'Kurta Sets', 'kurta-sets', 'Comfortable kurta sets for everyday wear and occasions', NULL, 7, 1, 0, '2025-11-12 06:10:57', '2025-11-12 06:10:57'),
 (30, 2, 'Palazzo Sets', 'palazzo-sets', 'Modern palazzo sets with contemporary designs', NULL, 8, 1, 0, '2025-11-12 06:10:57', '2025-11-12 06:10:57');
@@ -1356,6 +1385,32 @@ CREATE TABLE `users` (
 INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `remember_token`, `created_at`, `updated_at`) VALUES
 (1, 'Admin User', 'admin@gmail.com', NULL, '$2y$12$lCH6SzC/9jeCfGpQ6UNJYeTfmDnXJtBhBywMO14PNYOqeaLi5i7oW', 'Lkkbb6kU9Sdr467vURqQCJAKfdmdfB5ka5ADrxQq3yUJJKd0eKl78ixuZQO7', '2025-10-11 01:01:40', '2025-10-11 01:01:40');
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `videos`
+--
+
+CREATE TABLE `videos` (
+  `id` bigint UNSIGNED NOT NULL,
+  `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `video_path` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `status` enum('active','inactive') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'active',
+  `sort_order` int NOT NULL DEFAULT '0',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `videos`
+--
+
+INSERT INTO `videos` (`id`, `title`, `video_path`, `status`, `sort_order`, `created_at`, `updated_at`) VALUES
+(8, 'one', 'videos/69180680198bb_v1.mp4', 'active', 1, '2025-11-14 23:20:11', '2025-11-14 23:26:09'),
+(9, 'two', 'videos/6918069b944ba_v2.mp4', 'active', 2, '2025-11-14 23:20:37', '2025-11-14 23:26:28'),
+(10, 'three', 'videos/691806b686c4e_v3.mp4', 'active', 3, '2025-11-14 23:21:03', '2025-11-14 23:26:32'),
+(11, 'four', 'videos/691806c220ad2_v4.mp4', 'active', 4, '2025-11-14 23:21:17', '2025-11-14 23:26:37');
+
 --
 -- Indexes for dumped tables
 --
@@ -1429,6 +1484,13 @@ ALTER TABLE `cache_locks`
 ALTER TABLE `categories`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `categories_slug_unique` (`slug`);
+
+--
+-- Indexes for table `celebrities`
+--
+ALTER TABLE `celebrities`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `celebrities_slug_unique` (`slug`);
 
 --
 -- Indexes for table `collections`
@@ -1699,6 +1761,12 @@ ALTER TABLE `users`
   ADD UNIQUE KEY `users_email_unique` (`email`);
 
 --
+-- Indexes for table `videos`
+--
+ALTER TABLE `videos`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -1718,7 +1786,7 @@ ALTER TABLE `addresses`
 -- AUTO_INCREMENT for table `banners`
 --
 ALTER TABLE `banners`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `blog_categories`
@@ -1749,6 +1817,12 @@ ALTER TABLE `brands`
 --
 ALTER TABLE `categories`
   MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT for table `celebrities`
+--
+ALTER TABLE `celebrities`
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `collections`
@@ -1808,7 +1882,7 @@ ALTER TABLE `languages`
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=62;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=67;
 
 --
 -- AUTO_INCREMENT for table `notifications`
@@ -1844,7 +1918,7 @@ ALTER TABLE `payment_gateways`
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `product_attributes`
@@ -1856,19 +1930,19 @@ ALTER TABLE `product_attributes`
 -- AUTO_INCREMENT for table `product_attribute_values`
 --
 ALTER TABLE `product_attribute_values`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=79;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=95;
 
 --
 -- AUTO_INCREMENT for table `product_collections`
 --
 ALTER TABLE `product_collections`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT for table `product_images`
 --
 ALTER TABLE `product_images`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=99;
 
 --
 -- AUTO_INCREMENT for table `product_reviews`
@@ -1880,7 +1954,7 @@ ALTER TABLE `product_reviews`
 -- AUTO_INCREMENT for table `product_subcategory`
 --
 ALTER TABLE `product_subcategory`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
 -- AUTO_INCREMENT for table `product_variants`
@@ -1910,7 +1984,7 @@ ALTER TABLE `shipping_zones`
 -- AUTO_INCREMENT for table `sliders`
 --
 ALTER TABLE `sliders`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `subcategories`
@@ -1959,6 +2033,12 @@ ALTER TABLE `transactions`
 --
 ALTER TABLE `users`
   MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `videos`
+--
+ALTER TABLE `videos`
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

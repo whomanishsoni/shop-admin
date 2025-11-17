@@ -17,6 +17,13 @@
                                             <br>
                                             <br>
                                             <br>
+                                            <br>
+                                            <br>
+                                            <br>
+                                            <br>
+                                            <br>
+                                            <br>
+                                            <br>
                                         </div>
                                     </div>
                                 </div>
@@ -124,22 +131,22 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        function adjustSliderPosition() {
-            const headerSection = document.querySelector('.header__section');
-            const topbar = document.querySelector('.header__topbar--style3');
-            const mainHeader = document.querySelector('.main__header');
-            const sliderSection = document.querySelector('.hero__slider--section');
+function adjustSliderPosition() {
+    const topbar = document.querySelector('.header__topbar--style3');
+    const mainHeader = document.querySelector('.main__header');
+    const sliderSection = document.querySelector('.hero__slider--section');
 
-            if (headerSection && sliderSection) {
-                const topbarHeight = topbar ? topbar.offsetHeight : 0;
-                const mainHeaderHeight = mainHeader ? mainHeader.offsetHeight : 0;
-                const headerHeight = topbarHeight + mainHeaderHeight;
+    if (!sliderSection) return;
 
-                // Adjust margin-top to account for header
-                sliderSection.style.marginTop = `${headerHeight}px`;
-                sliderSection.style.paddingTop = '0';
-            }
-        }
+    // calculate visible header height (handles display:none)
+    const topbarHeight = (topbar && getComputedStyle(topbar).display !== 'none') ? topbar.getBoundingClientRect().height : 0;
+    const mainHeaderHeight = mainHeader ? mainHeader.getBoundingClientRect().height : 0;
+    const headerHeight = Math.round(topbarHeight + mainHeaderHeight);
+
+    // set padding so slider content is pushed below fixed header (better than margin)
+    sliderSection.style.paddingTop = headerHeight + 'px';
+}
+
 
         // Run on load, resize, and scroll
         adjustSliderPosition();

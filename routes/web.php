@@ -275,6 +275,12 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('videos/upload-chunk', [AdminVideoController::class, 'uploadChunk'])->name('videos.upload-chunk');
         Route::post('videos/merge-chunks', [AdminVideoController::class, 'mergeChunks'])->name('videos.merge-chunks');
 
+        // Chunked file upload routes for products
+        Route::post('products/upload-chunk', [AdminProductController::class, 'uploadChunk'])->name('products.upload-chunk');
+        Route::post('products/upload-chunk-small', [AdminProductController::class, 'uploadChunkSmall'])->name('products.upload-chunk-small');
+        Route::post('products/upload-large-file', [AdminProductController::class, 'uploadLargeFile'])->name('products.upload-large-file');
+        Route::get('products/uploaded-images', [AdminProductController::class, 'getUploadedImages'])->name('products.uploaded-images');
+
         // Settings Pages
         Route::get('seo-settings', [SettingController::class, 'seo'])->name('seo-settings');
         Route::post('seo-settings', [SettingController::class, 'updateSeo'])->name('seo-settings.update');

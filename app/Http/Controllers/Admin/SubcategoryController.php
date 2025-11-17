@@ -12,6 +12,16 @@ use Yajra\DataTables\Facades\DataTables;
 
 class SubcategoryController extends Controller
 {
+    use ImageProcessable;
+
+    public function __construct()
+    {
+        // Increase PHP limits for file uploads
+        ini_set('upload_max_filesize', '5M');
+        ini_set('post_max_size', '5M');
+        ini_set('memory_limit', '512M');
+    }
+
     public function index(Request $request)
     {
         if ($request->ajax()) {
@@ -51,28 +61,35 @@ class SubcategoryController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'category_id' => 'required|exists:categories,id',
-            'name' => 'required|string|max:255',
-            'slug' => 'nullable|string|unique:subcategories,slug',
-            'description' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'sort_order' => 'nullable|integer',
-            'status' => 'boolean',
-            'is_featured' => 'nullable|boolean',
-        ]);
+        try {
+            $validated = $request->validate([
+                'category_id' => 'required|exists:categories,id',
+                'name' => 'required|string|max:255',
+                'slug' => 'nullable|string|unique:subcategories,slug',
+                'description' => 'nullable|string',
+                'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:5120',
+                'sort_order' => 'nullable|integer',
+                'status' => 'boolean',
+                'is_featured' => 'nullable|boolean',
+            ]);
 
-        if (empty($validated['slug'])) {
-            $validated['slug'] = Str::slug($validated['name']);
+            if (empty($validated['slug'])) {
+                $validated['slug'] = Str::slug($validated['name']);
+            }
+
+            if ($request->hasFile('image')) {
+                $validated['image'] = $this->processImage($request->file('image'), 'subcategories');
+            }
+
+            Subcategory::create($validated);
+
+            return redirect()->route('admin.subcategories.index')->with('success', 'Subcategory created successfully');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return back()->withErrors($e->errors());
+        } catch (\Exception $e) {
+            \Log::error('Subcategory creation failed: ' . $e->getMessage());
+            return back()->withErrors(['error' => 'Failed to create subcategory. Please try with a smaller image.']);
         }
-
-        if ($request->hasFile('image')) {
-            $validated['image'] = $request->file('image')->store('subcategories', 'public');
-        }
-
-        Subcategory::create($validated);
-
-        return redirect()->route('admin.subcategories.index')->with('success', 'Subcategory created successfully');
     }
 
     public function edit(Subcategory $subcategory)
@@ -83,35 +100,42 @@ class SubcategoryController extends Controller
 
     public function update(Request $request, Subcategory $subcategory)
     {
-        $validated = $request->validate([
-            'category_id' => 'required|exists:categories,id',
-            'name' => 'required|string|max:255',
-            'slug' => 'nullable|string|unique:subcategories,slug,' . $subcategory->id,
-            'description' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'remove_image' => 'nullable|boolean',
-            'sort_order' => 'nullable|integer',
-            'status' => 'boolean',
-            'is_featured' => 'nullable|boolean',
-        ]);
+        try {
+            $validated = $request->validate([
+                'category_id' => 'required|exists:categories,id',
+                'name' => 'required|string|max:255',
+                'slug' => 'nullable|string|unique:subcategories,slug,' . $subcategory->id,
+                'description' => 'nullable|string',
+                'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:5120',
+                'remove_image' => 'nullable|boolean',
+                'sort_order' => 'nullable|integer',
+                'status' => 'boolean',
+                'is_featured' => 'nullable|boolean',
+            ]);
 
-        $validated['status'] = $request->has('status') ? true : false;
+            $validated['status'] = $request->has('status') ? true : false;
 
-        if ($request->has('remove_image') && $request->remove_image) {
-            if ($subcategory->image) {
-                Storage::disk('public')->delete($subcategory->image);
+            if ($request->has('remove_image') && $request->remove_image) {
+                if ($subcategory->image) {
+                    Storage::disk('public')->delete($subcategory->image);
+                }
+                $validated['image'] = null;
+            } elseif ($request->hasFile('image')) {
+                if ($subcategory->image) {
+                    Storage::disk('public')->delete($subcategory->image);
+                }
+                $validated['image'] = $this->processImage($request->file('image'), 'subcategories');
             }
-            $validated['image'] = null;
-        } elseif ($request->hasFile('image')) {
-            if ($subcategory->image) {
-                Storage::disk('public')->delete($subcategory->image);
-            }
-            $validated['image'] = $request->file('image')->store('subcategories', 'public');
+
+            $subcategory->update($validated);
+
+            return redirect()->route('admin.subcategories.index')->with('success', 'Subcategory updated successfully');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return back()->withErrors($e->errors());
+        } catch (\Exception $e) {
+            \Log::error('Subcategory update failed: ' . $e->getMessage());
+            return back()->withErrors(['error' => 'Failed to update subcategory. Please try with a smaller image.']);
         }
-
-        $subcategory->update($validated);
-
-        return redirect()->route('admin.subcategories.index')->with('success', 'Subcategory updated successfully');
     }
 
     public function destroy(Subcategory $subcategory)
